@@ -60,24 +60,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// hash the password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		http.Error(w, `{"message":"password hashing failed"}`, http.StatusInternalServerError)
-		return 
-	}
-
-	// insert into the database
-	stmt, err := db.Prepare("INSERT INTO users(username, password) VALUES(?, ?)")
-	if err != nil {
-		http.Error(w, `{"message":"database error"}`, http.StatusInternalServerError)
-		return 
-	}
-	_, err = stmt.Exec(user.Username, string(hashedPassword))
-	if err != nil {
-		http.Error(w, `{"message":"username already exists"}`, http.StatusConflict)
-		return 
-	}
+	
 
 	// success reponse
 	w.Header().Set("Content-Type", "application/json")
@@ -89,12 +72,12 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	// initialize database
-	var err error
-	db, err = database.SetupDatabase()
-	if err != nil {
-		fmt.Printf("error in setting up database: %v\n", err)
-		return
-	}
+	// var err error
+	// db, err = database.SetupDatabase()
+	// if err != nil {
+	// 	fmt.Printf("error in setting up database: %v\n", err)
+	// 	return
+	// }
 	
 	http.HandleFunc("/api/auth/register", registerHandler)
 	fmt.Println("Server running at ", C_LOCAL_SERVER)
