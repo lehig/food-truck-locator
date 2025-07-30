@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Router, Routes } from 'react-router-dom';
 import './App.css';
 import LoginForm from './Components/LoginForm/LoginForm'
 import RegisterForm from './Components/RegisterForm/RegisterForm';
+import Dashboard from './Components/Dashboard/Dashboard';
 
 function LoginButton() {
   return (
@@ -37,6 +38,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>;
     </BrowserRouter>
   );

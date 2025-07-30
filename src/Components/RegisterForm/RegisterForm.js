@@ -1,5 +1,5 @@
 import React from "react";
-import 'C:/Users/lehig/Documents/food-truck-locator/src/Components/LoginForm/LoginForm.css';
+import './RegisterForm.css';
 import { FaLock, FaUser } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";

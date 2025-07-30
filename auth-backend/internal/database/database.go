@@ -2,16 +2,28 @@ package database
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 
-	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/crypto/bcrypt"
+	_ "modernc.org/sqlite"
 )
 
-func SetupDatabase() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", "./users.db")
+type UserJSON struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+var ( 
+	db *sql.DB
+	users []UserJSON
+)
+
+func SetupDatabase() (error) {
+	var err error
+	db, err = sql.Open("sqlite", "./users.db")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	createTable := `
@@ -21,11 +33,7 @@ func SetupDatabase() (*sql.DB, error) {
 		password TEXT NOT NULL
 	);`
 	_, err = db.Exec(createTable)
-	if err != nil {
-		return nil, err
-	}
-
-	return db, nil
+	return err
 }
 
 func hashPassword(password string) (hashedPassword []byte, errString string, httpStatusCode int) {
@@ -37,23 +45,51 @@ func hashPassword(password string) (hashedPassword []byte, errString string, htt
 	return hashedPassword, "", http.StatusOK
 }
 
-func RegisterUser(password string) (errString string, httpStatusCode int) {
+
+
+func RegisterUser(username, password string) (errString string, httpStatusCode int) {
 	
 	// hashing the password
-	passwordHash, errString, httpStatusCode := hashPassword(password) // <-- TODO: this is where I stopped 
+	passwordHash, errString, httpStatusCode := hashPassword(password)
 	if errString != "" {
+		log.Println("hash error: ", errString)
 		return errString, httpStatusCode
 	}
+	log.Printf("Registering\nUser: %v\nPassword: %v\n", username, passwordHash)
 
 	// insert into the database
 	stmt, err := db.Prepare("INSERT INTO users(username, password) VALUES(?, ?)")
 	if err != nil {
-		http.Error(w, `{"message":"database error"}`, http.StatusInternalServerError)
-		return
+		log.Println("db error: ", err)
+		return `{"message":"database error"}`, http.StatusInternalServerError
 	}
-	_, err = stmt.Exec(user.Username, string(hashedPassword))
+	_, err = stmt.Exec(username, string(passwordHash))
 	if err != nil {
-		http.Error(w, `{"message":"username already exists"}`, http.StatusConflict)
-		return
+		log.Println("username already exists: ", err)
+		return `{"message":"username already exists"}`, http.StatusConflict
 	}
+
+	return "", http.StatusOK
+}
+
+func LoginUser(username, password string) (errString string, httpStatusCode int) {
+	var storedPasswordHash string
+	err := db.QueryRow("SELECT password FROM users WHERE username = ?", username).Scan(&storedPasswordHash)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			log.Println("Login failed: user not found:", username)
+			return `{"message":"invalid username or password"}`, http.StatusUnauthorized
+		}
+		log.Println("Database error during login:", err)
+		return `{"message":"database error"}`, http.StatusInternalServerError
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(storedPasswordHash), []byte(password))
+	if err != nil {
+		log.Println("comparing hash...\ninvalid username or password error: ", err)
+		return `{"message":"comparing hash...invalid username or password"}`, http.StatusUnauthorized
+	}
+	
+	log.Println("successfully logging in user: ", username)
+	return "", http.StatusOK
 }

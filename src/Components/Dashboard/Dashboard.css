@@ -1,0 +1,6 @@
+.map-wrapper {
+  width: 100%;          /* full width of parent container */
+  max-width: 900px;     /* optional max width, adjust as you want */
+  height: 500px;        /* match the map height */
+  margin: 0 auto;       /* center horizontally if max-width is smaller than viewport */
+}

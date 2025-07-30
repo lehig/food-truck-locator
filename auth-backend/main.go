@@ -1,35 +1,24 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
 	"github.com/lehig/food-truck-locator/internal/database"
-	"golang.org/x/crypto/bcrypt"
 )
 
 const (
-	C_LOCAL_SERVER = "http://localhost:5000"
+	C_LOCAL_SERVER = "http://localhost:3000"
 	C_PORT         = ":5000"
 )
 
-var ( 
-	db *sql.DB
-	users []UserJSON
-)
-
-type UserJSON struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
 func registerHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	w.Header().Set("Access-Control-Allow-Origin", C_LOCAL_SERVER)
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
 	w.Header().Set("Content-Type", "application/json")
 
 	// handle preflight request
@@ -44,8 +33,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var user UserJSON
-
+	var user database.UserJSON
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		http.Error(w, `{"message":"invalid json"}`, http.StatusBadRequest)
@@ -60,7 +48,12 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	
+	// register the username and password
+	errString, httpStatusCode := database.RegisterUser(user.Username, user.Password)
+	if errString != "" {
+		http.Error(w, errString, httpStatusCode)
+		return
+	}
 
 	// success reponse
 	w.Header().Set("Content-Type", "application/json")
@@ -68,18 +61,53 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{
 		"message": "user registered successfully",
 	})
+	log.Println("user registered successfully")
+}
+
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("login endpoint hit")
+
+	w.Header().Set("Access-Control-Allow-Origin", C_LOCAL_SERVER)
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Content-Type", "application/json")
+
+	// handle preflight request
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	// allow POST
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var user database.UserJSON
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		http.Error(w, `{"message":"invalid json"}`, http.StatusBadRequest)
+		return
+	}
+
+	errString, httpStatusCode := database.LoginUser(user.Username, user.Password)
+	if errString != "" {
+		http.Error(w, errString, httpStatusCode)
+		return
+	}
 }
 
 func main() {
 	// initialize database
-	// var err error
-	// db, err = database.SetupDatabase()
-	// if err != nil {
-	// 	fmt.Printf("error in setting up database: %v\n", err)
-	// 	return
-	// }
-	
+	err := database.SetupDatabase()
+	if err != nil {
+		log.Println("error in setting up database: ", err)
+		return 
+	}
+
 	http.HandleFunc("/api/auth/register", registerHandler)
-	fmt.Println("Server running at ", C_LOCAL_SERVER)
+	http.HandleFunc("/api/auth/login", loginHandler)
+	fmt.Println("Server running at ", C_PORT)
 	http.ListenAndServe(C_PORT, nil)
 }

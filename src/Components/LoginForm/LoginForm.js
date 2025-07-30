@@ -13,10 +13,11 @@ function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/', {
+            const res = await axios.post('http://localhost:5000/api/auth/login', {
                 username,
                 password
             });
+            console.log(res.data);
             localStorage.setItem('token', res.data.token);
             navigate('/dashboard'); // or wherever your protected route is
         } catch (err) {
@@ -26,7 +27,7 @@ function LoginForm() {
 
     return (
         <div className='wrapper'>
-            <form action="">
+            <form onSubmit={handleSubmit}>
                 <h1>Food Truck Locator</h1>
                 <h2>Login</h2>
                 <div className="input-box">
