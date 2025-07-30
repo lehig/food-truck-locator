@@ -22,7 +22,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  
+  background: url('https://food-truck-locator-assets.s3.us-east-1.amazonaws.com/background.jpeg');
   background-size: cover;
   background-position: center;
 }
