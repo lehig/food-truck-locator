@@ -3,6 +3,13 @@ import './LoginForm.css';
 import { FaLock, FaUser } from "react-icons/fa";
 import axios from "axios"; 
 import { useNavigate } from "react-router-dom";
+import backgroundImage from '../../assets/background.jpeg';
+
+// Then in your component's style or styled-components
+const styles = {
+  backgroundImage: `url(${backgroundImage})`,
+  backgroundRepeat: 'no-repeat'
+};
 
 function LoginForm() {
     const [username, setUsername] = useState('');

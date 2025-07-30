@@ -4,6 +4,13 @@ import { FaLock, FaUser } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import backgroundImage from '../../assets/background.jpeg';
+
+// Then in your component's style or styled-components
+const styles = {
+  backgroundImage: `url(${backgroundImage})`,
+  backgroundRepeat: 'no-repeat'
+};
 
 function RegisterForm() {
     const [username, setUsername] = useState('');
