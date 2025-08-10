@@ -3,6 +3,7 @@ import './App.css';
 import LoginForm from './Components/LoginForm/LoginForm'
 import RegisterForm from './Components/RegisterForm/RegisterForm';
 import Dashboard from './Components/Dashboard/Dashboard';
+import TestComms from './Components/TestComms/TestComms';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
           <Route path="/" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/test" element={<TestComms />} />
         </Routes>
       </BrowserRouter>
   );
