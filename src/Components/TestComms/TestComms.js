@@ -6,7 +6,7 @@ function TestComms() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch("https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/customerdb?username=JohnDoe33")
+        fetch("https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/customerdb")
             .then(res => res.json())
             .then(parsedData => {
                 console.log("Parsed JSON:", parsedData);
@@ -19,11 +19,10 @@ function TestComms() {
     }, []);
 
     const renderTable = () => {
-        if (!data) return null;
+        if (!data || data.length === 0) return <p>No data found</p>;
 
         // if data is a single object, wrap in array
-        const rows = Array.isArray(data) ? data : [data];
-        const columns = Object.keys(rows[0]);
+        const columns = Object.keys(data[0]);
 
         return (
             <table className="customer-table">
@@ -35,7 +34,7 @@ function TestComms() {
                     </tr>
                 </thead>
                 <tbody>
-                    {rows.map((row, i) => (
+                    {data.map((row, i) => (
                         <tr key={i}>
                             {columns.map((col, j) => (
                                 <td key={j}>{row[col]}</td>
@@ -50,6 +49,7 @@ function TestComms() {
     return (
         <div className="wrapper-db">
             <h1>Testing Lambda Communication...</h1>
+            <h2>customers table</h2>
             {error && <p style={{ color: "red"}}>{error}</p>}
             {data ? renderTable() : <p>Loading...</p>}
         </div>
