@@ -52,6 +52,7 @@ function TestComms() {
             <h2>customers table</h2>
             {error && <p style={{ color: "red"}}>{error}</p>}
             {data ? renderTable() : <p>Loading...</p>}
+            <p><a href="/test-entry">register a new user</a></p>
         </div>
     );
 }
