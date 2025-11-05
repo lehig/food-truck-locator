@@ -37,7 +37,7 @@ function TestEntry() {
             
         } catch (err) {
             console.error(err);
-            setError("failed to register user");
+            setError(err);
         }
     };
 
