@@ -34,7 +34,7 @@ function TestLogin() {
             console.log("failed")
             setError("login failed")
         }
-    }
+    };
 
     return (
         <div className="wrapper">

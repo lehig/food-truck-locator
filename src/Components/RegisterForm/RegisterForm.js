@@ -1,6 +1,6 @@
 import React from "react";
 import './RegisterForm.css';
-import { FaLock, FaUser } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -8,52 +8,142 @@ import { useState } from "react";
 function RegisterForm() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [accountType, setAccountType] = useState('customer'); // default
     const navigate = useNavigate();
     const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError(''); // clear any previous error
+
         try {
-            await axios.post('http://localhost:5000/api/auth/register', {
-                username, 
-                password
-            });
-            navigate('/');
+            const response = await axios.post(
+                "https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/register",
+                {
+                    username,
+                    password, 
+                    email,
+                    accountType
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+            
+            console.log("Success:", response.data);
+            
+            if (accountType === "business") {
+                navigate("/business-register", {
+                    state: {
+                        userId: response.data.userId, 
+                        username, 
+                        email,
+                    },
+                });
+            } else {
+                navigate("/");
+            }
         } catch (err) {
-            setError(err.response?.data?.message || 'registration failed');
+        console.error('Register error:', err);
+
+        let message = 'Registration failed';
+
+        // If backend sends something in response.data
+        if (err.response && err.response.data) {
+            const data = err.response.data;
+            console.log("err.response.data: ", data)
+
+            message = data.error
+        } else if (err.message) {
+            // Generic JS / Axios error message
+            message = err.message;
         }
-    };
+
+        setError(String(message)); // ALWAYS a string
+    }
+};
 
     return (
         <div className="wrapper">
             <form onSubmit={handleSubmit}>
                 <h1>Food Truck Locator</h1>
                 <h2>Registration</h2>
+
+                {/* email */}
                 <div className="input-box">
                     <input 
-                    type="text" 
-                    placeholder="Username" 
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required/>
-                    <FaUser className="icon"/>
+                        type="email"
+                        placeholder="example@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <FaEnvelope className="icon" />
                 </div>
+
+                {/* username */}
                 <div className="input-box">
                     <input 
-                    type="password" 
-                    placeholder="Password" 
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required/>
-                    <FaLock className="icon"/>
+                        type="text" 
+                        placeholder="Username" 
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                    <FaUser className="icon" />
                 </div>
-                {error && <p className="error">{error}</p>}
+
+                {/* password */}
+                <div className="input-box">
+                    <input 
+                        type="password" 
+                        placeholder="Password" 
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                    <FaLock className="icon" />
+                </div>
+
+                {/* radio button account type */}
+                <div className="account-type">
+                    <p>What type of account are you registering?</p>
+                    <label>
+                        <input
+                        type="radio"
+                        name="accountType"
+                        value="customer"
+                        checked={accountType === 'customer'}
+                        onChange={(e) => setAccountType(e.target.value)}
+                        />
+                        Customer
+                    </label>
+
+                    <label>
+                        <input
+                        type="radio"
+                        name="accountType"
+                        value="business"
+                        checked={accountType === 'business'}
+                        onChange={(e) => setAccountType(e.target.value)}
+                        />
+                        Business
+                    </label>
+                </div>
+
+                {error && (
+                    <p className="error">
+                        {typeof error === 'string' ? error : JSON.stringify(error)}
+                    </p>
+                )}
 
                 <button type="submit">Register</button>
 
                 <div className="register-link">
                     <p>Already have an account? <a href="/">Login</a></p>
-                    
                 </div>
             </form>
         </div>

@@ -8,6 +8,7 @@
     padding: 30px 40px;
     margin: 0 auto;
     margin-top: 100px;
+    overflow-x: auto;
 }
 
 .wrapper-db h1 {
@@ -118,12 +119,14 @@
     border-collapse: collapse;
     width: 100%;
     margin-top: 20px;
+    min-width: 600px;
 }
 
 .customer-table th, 
 .customer-table td {
     border: 1px solid #ddd;
     padding: 8px;
+    white-space: nowrap;
 }
 
 .customer-table th {

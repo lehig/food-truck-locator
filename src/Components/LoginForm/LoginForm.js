@@ -1,15 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import './LoginForm.css';
 import { FaLock, FaUser } from "react-icons/fa";
-import axios from "axios"; 
+import { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import backgroundImage from '../../assets/background.jpeg';
-
-// Then in your component's style or styled-components
-const styles = {
-  backgroundImage: `url(${backgroundImage})`,
-  backgroundRepeat: 'no-repeat'
-};
 
 function LoginForm() {
     const [username, setUsername] = useState('');
@@ -20,15 +14,23 @@ function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', {
+            const response = await axios.post("https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/login", {
                 username,
                 password
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                }
             });
-            console.log(res.data);
-            localStorage.setItem('token', res.data.token);
-            navigate('/dashboard'); // or wherever your protected route is
+
+            console.log("response received");
+            console.log("success");
+            console.log(response.data)
+            navigate("/dashboard");
         } catch (err) {
-            setError(err.response?.data?.message || 'login failed');
+            console.log("failed")
+            setError("login failed")
         }
     };
 
@@ -57,15 +59,11 @@ function LoginForm() {
                 </div>
                 {error && <p className="error">{error}</p>}
 
-                <div className="remember-forgot">
-                    <label><input type="checkbox" />Remember Me</label>
-                    <a href="#">Forgot Password</a>
-                </div>
-
                 <button type="submit">Login</button>
 
                 <div className="register-link">
-                    <p>Don't have an account? <a href="/register">Register</a></p>
+                    <p>Don't have an account yet? <a href="/register">Register</a></p>
+                    
                 </div>
             </form>
         </div>
