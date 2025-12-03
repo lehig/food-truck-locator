@@ -24,10 +24,31 @@ function LoginForm() {
                 }
             });
 
+            const {user_id, username: respUsername, email, role} = response.data;
+
+            const userID = user_id;
+
+            sessionStorage.setItem(
+                "ftlUser",
+                JSON.stringify({
+                    userID,
+                    username: respUsername,
+                    email,
+                    role
+                })
+            );
+
             console.log("response received");
             console.log("success");
             console.log(response.data)
-            navigate("/dashboard");
+            navigate("/dashboard", {
+                state: {
+                    userID,
+                    username: respUsername,
+                    email,
+                    role
+                }
+            });
         } catch (err) {
             console.log("failed")
             setError("login failed")

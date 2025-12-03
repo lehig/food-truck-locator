@@ -7,6 +7,7 @@ import Dashboard from './Components/Dashboard/Dashboard';
 import TestComms from './Components/TestComms/TestComms';
 import TestEntry from './Components/TestEntry/TestEntry';
 import TestLogin from './Components/TestLogin/TestLogin';
+import ProfilePage from './Components/ProfilePage/ProfilePage';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/test" element={<TestComms />} />
           <Route path='/test-entry' element={<TestEntry />} />
           <Route path='/test-login' element={<TestLogin />} />
+          <Route path='/profile' element={<ProfilePage />} />
         </Routes>
       </BrowserRouter>
   );

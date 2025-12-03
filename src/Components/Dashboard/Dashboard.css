@@ -1,6 +1,280 @@
-.map-wrapper {
-  width: 100%;          /* full width of parent container */
-  max-width: 900px;     /* optional max width, adjust as you want */
-  height: 500px;        /* match the map height */
-  margin: 0 auto;       /* center horizontally if max-width is smaller than viewport */
+/* Root dashboard layout – similar background to login page */
+.dashboard {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* You can tweak this gradient or replace with your page background */
+  color: #fff;
+  padding: 20px 10px;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Top nav bar styled like a horizontal "wrapper" */
+.dashboard-nav {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,.2);
+  backdrop-filter: blur(30px);
+  color: #fff;
+  border-radius: 10px;
+  padding: 15px 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Left logo/title */
+.nav-left .nav-logo {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* Center state selector */
+.nav-center {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-center label {
+  font-size: 14px;
+}
+
+/* State select matches input style from .wrapper */
+.state-select {
+  height: 40px;
+  padding: 0 18px;
+  background: transparent;
+  border-radius: 40px;
+  border: 2px solid rgba(255,255,255,.2);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  appearance: none;
+}
+
+.state-select option {
+  color: #000; /* dropdown list text */
+}
+
+/* Right profile button – match .wrapper button style */
+.profile-btn {
+  min-width: 120px;
+  height: 40px;
+  background: #fff;
+  border: none;
+  outline: none;
+  border-radius: 40px;
+  box-shadow: 0 0 10px rgba(0,0,0,.1);
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  font-weight: 700;
+}
+
+/* Main content container – similar to .wrapper card */
+.dashboard-main {
+  width: 100%;
+  max-width: 1100px;
+  margin: 30px auto 40px;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,.2);
+  backdrop-filter: blur(30px);
+  color: #fff;
+  border-radius: 10px;
+  padding: 30px 40px;
+  box-sizing: border-box;
+}
+
+.dashboard-main h1 {
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.state-summary {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* Loading / generic text */
+.dashboard-main p {
+  font-size: 14px;
+}
+
+/* Error message – reuse your .error style feel */
+.error-message {
+  color: red;
+  text-align: center;
+  margin: 20px 0;
+  border: 2px solid rgba(255,255,255,.2);
+  border-radius: 40px;
+  background: #FFC9C9;
+  padding: 10px 15px;
+}
+
+/* Business list table area */
+.business-list {
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+/* Glassy table */
+.business-list table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(15,23,42,0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.15);
+}
+
+/* Table headers & cells */
+.business-list th,
+.business-list td {
+  padding: 12px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.business-list th {
+  font-weight: 600;
+  text-align: left;
+  background: rgba(15,23,42,0.4);
+}
+
+.business-list tr:last-child td {
+  border-bottom: none;
+}
+
+/* Hover row effect */
+.business-list tbody tr:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .dashboard-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .nav-center {
+    justify-content: center;
+  }
+
+  .dashboard-main {
+    padding: 20px;
+  }
+}
+
+.logout-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  height: 45px;
+  padding: 0 25px;
+
+  background: #fff;
+  border: none;
+  outline: none;
+  border-radius: 40px;
+  box-shadow: 0 0 10px rgba(0,0,0,.3);
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+  font-weight: 700;
+
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.logout-btn:hover {
+  transform: scale(1.07);
+  opacity: 0.9;
+}
+
+/* Container that holds all cards */
+.business-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+/* Individual card */
+.business-card {
+  background: transparent;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  border: 2px solid rgb(255, 255, 255);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  color: #fff;
+}
+
+/* Header area with name + location */
+.business-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.business-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.business-location {
+  font-size: 0.9rem;
+  color: #fff;
+  white-space: pre-line;
+}
+
+/* Menu section */
+.business-card-body {
+  border-top: 1px solid rgba(255, 255, 255, 0.712);
+  padding-top: 0.75rem;
+}
+
+.menu-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem 0;
+}
+
+.menu-content {
+  font-size: 0.9rem;
+}
+
+/* Reuse your existing menu-list or tweak it */
+.menu-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.menu-list li {
+  margin-bottom: 0.25rem;
+}
+
+/* Optional: match buttons to the card style */
+.btn {
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  filter: brightness(0.95);
 }

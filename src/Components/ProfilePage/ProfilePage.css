@@ -1,0 +1,225 @@
+.profile-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.profile-page h1 {
+  margin-bottom: 0.5rem;
+}
+
+.error {
+  color: red;
+}
+
+.business-profile-form label {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.business-profile-form input {
+  width: 100%;
+  padding: 0.4rem;
+  margin-top: 0.25rem;
+}
+
+.row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.row label {
+  flex: 1;
+}
+
+.hours-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 0.4rem 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.hours-row {
+  display: contents;
+}
+
+.menu-item-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.menu-item-row input {
+  flex: 1;
+}
+
+.menu-item-row button {
+  flex: 0 0 auto;
+}
+
+.actions {
+  margin-top: 1rem;
+}
+
+.customer-messages .messages-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.message-card {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.message-date {
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.message-body {
+  margin: 0.25rem 0 0.5rem;
+}
+
+/* Glassmorphism card for "no business profile" message */
+.business-registration-cta {
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  
+
+  /* Glass / Frosted UI */
+  background: rgba(255, 255, 255, 0.18);   /* light transparency */
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+
+  /* Optional shadow for depth */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+  color: #000; /* adjust if your theme uses white text */
+}
+
+.business-registration-cta h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.business-registration-cta p {
+  margin: 0 0 1rem 0;
+  line-height: 1.45;
+  color: #fff;
+}
+
+/* Button styled to match modern glass UI */
+.business-registration-cta button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  background: rgba(0, 119, 204, 0.6); /* transparent blue */
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+
+  backdrop-filter: blur(6px);
+  transition: all 0.2s ease;
+}
+
+.business-registration-cta button:hover {
+  background: rgba(0, 119, 204, 0.85);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Reusable glass box for profile sections */
+.glass-box {
+  margin-top: 1.5rem;
+  padding: 1.5rem 1.75rem;
+  color: #fff;
+
+  /* Glass look */
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+
+  /* Depth */
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* Layout for profile header box */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-header-main h1 {
+  margin-bottom: 0.25rem;
+}
+
+.profile-header-main p {
+  margin: 0;
+}
+
+.profile-header-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Base button style (glass-friendly) */
+.btn {
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(6px);
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  color: #fff;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Primary action (Save, Register, etc.) */
+.btn-primary {
+  background: rgba(0, 119, 204, 0.7);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+.btn-primary:hover {
+  background: rgba(0, 119, 204, 0.9);
+}
+
+/* Secondary / subtle actions (Back, Add item, Remove) */
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.18);
+  color: #000;
+}
+
+/* Smaller buttons, e.g. "Remove" inside menu rows */
+.btn-small {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+}
