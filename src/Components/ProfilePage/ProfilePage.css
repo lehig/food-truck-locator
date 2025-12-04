@@ -203,7 +203,7 @@
 
 /* Primary action (Save, Register, etc.) */
 .btn-primary {
-  background: rgba(0, 119, 204, 0.7);
+  background: rgba(0, 119, 204, 0.5);
   color: #fff;
   border-color: rgba(255, 255, 255, 0.85);
 }
@@ -222,4 +222,17 @@
 .btn-small {
   padding: 0.3rem 0.6rem;
   font-size: 0.85rem;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+  margin-top: 300px;
+}
+
+.buttons button {
+  font-size: large;
 }

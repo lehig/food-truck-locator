@@ -180,7 +180,7 @@ function Dashboard() {
       {/* Top Navigation Bar */}
       <nav className='dashboard-nav'>
         <div className='nav-left'>
-          <span className='nav-logo'>Food Truck Locator</span>
+          <span className='nav-logo'>Food Truck Locator Dashboard</span>
         </div>
 
         <div className='nav-center'>

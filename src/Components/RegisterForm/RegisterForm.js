@@ -38,7 +38,7 @@ function RegisterForm() {
             if (accountType === "business") {
                 navigate("/business-register", {
                     state: {
-                        userId: response.data.userId, 
+                        userId: response.data.user_id, 
                         username, 
                         email,
                     },

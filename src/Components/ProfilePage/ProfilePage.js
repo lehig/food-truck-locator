@@ -213,16 +213,26 @@ function ProfilePage() {
     });
   };
 
+  const handleGoToLogin = () => {
+    navigate('/')
+  }
+
   const handleGoToDashboard = () => {
     // 🔁 change '/dashboard' to whatever your actual route is
-    navigate('/dashboard', {
-        state: {
-        userID: user.userID,
-        username: user.username,
-        email: user.email,
-        },
-    });
-    };
+    if (user) {
+      navigate('/dashboard', {
+          state: {
+          userID: user.userID,
+          username: user.username,
+          email: user.email,
+          },
+      });
+    } else {
+      // Fallback if no user in sessionStorage; Dashboard can handle "guest" or redirect
+      navigate('/dashboard');
+    }
+      
+  };
 
 
   if (loading) {
@@ -231,11 +241,43 @@ function ProfilePage() {
 
   // Only treat error as a hard stop if we are NOT in the "needs registration" state
   if (error && !needsRegistration) {
-    return <div className="profile-page"><p className="error">{error}</p></div>;
+    return (
+      <div className="profile-page">
+        <p className="error">{error}</p>
+        <div className='buttons'>
+          <button
+            type='button'
+            className='btn btn-primary'
+            onClick={handleGoToDashboard}
+          >
+            Back to Dashboard
+          </button>
+          
+          <button
+          type="button"
+          className="btn btn-primary"
+          onClick={handleGoToLogin}
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
   }
 
   if (!user) {
-    return <div className="profile-page"><p>Please log in.</p></div>;
+    return (
+    <div className="profile-page">
+      <p>Please log in.</p>
+      <button
+        type="button"
+        className="btn btn-secondary"
+        onClick={handleGoToDashboard}
+      >
+        Back to Dashboard
+      </button>
+    </div>
+  );
   }
 
   return (

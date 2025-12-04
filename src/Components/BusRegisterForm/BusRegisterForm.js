@@ -1,235 +1,276 @@
 import React, { useState } from 'react';
 import './BusRegisterForm.css';
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function BusRegisterForm() {
-    const location = useLocation();
-    const { userId, username, email } = location.state || {};
-    const [BusName, setBusName] = useState('');
-    const [CityName, setCityName] = useState('');
-    const [StateName, setStateName] = useState('');
-    const [Address, setAddress] = useState('');
-    const [ZipCode, setZipCode] = useState('');
-    const [menuItems, setMenuItems] = useState([{ name: '', price: '', description: ''}]);
-    const [hours, setHours] = useState({
-        Monday: "",
-        Tuesday: "",
-        Wednesday: "",
-        Thursday: "",
-        Friday: "",
-        Saturday: "",
-        Sunday: ""
+  const location = useLocation();
+  const { userId, username, email } = location.state || {};
+  const navigate = useNavigate();
+
+  const [businessProfile, setBusinessProfile] = useState({
+    name: '',
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    hours: {
+      Monday: "",
+      Tuesday: "",
+      Wednesday: "",
+      Thursday: "",
+      Friday: "",
+      Saturday: "",
+      Sunday: ""
+    },
+    menuItems: [{ name: '', description: '', price: '' }]
+  });
+
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  // --- handlers like in ProfilePage ---
+
+  const handleBusinessChange = (field, value) => {
+    setBusinessProfile(prev => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleHoursChange = (day, value) => {
+    setBusinessProfile(prev => ({
+      ...prev,
+      hours: {
+        ...prev.hours,
+        [day]: value,
+      },
+    }));
+  };
+
+  const handleMenuItemChange = (index, field, value) => {
+    setBusinessProfile(prev => {
+      const updated = [...prev.menuItems];
+      updated[index] = {
+        ...updated[index],
+        [field]: value,
+      };
+      return {
+        ...prev,
+        menuItems: updated,
+      };
     });
+  };
 
-    const [error, setError] = useState('');
-    const [saving, setSaving] = useState(false);
+  const addMenuItem = () => {
+    setBusinessProfile(prev => ({
+      ...prev,
+      menuItems: [...prev.menuItems, { name: '', description: '', price: '' }],
+    }));
+  };
 
-    const navigate = useNavigate();
+  const removeMenuItem = (index) => {
+    setBusinessProfile(prev => {
+      const updated = [...prev.menuItems];
+      updated.splice(index, 1);
+      return {
+        ...prev,
+        menuItems: updated,
+      };
+    });
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError('');
-        setSaving(true);
+  // --- submit ---
 
-        try {
-            const payload = {
-                user_id: userId,
-                username, 
-                email, 
-                business_name: BusName,
-                state: StateName,
-                city: CityName,
-                address: Address,
-                zip_code: ZipCode,
-                hours,
-                menu_items: menuItems
-            };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSaving(true);
 
-            console.log("sending payload:", payload);
+    try {
+      const payload = {
+        user_id: userId,
+        username,
+        email,
+        business_name: businessProfile.name,
+        state: businessProfile.state,
+        city: businessProfile.city,
+        address: businessProfile.address,
+        zip_code: businessProfile.zipCode,
+        hours: businessProfile.hours,
+        menu_items: businessProfile.menuItems,
+      };
 
-            const response = await axios.post(
-                "https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/business-register",
-                payload,
-                {
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
-            );
+      console.log("sending payload:", payload);
 
-            console.log("business registration saved:", response.data);
-            alert("business info saved successfully!")
-
-            navigate('/');
-        } catch (err) {
-            console.error("error saving business info:", err);
-
-            let message = "failed to save business info";
-
-            if (err.response && err.response.data) {
-                message = err.response.data.error || message;
-            } else if (err.message) {
-                message = err.message;
-            }
-
-            setError(String(message));
-        } finally {
-            setSaving(false);
+      const response = await axios.post(
+        "https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/business-register",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json"
+          }
         }
+      );
+
+      console.log("business registration saved:", response.data);
+      alert("business info saved successfully... redirecting to login!");
+      navigate('/');
+    } catch (err) {
+      console.error("error saving business info:", err);
+
+      let message = "failed to save business info";
+
+      if (err.response && err.response.data) {
+        message = err.response.data.error || message;
+      } else if (err.message) {
+        message = err.message;
+      }
+
+      setError(String(message));
+    } finally {
+      setSaving(false);
     }
+  };
 
-    /* Set Menu Items */
-    const handleMenuChange = (index, field, value) => {
-    const newMenu = [...menuItems];
-    newMenu[index][field] = value;
-    setMenuItems(newMenu);
-    };
+  return (
+    <div className="wrapper-bus">
+      <div className="glass-box">
+        <form className="business-profile-form" onSubmit={handleSubmit}>
+          <h2>Business Registration</h2>
+          <p className="base-account">
+            Base account: {username} ({email})
+          </p>
 
-    const addMenuItem = () => {
-    setMenuItems([...menuItems, { name: '', price: '', description: '' }]);
-    };
+          <label>
+            Business Name
+            <input
+              type="text"
+              value={businessProfile.name}
+              onChange={e => handleBusinessChange('name', e.target.value)}
+              required
+            />
+          </label>
 
-    const removeMenuItem = (index) => {
-    const newMenu = [...menuItems];
-    newMenu.splice(index, 1);
-    setMenuItems(newMenu);
-    };
+          <label>
+            Address
+            <input
+              type="text"
+              value={businessProfile.address}
+              onChange={e => handleBusinessChange('address', e.target.value)}
+              required
+            />
+          </label>
 
-    /* Handle Hours */
-    const handleHourChange = (day, value) => {
-        setHours(prev => ({ ...prev, [day]: value }));
-    };
+          <div className="row">
+            <label>
+              City
+              <input
+                type="text"
+                value={businessProfile.city}
+                onChange={e => handleBusinessChange('city', e.target.value)}
+                required
+              />
+            </label>
 
+            <label>
+              State
+              {/* you can keep this as free text or make it a <select> */}
+              <select
+                value={businessProfile.state}
+                onChange={e => handleBusinessChange('state', e.target.value)}
+                required
+              >
+                <option value="">Select a State</option>
+                <option value="ID">Idaho</option>
+                <option value="UT">Utah</option>
+                <option value="WY">Wyoming</option>
+              </select>
+            </label>
 
-    // use these to prefill or link to the base account
-    return (
-        <div className='wrapper-bus'>
-            <form onSubmit={handleSubmit}>
-                <h1>Business Registration</h1>
-                <p>Base account: {username} ({email})</p>
-                {/* extra business fields here */}
+            <label>
+              Zip Code
+              <input
+                type="text"
+                value={businessProfile.zipCode}
+                onChange={e => handleBusinessChange('zipCode', e.target.value)}
+                required
+              />
+            </label>
+          </div>
 
-                {/* business name */}
-                <div className="input-box">
-                    <input 
-                        type="business-name"
-                        placeholder="Enter name of business"
-                        value={BusName}
-                        onChange={(e) => setBusName(e.target.value)}
-                        required
-                    />
-                </div>
+          <h3>Hours</h3>
+          <div className="hours-grid">
+            {Object.keys(businessProfile.hours).map(day => (
+              <div key={day} className="hours-row">
+                <span>{day}</span>
+                <input
+                  type="text"
+                  placeholder="e.g. 10:00 - 18:00 / Closed"
+                  value={businessProfile.hours[day]}
+                  onChange={e => handleHoursChange(day, e.target.value)}
+                />
+              </div>
+            ))}
+          </div>
 
-                {/* state */}
-                <div className="input-box">
-                    <select
-                        value={StateName}
-                        onChange={(e) => setStateName(e.target.value)}
-                        required
-                    >
-                        <option value="">Select a State</option>
-                        <option value="ID">Idaho</option>
-                        <option value="UT">Utah</option>
-                    </select>
-                </div>
+          <h3>Menu Items</h3>
+          {businessProfile.menuItems.map((item, index) => (
+            <div key={index} className="menu-item-row">
+              <input
+                type="text"
+                placeholder="Name"
+                value={item.name}
+                onChange={e => handleMenuItemChange(index, 'name', e.target.value)}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Description"
+                value={item.description}
+                onChange={e => handleMenuItemChange(index, 'description', e.target.value)}
+              />
+              <input
+                type="number"
+                step="0.01"
+                placeholder="Price"
+                value={item.price}
+                onChange={e => handleMenuItemChange(index, 'price', e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="btn btn-secondary btn-small"
+                onClick={() => removeMenuItem(index)}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
 
-                {/* city */}
-                <div className='input-box'>
-                    <input 
-                        type='city-name'
-                        placeholder='Name of City (ex. Rexburg)'
-                        value={CityName}
-                        onChange={(e) => setCityName(e.target.value)}
-                        required
-                    />
-                </div>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={addMenuItem}
+          >
+            + Add Menu Item
+          </button>
 
-                {/* address */}
-                <div className='input-box'>
-                    <input 
-                        type='address'
-                        placeholder='Street Address (approximate street address)'
-                        value={Address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        required
-                    />
-                </div>
+          {error && <p className="error">{error}</p>}
 
-                {/* zipcode */}
-                <div className='input-box'>
-                    <input 
-                        type='zipcode'
-                        placeholder='Zipcode (ex. 83440)'
-                        value={ZipCode}
-                        onChange={(e) => setZipCode(e.target.value)}
-                        required
-                    />
-                </div>
-
-                {/* Hours of Operation */}
-                <div className="hours-section">
-                    <h3>Hours of Operation</h3>
-                    {Object.keys(hours).map(day => (
-                        <div key={day} className="menu-item">
-                            <label>{day}:</label>
-                            <input
-                                type="text"
-                                placeholder="e.g. 10am–8pm / Closed"
-                                value={hours[day]}
-                                onChange={(e) => handleHourChange(day, e.target.value)}
-                            />
-                        </div>
-                    ))}
-                </div>
-
-
-                {/* menu items */}
-                <div className="input-box">
-                    <h3>Add Some Menu Items</h3>
-                    {menuItems.map((item, index) => (
-                        <div key={index} className="menu-item">
-                            <input
-                                type="text"
-                                placeholder="Item name"
-                                value={item.name}
-                                onChange={(e) => handleMenuChange(index, 'name', e.target.value)}
-                                required
-                            />
-                            <input
-                                type="text"
-                                placeholder="Description"
-                                value={item.description}
-                                onChange={(e) => handleMenuChange(index, 'description', e.target.value)}
-                            />
-                            <input
-                                type="number"
-                                placeholder="Price ($)"
-                                value={item.price}
-                                onChange={(e) => handleMenuChange(index, 'price', e.target.value)}
-                                required
-                            />
-                            <button type="button" onClick={() => removeMenuItem(index)}>
-                                Remove
-                            </button>
-                        </div>
-                    ))}
-                    <button type="button" onClick={addMenuItem}>
-                        + Add Item
-                    </button>
-                </div>
-
-                {/* error message */}
-                {error && <p className='error'>{error}</p>}
-                
-                {/* submit button */}
-                <button type='submit' disabled={saving}>
-                    {saving ? "Saving..." : "Submit Business Info"}
-                </button>
-            </form>
-        </div>
-    );
+          <div className="actions">
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={saving}
+            >
+              {saving ? "Saving..." : "Submit Business Info"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 }
 
 export default BusRegisterForm;
