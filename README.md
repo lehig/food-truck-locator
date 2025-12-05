@@ -1,70 +1,37 @@
-# Getting Started with Create React App
+### Backend API Endpoints (Go Lambdas)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+1. POST /subscribe
 
-## Available Scripts
+    - Creates Subscriptions item.
+    - Idempotent: ignore if item already exists.
 
-In the project directory, you can run:
+2. DELETE /subscribe
 
-### `npm start`
+    - Deletes that subscription row.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+3. GET /subscriptions/customer/{customer_id}
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+    - Queries GSI by customer_id to get list of business_ids the user is following.
+    - Used by the Dashboard to know which cards say "Subscribed".
 
-### `npm test`
+4. POST /business/{business_id}/message (for business accounts)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    - Verifies caller is that business (check user_type and user_id).
+    - Queries Subscriptions for all customer_ids for this business_id.
+    - For each subscriber, writes a row into Messages table.
 
-### `npm run build`
+5. GET /messages/customer/{customer_id} (later, for a customer inbox UI)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    - Query Messages table by customer_id.
+    - Return list of messages.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### IAM permissions needed
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- dynamodb:PutItem, dynamodb:DeleteItem, dynamodb:Query, dynamodb:BatchWriteItem (if you fan out messages in batches) on the Subscriptions and Messages table ARNs.
+- Plus the usual logs:CreateLogGroup, logs:CreateLogStream, logs:PutLogEvents for CloudWatch logs
 
-### `npm run eject`
+### Frontend Changes
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Dashboard business cards (customer view)
+2. Button behavior
+3. Business UI (business user sends messages)
