@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Dashboard.css';
-
 
 function Dashboard() {
   const location = useLocation();
@@ -25,7 +24,13 @@ function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // NEW: subscription-related state
+  const [subscriptions, setSubscriptions] = useState(new Set());
+  const [submittingMap, setSubmittingMap] = useState({}); // { [businessID]: boolean }
+
   const API_BASE = 'https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/business';
+  const SUBSCRIPTIONS_API = 'https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/subscriptions';
+  const SUBSCRIBE_API = 'https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/subscribe';
 
   const handleProfileClick = () => {
     navigate('/profile', { state: { userID, username, email, role } });
@@ -33,7 +38,6 @@ function Dashboard() {
 
   const handleStateChange = async (e) => {
     const value = e.target.value;
-
 
     setSelectedState(value);
     setBusinesses([]);
@@ -59,121 +63,202 @@ function Dashboard() {
   const handleLogout = () => {
     sessionStorage.removeItem("ftlUser");
     navigate("/");
-  }
-
-  const renderMenuItems = (menu) => {
-  if (!menu) return '—';
-
-  // Helper to flatten nested arrays: [[item1, item2], [item3]] -> [item1, item2, item3]
-  const flatten = (arr) => {
-    if (!Array.isArray(arr)) return [];
-    const result = [];
-    const stack = [...arr];
-
-    while (stack.length) {
-      const current = stack.shift();
-      if (Array.isArray(current)) {
-        stack.unshift(...current);
-      } else {
-        result.push(current);
-      }
-    }
-    return result;
   };
 
-  // If it's already an array (or array of arrays)
-  if (Array.isArray(menu)) {
-    const flatItems = flatten(menu);
+  // === NEW: Load subscriptions for this customer ===
+  useEffect(() => {
+    if (!userID) return; // nothing to load for guests
 
-    if (flatItems.length === 0) return '—';
+    const fetchSubscriptions = async () => {
+      try {
+        const res = await axios.get(SUBSCRIPTIONS_API, {
+          params: { customerID: userID },
+        });
+        const ids = res.data?.businessIDs || [];
+        setSubscriptions(new Set(ids));
+      } catch (err) {
+        console.error('error loading subscriptions:', err);
+        // optional: setError('Error loading subscriptions');
+      }
+    };
 
-    // Case 1: it's a flat list of strings like:
-    // ["1.75","delicious taco","taco", "2.50","yummy burrito","burrito"]
-    const allStrings = flatItems.every((v) => typeof v === 'string');
+    fetchSubscriptions();
+  }, [userID]);
 
-    if (allStrings) {
-      const groups = [];
-      for (let i = 0; i < flatItems.length; i += 3) {
-        const [price, description, name] = flatItems.slice(i, i + 3);
-        if (price || description || name) {
-          groups.push({ name, price, description });
+  const isSubscribed = (businessID) => {
+    if (!businessID) return false;
+    return subscriptions.has(businessID);
+  };
+
+  const setSubmittingFor = (businessID, value) => {
+    setSubmittingMap(prev => ({
+      ...prev,
+      [businessID]: value,
+    }));
+  };
+
+  // === NEW: Toggle subscribe / unsubscribe ===
+  const toggleSubscription = async (businessID) => {
+    if (!userID) {
+      alert('You must be logged in to subscribe.');
+      return;
+    }
+    if (!businessID) {
+      console.error('Missing businessID on card');
+      return;
+    }
+
+    const currentlySubscribed = isSubscribed(businessID);
+    setSubmittingFor(businessID, true);
+
+    try {
+      if (currentlySubscribed) {
+        // Unsubscribe
+        await axios.delete(SUBSCRIBE_API, {
+          data: {
+            customerID: userID,
+            businessID: businessID,
+          },
+        });
+
+        setSubscriptions(prev => {
+          const next = new Set(prev);
+          next.delete(businessID);
+          return next;
+        });
+      } else {
+        // Subscribe
+        await axios.post(SUBSCRIBE_API, {
+          customerID: userID,
+          businessID: businessID,
+        });
+
+        setSubscriptions(prev => {
+          const next = new Set(prev);
+          next.add(businessID);
+          return next;
+        });
+      }
+    } catch (err) {
+      console.error('subscription error:', err);
+      // optional: setError('Error updating subscription. Please try again.');
+    } finally {
+      setSubmittingFor(businessID, false);
+    }
+  };
+
+  const renderMenuItems = (menu) => {
+    if (!menu) return '—';
+
+    // Helper to flatten nested arrays: [[item1, item2], [item3]] -> [item1, item2, item3]
+    const flatten = (arr) => {
+      if (!Array.isArray(arr)) return [];
+      const result = [];
+      const stack = [...arr];
+
+      while (stack.length) {
+        const current = stack.shift();
+        if (Array.isArray(current)) {
+          stack.unshift(...current);
+        } else {
+          result.push(current);
         }
       }
+      return result;
+    };
 
+    // If it's already an array (or array of arrays)
+    if (Array.isArray(menu)) {
+      const flatItems = flatten(menu);
+
+      if (flatItems.length === 0) return '—';
+
+      // Case 1: it's a flat list of strings like:
+      // ["1.75","delicious taco","taco", "2.50","yummy burrito","burrito"]
+      const allStrings = flatItems.every((v) => typeof v === 'string');
+
+      if (allStrings) {
+        const groups = [];
+        for (let i = 0; i < flatItems.length; i += 3) {
+          const [price, description, name] = flatItems.slice(i, i + 3);
+          if (price || description || name) {
+            groups.push({ name, price, description });
+          }
+        }
+
+        return (
+          <ul className="menu-list">
+            {groups.map((item, idx) => (
+              <li key={idx}>
+                <strong>{item.name || 'Item'}</strong>
+                {item.price && ` – $${item.price}`}
+                {item.description && ` – ${item.description}`}
+              </li>
+            ))}
+          </ul>
+        );
+      }
+
+      // Case 2: array of objects or nested arrays
       return (
         <ul className="menu-list">
-          {groups.map((item, idx) => (
-            <li key={idx}>
-              <strong>{item.name || 'Item'}</strong>
-              {item.price && ` – $${item.price}`}
-              {item.description && ` – ${item.description}`}
-            </li>
-          ))}
+          {flatItems.map((item, idx) => {
+            // raw string items, keep as-is
+            if (typeof item === 'string') {
+              return <li key={idx}>{item}</li>;
+            }
+
+            // expected: object: { name, price, description }
+            if (item && typeof item === 'object') {
+              const name = item.name || 
+                item.item_name ||
+                item.Name ||
+                'Item';
+              const rawPrice = 
+                item.price ||
+                item.item_price ||
+                item.Price; 
+              const desc = item.description || 
+                item.desc ||
+                item.item_description ||
+                item.Description ||
+                '';
+
+              const price = rawPrice ? `$${rawPrice}` : '';
+
+              return (
+                <li key={idx}>
+                  <strong>{name}</strong>
+                  {price && ` – ${price}`}
+                  {desc && ` – ${desc}`}
+                </li>
+              );
+            }
+
+            // fallback
+            return <li key={idx}>{String(item)}</li>;
+          })}
         </ul>
       );
     }
 
-    // Case 2: array of objects or nested arrays
-    return (
-      <ul className="menu-list">
-        {flatItems.map((item, idx) => {
-          // raw string items, keep as-is
-          if (typeof item === 'string') {
-            return <li key={idx}>{item}</li>;
-          }
-
-          // expected: object: { name, price, description }
-          if (item && typeof item === 'object') {
-            const name = item.name || 
-              item.item_name ||
-              item.Name ||
-              'Item';
-            const rawPrice = 
-              item.price ||
-              item.item_price ||
-              item.Price; 
-            const desc = item.description || 
-              item.desc ||
-              item.item_description ||
-              item.Description ||
-              '';
-
-            const price = rawPrice ? `$${rawPrice}` : '';
-
-            return (
-              <li key={idx}>
-                <strong>{name}</strong>
-                {price && ` – ${price}`}
-                {desc && ` – ${desc}`}
-              </li>
-            );
-          }
-
-          // fallback
-          return <li key={idx}>{String(item)}</li>;
-        })}
-      </ul>
-    );
-  }
-
-  // If it's a JSON string, try to parse
-  if (typeof menu === 'string') {
-    try {
-      const parsed = JSON.parse(menu);
-      if (Array.isArray(parsed)) {
-        return renderMenuItems(parsed);
+    // If it's a JSON string, try to parse
+    if (typeof menu === 'string') {
+      try {
+        const parsed = JSON.parse(menu);
+        if (Array.isArray(parsed)) {
+          return renderMenuItems(parsed);
+        }
+        return String(menu);
+      } catch {
+        // Not JSON, just show as is
+        return menu;
       }
-      return String(menu);
-    } catch {
-      // Not JSON, just show as is
-      return menu;
     }
-  }
 
-  // Last-resort fallback
-  return String(menu);
-};
-
+    // Last-resort fallback
+    return String(menu);
+  };
 
   return (
     <div className='dashboard'>
@@ -190,12 +275,12 @@ function Dashboard() {
             className='state-select'
             value={selectedState}
             onChange={handleStateChange}
-            >
-              <option value=''>Select a State</option>
-              <option value='ID'>Idaho</option>
-              <option value='UT'>Utah</option>
-              <option value='WY'>Wyoming</option>
-            </select>
+          >
+            <option value=''>Select a State</option>
+            <option value='ID'>Idaho</option>
+            <option value='UT'>Utah</option>
+            <option value='WY'>Wyoming</option>
+          </select>
         </div>
 
         <div className='nav-right'>
@@ -226,33 +311,56 @@ function Dashboard() {
         {!loading && businesses.length > 0 && (
           <div className="business-list">
             <div className="business-cards">
-              {businesses.map((b) => (
-                <div
-                  key={b.business_id || b.id}
-                  className="business-card"
-                >
-                  <div className="business-card-header">
-                    <h2 className="business-name">
-                      {b.business_name || 'Unnamed Business'}
-                    </h2>
-                    <span className="business-location">
-                      {b.address && b.city && b.state ? `${b.address}\n${b.city}, ${b.state} ${b.zip_code}` : b.address || b.state || b.city || 'Location N/A'}
-                    </span>
-                  </div>
+              {businesses.map((b) => {
+                const businessID = b.user_id || b.id;
+                const subscribed = isSubscribed(businessID);
+                const isSubmitting = submittingMap[businessID] || false;
 
-                  <div className="business-card-body">
-                    <h3 className="menu-title">Menu</h3>
-                    <div className="menu-content">
-                      {renderMenuItems(b.menu_items)}
+                return (
+                  <div
+                    key={businessID}
+                    className="business-card"
+                  >
+                    <div className="business-card-header">
+                      <h2 className="business-name">
+                        {b.business_name || 'Unnamed Business'}
+                      </h2>
+                      <span className="business-location">
+                        {b.address && b.city && b.state
+                          ? `${b.address}\n${b.city}, ${b.state} ${b.zip_code}`
+                          : b.address || b.state || b.city || 'Location N/A'}
+                      </span>
+                    </div>
+
+                    <div className="business-card-body">
+                      <h3 className="menu-title">Menu</h3>
+                      <div className="menu-content">
+                        {renderMenuItems(b.menu_items)}
+                      </div>
+                    </div>
+
+                    {/* NEW: Subscribe button */}
+                    <div className="business-card-footer">
+                      {userID && role !== 'business' && (
+                        <button
+                          className={
+                            'btn subscribe-btn' +
+                            (subscribed ? ' subscribed' : '')
+                          }
+                          onClick={() => toggleSubscription(businessID)}
+                          disabled={isSubmitting}
+                        >
+                          {isSubmitting
+                            ? 'Saving...'
+                            : subscribed
+                              ? 'Subscribed'
+                              : 'Subscribe'}
+                        </button>
+                      )}
                     </div>
                   </div>
-
-                  {/* Optional footer area if you want actions later */}
-                  {/* <div className="business-card-footer">
-                    <button className="btn btn-outline">View Details</button>
-                  </div> */}
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
@@ -262,11 +370,8 @@ function Dashboard() {
       <button className='logout-btn' onClick={handleLogout}>
         Logout
       </button>
-
     </div>
   );
 }
 
 export default Dashboard;
-
-

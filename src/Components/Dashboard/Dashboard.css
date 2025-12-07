@@ -281,3 +281,33 @@
 .btn:hover {
   filter: brightness(0.95);
 }
+
+.subscribe-btn {
+  margin-top: 0.75rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #4a90e2;
+  background: #fff;
+  color: #4a90e2;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.subscribe-btn:hover:not(:disabled) {
+  background: #4a90e2;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.subscribe-btn.subscribed {
+  background: #4a90e2;
+  color: #fff;
+  border-color: #4a90e2;
+}
+
+.subscribe-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+

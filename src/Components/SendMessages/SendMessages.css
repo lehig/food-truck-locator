@@ -1,0 +1,107 @@
+.messages-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.header-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.header-main h1 {
+  margin: 0;
+}
+
+.subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.highlight {
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.send-message-form label {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.send-message-form input,
+.send-message-form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font: inherit;
+}
+
+.send-message-form textarea {
+  resize: vertical;
+}
+
+.actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.primary-button,
+.secondary-button {
+  border: none;
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.05s ease, box-shadow 0.05s ease, background 0.15s ease;
+}
+
+.primary-button {
+  background: #2563eb;
+  color: white;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+.primary-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.secondary-button {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.secondary-button:hover {
+  background: #d1d5db;
+}
+
+.error {
+  color: #b91c1c;
+  margin-bottom: 0.5rem;
+}
+
+.success {
+  color: #15803d;
+  margin-bottom: 0.5rem;
+}
+
+.hint-text {
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.85;
+}

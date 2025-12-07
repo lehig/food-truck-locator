@@ -6,6 +6,7 @@ html, body, #root {
   margin: 0;
   padding: 0;
   background: var(--bg-image) no-repeat;
+  background-attachment: fixed;
 }
 
 * {
@@ -25,6 +26,7 @@ body {
   background: url('https://food-truck-locator-assets.s3.us-east-1.amazonaws.com/background.jpeg');
   background-size: cover;
   background-position: center;
+  background-attachment: fixed;
 }
 
 code {

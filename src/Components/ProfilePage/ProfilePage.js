@@ -234,6 +234,16 @@ function ProfilePage() {
       
   };
 
+  const handleGoToMessages = () => {
+    // 🔁 Change '/messages' to whatever route you end up using
+    navigate('/messages', {
+      state: {
+        userID: user.userID,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  };
 
   if (loading) {
     return <div className="profile-page"><p>Loading...</p></div>;
@@ -282,24 +292,41 @@ function ProfilePage() {
 
   return (
     <div className="profile-page">
-        <div className="glass-box profile-header">
-            <div className="profile-header-main">
-                <h1>Profile</h1>
-                <p>
-                Logged in as: <strong>{user.username}</strong> ({user.role})
-                </p>
-            </div>
-            <div className="profile-header-actions">
-                <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={handleGoToDashboard}
-                >
-                Back to Dashboard
-                </button>
-            </div>
+      {/* Top Navigation Bar */}
+      <nav className="dashboard-nav">
+        {/* Left partition – acts like a button */}
+        <div
+          className="nav-part nav-part-left"
+          role="button"
+          tabIndex={0}
+          onClick={handleGoToDashboard}
+          onKeyDown={(e) => e.key === 'Enter' && handleGoToDashboard()}
+        >
+          ← Back to Dashboard
         </div>
 
+        {/* Center section – title + user info */}
+        
+
+        {/* Right partition – acts like a button */}
+        <div
+          className="nav-part nav-part-right"
+          role="button"
+          tabIndex={0}
+          onClick={handleGoToMessages}
+          onKeyDown={(e) => e.key === 'Enter' && handleGoToMessages()}
+        >
+          ✉ Send Messages
+        </div>
+      </nav>
+      <div className='glass-box'>
+        <div className>
+          <h1>Profile</h1>
+          <p>
+            Logged in as: <strong>{user.username}</strong> ({user.role})
+          </p>
+        </div>
+      </div>
 
       {isBusiness && needsRegistration && (
         <div className="business-registration-cta">

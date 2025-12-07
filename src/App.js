@@ -8,6 +8,7 @@ import TestComms from './Components/TestComms/TestComms';
 import TestEntry from './Components/TestEntry/TestEntry';
 import TestLogin from './Components/TestLogin/TestLogin';
 import ProfilePage from './Components/ProfilePage/ProfilePage';
+import SendMessages from './Components/SendMessages/SendMessages';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path='/test-entry' element={<TestEntry />} />
           <Route path='/test-login' element={<TestLogin />} />
           <Route path='/profile' element={<ProfilePage />} />
+          <Route path='/messages' element={<SendMessages />} />
         </Routes>
       </BrowserRouter>
   );

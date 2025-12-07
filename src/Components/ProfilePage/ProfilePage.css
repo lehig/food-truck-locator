@@ -236,3 +236,73 @@
 .buttons button {
   font-size: large;
 }
+
+.dashboard-nav {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Each partition */
+.nav-part {
+  flex: 1;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: default;
+}
+
+/* Clickable partitions look like buttons */
+.nav-part-left,
+.nav-part-right {
+  cursor: pointer;
+  font-weight: 600;
+  text-align: center;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+/* Subtle separators between partitions */
+.nav-part-left {
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.nav-part-right {
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Hover / active states */
+.nav-part-left:hover,
+.nav-part-right:hover {
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+.nav-part-left:active,
+.nav-part-right:active {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Center section (title + username) */
+.nav-part-center {
+  text-align: center;
+}
+
+.nav-part-center h1 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.nav-part-center p {
+  margin: 0.1rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
