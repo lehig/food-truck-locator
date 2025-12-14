@@ -23,6 +23,8 @@ function Dashboard() {
   const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [expandedHours, setExpandedHours] = useState({}); // { [businessID]: boolean }
+
 
   // NEW: subscription-related state
   const [subscriptions, setSubscriptions] = useState(new Set());
@@ -146,6 +148,43 @@ function Dashboard() {
       setSubmittingFor(businessID, false);
     }
   };
+
+  const DAY_ORDER = [
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+  ];
+
+  const formatHoursValue = (value) => {
+    if (value == null) return '—';
+    const v = String(value).trim();
+    if (!v) return '—';
+    // normalize common “closed” inputs
+    if (v.toLowerCase() === 'closed') return 'Closed';
+    return v;
+  };
+
+  const renderHours = (hours) => {
+    if (!hours || typeof hours !== 'object') return <span>—</span>;
+
+    return (
+      <div className="hours-list">
+        {DAY_ORDER.map((day) => (
+          <div className="hours-row" key={day}>
+            <span className="hours-day">{day}</span>
+            <span className="hours-time">{formatHoursValue(hours[day])}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+    const toggleHours = (businessID) => {
+    setExpandedHours(prev => ({
+      ...prev,
+      [businessID]: !prev[businessID],
+    }));
+  };
+
+  const isHoursExpanded = (businessID) => !!expandedHours[businessID];
 
   const renderMenuItems = (menu) => {
     if (!menu) return '—';
@@ -336,6 +375,24 @@ function Dashboard() {
                       <h3 className="menu-title">Menu</h3>
                       <div className="menu-content">
                         {renderMenuItems(b.menu_items)}
+                      </div>
+
+                      {/* Hours (collapsible) */}
+                      <div className="hours-section">
+                        <button
+                          type="button"
+                          className="btn hours-toggle-btn"
+                          onClick={() => toggleHours(businessID)}
+                          aria-expanded={isHoursExpanded(businessID)}
+                        >
+                          {isHoursExpanded(businessID) ? 'Hide hours' : 'Show hours'}
+                        </button>
+
+                        {isHoursExpanded(businessID) && (
+                          <div className="hours-content">
+                            {renderHours(b.hours)}
+                          </div>
+                        )}
                       </div>
                     </div>
 

@@ -10,7 +10,6 @@ function SendMessages() {
 
   const API_BASE_URL = 'https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev';
 
-  const [recipientIdentifier, setRecipientIdentifier] = useState('');
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
   const [sending, setSending] = useState(false);
@@ -40,17 +39,28 @@ function SendMessages() {
     setSuccessMessage('');
     setSending(true);
 
-    try {
-      // Adjust payload/endpoint to match your Lambda as needed
-      const payload = {
-        businessID: user.userID,        // business user_id
-        businessUsername: user.username,
-        customerLookup: recipientIdentifier, // username/email/id of the customer
-        subject,
-        body,
-      };
+    const trimmedSubject = subject.trim();
+    const trimmedBody = body.trim();
 
-      await axios.post(`${API_BASE_URL}/business/messages`, payload);
+    if (!trimmedSubject || !trimmedBody) {
+      setError('Subject and message cannot be empty.')
+      setSending(false);
+      return;
+    }
+
+    try {
+      await axios.post(`${API_BASE_URL}/messages/broadcast`, 
+        { 
+          subject: trimmedSubject,
+          body: trimmedBody,
+          busName: user.username,
+        },
+        {
+          params: {
+            businessID: user.userID,
+          },
+        }
+      );
 
       setSuccessMessage('Message sent successfully!');
       setSubject('');

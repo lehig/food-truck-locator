@@ -311,3 +311,28 @@
   cursor: default;
 }
 
+.hours-title {
+  margin-top: 0.75rem;
+}
+
+.hours-list {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.hours-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.hours-day {
+  font-weight: 600;
+}
+
+.hours-time {
+  text-align: right;
+  white-space: nowrap;
+  opacity: 0.95;
+}
+

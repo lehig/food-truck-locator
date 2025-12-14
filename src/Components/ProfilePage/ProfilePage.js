@@ -3,6 +3,23 @@ import axios from 'axios';
 import './ProfilePage.css';
 import { useNavigate } from 'react-router-dom';
 
+const formatTimestamp = (isoString) => {
+  if (!isoString) return '';
+
+  const date = new Date(isoString); // parses "2025-12-11T06:57:04Z" as UTC
+
+  return date.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',   // "Dec"
+    day: '2-digit',
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+    timeZone: 'America/Boise', // or omit this to use the user's local timezone
+  });
+};
+
 function ProfilePage() {
   const stored = sessionStorage.getItem('ftlUser');
   const user = stored ? JSON.parse(stored) : null;
@@ -18,7 +35,7 @@ function ProfilePage() {
   // Business profile state
   const [businessProfile, setBusinessProfile] = useState({
     businessID: '',
-    name: '',
+    business_name: '',
     address: '',
     city: '',
     state: '',
@@ -83,7 +100,7 @@ function ProfilePage() {
       setBusinessProfile({
         username: data.username || user.username,
         userID: data.userID || user.userID,
-        name: data.name || '',
+        business_name: data.business_name || '',
         address: data.address || '',
         city: data.city || '',
         state: data.state || '',
@@ -98,7 +115,11 @@ function ProfilePage() {
           Sunday: data.hours?.Sunday || '',
         },
         menuItems: (data.menuItems && data.menuItems.length > 0)
-          ? data.menuItems
+          ? data.menuItems.map(mi => ({
+              name: mi.name ?? '',
+              description: mi.description ?? '',
+              price: mi.price == null ? '' : String(mi.price), // force string
+            }))
           : [{ name: '', description: '', price: '' }],
       });
     } catch (err) {
@@ -154,10 +175,7 @@ function ProfilePage() {
   const handleMenuItemChange = (index, field, value) => {
     setBusinessProfile(prev => {
       const updated = [...prev.menuItems];
-      updated[index] = {
-        ...updated[index],
-        [field]: field === 'price' ? value : value
-      };
+      updated[index] = { ...updated[index], [field]: value };
       return { ...prev, menuItems: updated };
     });
   };
@@ -187,7 +205,7 @@ function ProfilePage() {
         userID: user.userID,
         menuItems: businessProfile.menuItems.map(mi => ({
           ...mi,
-          price: mi.price === '' ? 0 : parseFloat(mi.price),
+          price: mi.price === '' || mi.price == null ? '' : String(mi.price).trim(),
         })),
       };
 
@@ -294,21 +312,24 @@ function ProfilePage() {
     <div className="profile-page">
       {/* Top Navigation Bar */}
       <nav className="dashboard-nav">
-        {/* Left partition – acts like a button */}
-        <div
-          className="nav-part nav-part-left"
-          role="button"
-          tabIndex={0}
-          onClick={handleGoToDashboard}
-          onKeyDown={(e) => e.key === 'Enter' && handleGoToDashboard()}
-        >
-          ← Back to Dashboard
-        </div>
+      {/* Left side */}
+      <div
+        className="nav-part nav-part-left"
+        role="button"
+        tabIndex={0}
+        onClick={handleGoToDashboard}
+        onKeyDown={(e) => e.key === 'Enter' && handleGoToDashboard()}
+      >
+        ← Back to Dashboard
+      </div>
 
-        {/* Center section – title + user info */}
-        
+      {/* Center section (optional title) */}
+      <div className="nav-part nav-part-center">
+        <strong>Profile</strong>
+      </div>
 
-        {/* Right partition – acts like a button */}
+      {/* Right side — ONLY FOR BUSINESSES */}
+      {isBusiness && (
         <div
           className="nav-part nav-part-right"
           role="button"
@@ -318,7 +339,8 @@ function ProfilePage() {
         >
           ✉ Send Messages
         </div>
-      </nav>
+      )}
+    </nav>
       <div className='glass-box'>
         <div className>
           <h1>Profile</h1>
@@ -355,8 +377,8 @@ function ProfilePage() {
                 Business Name
                 <input
                 type="text"
-                value={businessProfile.name}
-                onChange={e => handleBusinessChange('name', e.target.value)}
+                value={businessProfile.business_name}
+                onChange={e => handleBusinessChange('business_name', e.target.value)}
                 required
                 />
             </label>
@@ -470,10 +492,10 @@ function ProfilePage() {
                         <li key={`${msg.customerID}-${msg.createdAt}-${idx}`} className="message-card">
                         <div className="message-header">
                             <strong>{msg.subject || 'No subject'}</strong>
-                            <span className="message-date">{msg.createdAt}</span>
+                            <span className="message-date"><strong>{formatTimestamp(msg.createdAt)}</strong></span>
                         </div>
                         <p className="message-body">{msg.body}</p>
-                        <small>From business: {msg.businessID}</small>
+                        <small>From business: {msg.busName?.toUpperCase()}</small>
                         </li>
                     ))}
                     </ul>
