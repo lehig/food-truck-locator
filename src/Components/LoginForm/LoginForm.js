@@ -2,8 +2,8 @@ import React from "react";
 import './LoginForm.css';
 import { FaLock, FaUser } from "react-icons/fa";
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { signIn, fetchAuthSession } from '../../auth/cognito';
 
 function LoginForm() {
     const [username, setUsername] = useState('');
@@ -13,45 +13,28 @@ function LoginForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
         try {
-            const response = await axios.post("https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/login", {
-                username,
-                password
-            },
-            {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
+            await signIn({ username, password });
+            const session = await fetchAuthSession();
+            const idPayload = session.tokens?.idToken?.payload || {};
+            const userID = idPayload.sub;
+            if (!userID) throw new Error("Missing sub claim");
+            const groups = idPayload["cognito:groups"];
+            const role = Array.isArray(groups) ? groups[0] :
+                        typeof groups === "string" ? groups :
+                        "";
 
-            const {user_id, username: respUsername, email, role} = response.data;
+            sessionStorage.setItem('ftlUser', JSON.stringify({
+            userID,
+            username,
+            email: idPayload.email,
+            role,
+            }));
 
-            const userID = user_id;
-
-            sessionStorage.setItem(
-                "ftlUser",
-                JSON.stringify({
-                    userID,
-                    username: respUsername,
-                    email,
-                    role
-                })
-            );
-
-            console.log("response received");
-            console.log("success");
-            console.log(response.data)
-            navigate("/dashboard", {
-                state: {
-                    userID,
-                    username: respUsername,
-                    email,
-                    role
-                }
-            });
+            navigate('/dashboard', { state: { userID, username, email: idPayload.email, role } });
         } catch (err) {
-            console.log("failed")
-            setError("login failed")
+            setError('login failed');
         }
     };
 

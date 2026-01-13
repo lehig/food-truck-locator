@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api/client';
+import { signOut } from '../../auth/cognito';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -30,10 +31,6 @@ function Dashboard() {
   const [subscriptions, setSubscriptions] = useState(new Set());
   const [submittingMap, setSubmittingMap] = useState({}); // { [businessID]: boolean }
 
-  const API_BASE = 'https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/business';
-  const SUBSCRIPTIONS_API = 'https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/subscriptions';
-  const SUBSCRIBE_API = 'https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/subscribe';
-
   const handleProfileClick = () => {
     navigate('/profile', { state: { userID, username, email, role } });
   };
@@ -49,7 +46,7 @@ function Dashboard() {
 
     setLoading(true);
     try {
-      const res = await axios.get(`${API_BASE}?state=${encodeURIComponent(value)}`);
+      const res = await api.get('/business', { params: { state: value } });
       
       // this may need adjusting depending on the shape of the response
       const data = Array.isArray(res.data) ? res.data : res.data.businesses || [];
@@ -62,9 +59,10 @@ function Dashboard() {
     }
   };
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("ftlUser");
-    navigate("/");
+  const handleLogout = async () => {
+    sessionStorage.removeItem('ftlUser');
+    try { await signOut(); } catch {}
+    navigate('/');
   };
 
   // === NEW: Load subscriptions for this customer ===
@@ -73,9 +71,7 @@ function Dashboard() {
 
     const fetchSubscriptions = async () => {
       try {
-        const res = await axios.get(SUBSCRIPTIONS_API, {
-          params: { customerID: userID },
-        });
+        const res = await api.get('/subscriptions', { params: { customerID: userID } });
         const ids = res.data?.businessIDs || [];
         setSubscriptions(new Set(ids));
       } catch (err) {
@@ -116,12 +112,7 @@ function Dashboard() {
     try {
       if (currentlySubscribed) {
         // Unsubscribe
-        await axios.delete(SUBSCRIBE_API, {
-          data: {
-            customerID: userID,
-            businessID: businessID,
-          },
-        });
+        await api.delete('/subscribe', { data: { customerID: userID, businessID } });
 
         setSubscriptions(prev => {
           const next = new Set(prev);
@@ -130,10 +121,7 @@ function Dashboard() {
         });
       } else {
         // Subscribe
-        await axios.post(SUBSCRIBE_API, {
-          customerID: userID,
-          businessID: businessID,
-        });
+        await api.post('/subscribe', { customerID: userID, businessID });
 
         setSubscriptions(prev => {
           const next = new Set(prev);
