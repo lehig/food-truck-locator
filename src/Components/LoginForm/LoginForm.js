@@ -14,27 +14,44 @@ function LoginForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
         try {
-            await signIn({ username, password });
+            const res = await signIn({ username, password });
+
+            // If Cognito requires another step (MFA, new password, etc.)
+            const step = res?.nextStep?.signInStep;
+            if (step && step !== 'DONE') {
+            throw new Error(`Sign-in requires additional step: ${step}`);
+            }
+
             const session = await fetchAuthSession();
-            const idPayload = session.tokens?.idToken?.payload || {};
-            const userID = idPayload.sub;
-            if (!userID) throw new Error("Missing sub claim");
-            const groups = idPayload["cognito:groups"];
-            const role = Array.isArray(groups) ? groups[0] :
-                        typeof groups === "string" ? groups :
-                        "";
 
-            sessionStorage.setItem('ftlUser', JSON.stringify({
-            userID,
-            username,
-            email: idPayload.email,
-            role,
-            }));
+            const idPayload = session.tokens?.idToken?.payload ?? {};
+            const accessPayload = session.tokens?.accessToken?.payload ?? {};
 
-            navigate('/dashboard', { state: { userID, username, email: idPayload.email, role } });
+            const userID = idPayload.sub || accessPayload.sub;
+            if (!userID) throw new Error('Missing sub claim');
+
+            // Groups are often on the access token
+            const groupsClaim = accessPayload['cognito:groups'] ?? idPayload['cognito:groups'];
+            const groups = Array.isArray(groupsClaim)
+            ? groupsClaim
+            : typeof groupsClaim === 'string' && groupsClaim.length
+            ? groupsClaim.split(',').map(s => s.trim())
+            : [];
+
+            const role = groups[0] || '';
+            const email = idPayload.email || accessPayload.email || '';
+
+            sessionStorage.setItem(
+            'ftlUser',
+            JSON.stringify({ userID, username, email, role })
+            );
+
+            navigate('/dashboard', { state: { userID, username, email, role } });
         } catch (err) {
-            setError('login failed');
+            console.error('Login error:', err);
+            setError(err?.message || 'login failed');
         }
     };
 
