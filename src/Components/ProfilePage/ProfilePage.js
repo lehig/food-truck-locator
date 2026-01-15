@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import './ProfilePage.css';
 import { useNavigate } from 'react-router-dom';
-import { fetchAuthSession } from 'aws-amplify/auth';
+import api from '../../api/client';
 
 const formatTimestamp = (isoString) => {
   if (!isoString) return '';
@@ -21,16 +20,9 @@ const formatTimestamp = (isoString) => {
   });
 };
 
-async function getIdToken() {
-  const session = await fetchAuthSession();
-  const token = session.tokens?.idToken?.toString();
-  return token; // can be undefined if not signed in
-}
-
 function ProfilePage() {
   const stored = sessionStorage.getItem('ftlUser');
   const user = stored ? JSON.parse(stored) : null;
-  const API_BASE_URL = 'https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev';
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -90,19 +82,7 @@ function ProfilePage() {
       setError('');
       setNeedsRegistration(false);
 
-      const token = await getIdToken();
-      if (!token) {
-        setError('Not authenticated. Please sign in again.');
-        return;
-      }
-
-      const res = await axios.get(
-        `${API_BASE_URL}/business/profile`,
-        { params: { username: user.username },
-          headers: {
-            Authorization: `Bearer ${token}`
-          } }  // <-- username as PK
-      );
+      const res = await api.get('/business/profile', { params: { username: user.username } });
 
       const data = res.data || {};
 
@@ -157,20 +137,7 @@ function ProfilePage() {
       setLoading(true);
       setError('');
 
-      const token = await getIdToken();
-      if (!token) {
-        setError('Not authenticated. Please sign in again.');
-        return;
-      }
-
-      const res = await axios.get(
-        `${API_BASE_URL}/messages`,
-        { 
-          params: { customerID: user.userID },
-          headers: {
-            Authorization: `Bearer ${token}`
-          } } // <-- user_id
-      );
+      const res = await api.get('/messages', { params: { customerID: user.userID }});
 
       setMessages(res.data || []);
     } catch (err) {
@@ -235,15 +202,7 @@ function ProfilePage() {
         })),
       };
 
-      const token = await getIdToken();
-      if (!token) {
-        setError('Not authenticated. Please sign in again.');
-        return;
-      }
-
-      await axios.put(`${API_BASE_URL}/business/profile`, payload, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.put('/business/profile', payload);
 
       alert('Profile saved!');
     } catch (err) {
