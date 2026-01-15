@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './ProfilePage.css';
 import { useNavigate } from 'react-router-dom';
+import { fetchAuthSession } from 'aws-amplify/auth';
 
 const formatTimestamp = (isoString) => {
   if (!isoString) return '';
@@ -19,6 +20,12 @@ const formatTimestamp = (isoString) => {
     timeZone: 'America/Boise', // or omit this to use the user's local timezone
   });
 };
+
+async function getIdToken() {
+  const session = await fetchAuthSession();
+  const token = session.tokens?.idToken?.toString();
+  return token; // can be undefined if not signed in
+}
 
 function ProfilePage() {
   const stored = sessionStorage.getItem('ftlUser');
@@ -83,9 +90,18 @@ function ProfilePage() {
       setError('');
       setNeedsRegistration(false);
 
+      const token = await getIdToken();
+      if (!token) {
+        setError('Not authenticated. Please sign in again.');
+        return;
+      }
+
       const res = await axios.get(
         `${API_BASE_URL}/business/profile`,
-        { params: { username: user.username } }  // <-- username as PK
+        { params: { username: user.username },
+          headers: {
+            Authorization: `Bearer ${token}`
+          } }  // <-- username as PK
       );
 
       const data = res.data || {};
@@ -141,9 +157,19 @@ function ProfilePage() {
       setLoading(true);
       setError('');
 
+      const token = await getIdToken();
+      if (!token) {
+        setError('Not authenticated. Please sign in again.');
+        return;
+      }
+
       const res = await axios.get(
         `${API_BASE_URL}/messages`,
-        { params: { customerID: user.userID } } // <-- user_id
+        { 
+          params: { customerID: user.userID },
+          headers: {
+            Authorization: `Bearer ${token}`
+          } } // <-- user_id
       );
 
       setMessages(res.data || []);
@@ -209,8 +235,14 @@ function ProfilePage() {
         })),
       };
 
+      const token = await getIdToken();
+      if (!token) {
+        setError('Not authenticated. Please sign in again.');
+        return;
+      }
+
       await axios.put(`${API_BASE_URL}/business/profile`, payload, {
-        headers: { 'Content-Type': 'application/json' },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       alert('Profile saved!');
@@ -342,7 +374,7 @@ function ProfilePage() {
       )}
     </nav>
       <div className='glass-box'>
-        <div className>
+        <div className="">
           <h1>Profile</h1>
           <p>
             Logged in as: <strong>{user.username}</strong> ({user.role})
