@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import './SendMessages.css';
 import { useNavigate } from 'react-router-dom';
+import api from '../../api/client';
 
 function SendMessages() {
   const stored = sessionStorage.getItem('ftlUser');
   const user = stored ? JSON.parse(stored) : null;
   const navigate = useNavigate();
-
-  const API_BASE_URL = 'https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev';
 
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
@@ -49,7 +47,7 @@ function SendMessages() {
     }
 
     try {
-      await axios.post(`${API_BASE_URL}/messages/broadcast`, 
+      await api.post('/messages/broadcast', 
         { 
           subject: trimmedSubject,
           body: trimmedBody,

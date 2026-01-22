@@ -4,6 +4,7 @@ import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { fetchAuthSession, signIn } from "../../auth/cognito";
 
 function RegisterForm() {
     const [username, setUsername] = useState('');
@@ -34,6 +35,11 @@ function RegisterForm() {
             );
             
             console.log("Success:", response.data);
+
+            await signIn({ username, password });
+
+            const session = await fetchAuthSession();
+            const token = session.tokens?.idToken?.toString();
             
             if (accountType === "business") {
                 navigate("/business-register", {
@@ -41,6 +47,7 @@ function RegisterForm() {
                         userId: response.data.user_id, 
                         username, 
                         email,
+                        token,
                     },
                 });
             } else {

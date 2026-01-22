@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import './BusRegisterForm.css';
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from '../../api/client';
 
 function BusRegisterForm() {
+  const REGISTER_API = "business-register"
   const location = useLocation();
   const { userId, username, email } = location.state || {};
   const navigate = useNavigate();
+
 
   const [businessProfile, setBusinessProfile] = useState({
     name: '',
@@ -103,15 +105,7 @@ function BusRegisterForm() {
 
       console.log("sending payload:", payload);
 
-      const response = await axios.post(
-        "https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/business-register",
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        }
-      );
+      const response = await api.post(REGISTER_API,payload);
 
       console.log("business registration saved:", response.data);
       alert("business info saved successfully... redirecting to login!");

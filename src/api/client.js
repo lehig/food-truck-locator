@@ -8,9 +8,9 @@ api.interceptors.request.use(async (config) => {
 
   try {
     const session = await fetchAuthSession();
-    const access = session.tokens?.accessToken?.toString?.();
-    // const id = session.tokens?.idToken?.toString?.();
-    const token = access;
+    // const access = session.tokens?.accessToken?.toString?.();
+    const id = session.tokens?.idToken?.toString?.();
+    const token = id;
     if (token) config.headers.Authorization = `Bearer ${token}`;
   } catch (e) {
         console.log("Interceptor: not logged in", e);
