@@ -10,6 +10,7 @@ import TestLogin from './Components/TestLogin/TestLogin';
 import ProfilePage from './Components/ProfilePage/ProfilePage';
 import SendMessages from './Components/SendMessages/SendMessages';
 import ProtectedRoute from './routes/ProtectedRoute';
+import ConfirmSignup from './Components/ConfirmSignUp/ConfirmSignUp';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/" element={<LoginForm />} />
         <Route path="/register" element={<RegisterForm />} />
         <Route path="/business-register" element={<BusRegisterForm />} />
+        <Route path='/confirm-signup' element={<ConfirmSignup />} />
 
         {/* Public tests */}
         <Route path="/test" element={<TestComms />} />
