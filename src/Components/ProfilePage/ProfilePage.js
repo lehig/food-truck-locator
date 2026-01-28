@@ -56,33 +56,73 @@ function ProfilePage() {
   // Customer messages state
   const [messages, setMessages] = useState([]);
 
+  const [effectiveUser, setEffectiveUser] = useState(user);
+  const role = effectiveUser?.role;
+
   const isBusiness = user?.role === 'business';
   const isCustomer = user?.role === 'customer';
+  const isUnverified = user?.role === 'unverified-business';
+
+  const fetchAndPersistRole = async () => {
+    // If we already have role, nothing to do
+    if (!effectiveUser || effectiveUser.role) return effectiveUser;
+
+    try {
+      // You need a backend route that returns: { role: "customer" | "business" | "unverified-business" }
+      // It should use the JWT to identify the user (best), or accept username (temporary).
+      const res = await api.get('/account-type', { params: { userID: effectiveUser.userID } });
+
+      const fetchedRole = res.data?.role;
+      if (!fetchedRole) return effectiveUser;
+
+      const updated = { ...effectiveUser, role: fetchedRole };
+
+      sessionStorage.setItem('ftlUser', JSON.stringify(updated));
+      setEffectiveUser(updated);
+
+      return updated;
+    } catch (err) {
+      console.error('Failed to fetch account type:', err);
+      // Don’t hard fail; just continue without role
+      return effectiveUser;
+    }
+  };
 
   useEffect(() => {
-    if (!user) {
-      setError('You must be logged in to view your profile.');
-      setLoading(false);
-      return;
-    }
+    const boot = async () => {
+      if (!effectiveUser) {
+        setError('You must be logged in to view your profile.');
+        setLoading(false);
+        return;
+      }
 
-    if (isBusiness) {
-      loadBusinessProfile();
-    } else if (isCustomer) {
-      loadCustomerMessages();
-    } else {
-      setLoading(false);
-    }
+      setError('');
+      setLoading(true);
+
+      const u = await fetchAndPersistRole();
+      const r = u?.role;
+
+      if (r === 'business') {
+        await loadBusinessProfile(u);
+      } else if (r === 'customer') {
+        await loadCustomerMessages(u);
+      } else {
+        // unverified or unknown
+        setLoading(false);
+      }
+    };
+
+    boot();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loadBusinessProfile = async () => {
+  const loadBusinessProfile = async (u = effectiveUser) => {
     try {
       setLoading(true);
       setError('');
       setNeedsRegistration(false);
 
-      const res = await api.get('/business/profile', { params: { username: user.username } });
+      const res = await api.get('/business/profile', { params: { username: u.username } });
 
       const data = res.data || {};
 
@@ -132,12 +172,12 @@ function ProfilePage() {
     }
   };
 
-  const loadCustomerMessages = async () => {
+  const loadCustomerMessages = async (u = effectiveUser) => {
     try {
       setLoading(true);
       setError('');
 
-      const res = await api.get('/messages', { params: { customerID: user.userID }});
+      const res = await api.get('/messages', { params: { customerID: u.userID }});
 
       setMessages(res.data || []);
     } catch (err) {
@@ -341,6 +381,42 @@ function ProfilePage() {
         </div>
       </div>
 
+      {isUnverified && (
+        <div className="glass-box">
+          
+            <h2>Business Verification Pending</h2>
+            <p>
+              Your email has been confirmed, and your business account is pending manual approval.
+              We will review your account and reach out within <strong>24–48 hours</strong>.
+            </p>
+
+            <p style={{ marginTop: "12px" }}>
+              During this time, business features (messaging, profile visibility, and search listings) are disabled.
+            </p>
+
+            <div className="actions" style={{ marginTop: "18px" }}>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleGoToDashboard}
+              >
+                Back to Dashboard
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleGoToLogin}
+                style={{ marginLeft: "10px" }}
+              >
+                Go to Login
+              </button>
+            </div>
+          
+        </div>
+      )}
+
+
       {isBusiness && needsRegistration && (
         <div className="business-registration-cta">
             <h2>No business profile found</h2>
@@ -495,8 +571,10 @@ function ProfilePage() {
         </div>
       )}
 
-      {!isBusiness && !isCustomer && (
-        <p>Your account doesn’t have a role yet. Talk to the admin / adjust your seed data.</p>
+      {!isBusiness && !isCustomer && !isUnverified && (
+        <div className='glass-box'>
+          <p>Your account doesn’t have a role yet. Talk to the admin / adjust your seed data.</p>
+        </div>
       )}
     </div>
   );

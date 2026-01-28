@@ -1,0 +1,250 @@
+.wrapper {
+    width: 450px;
+    background: transparent;
+    border: 2px solid rgba(255,255,255,.2);
+    backdrop-filter: blur(30px);
+    color: #fff;
+    border-radius: 10px;
+    padding: 30px 40px;
+    margin: 0 auto;
+    margin-top: 100px;
+}
+
+.wrapper h1 {
+    font-size: 36px;
+    text-align: center;
+}
+
+.wrapper h2 {
+    text-align: center;
+    color: aqua;
+}
+
+.wrapper .input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgba(255,255,255,.2);
+    border-radius: 40px;
+    font-size: 16px;
+    color: #fff;
+    padding: 20px 45px 20px 20px;
+}
+
+.input-box input::placeholder {
+    color: #fff;
+}
+
+.input-box .icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+}
+
+.wrapper .remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14.5px;
+    margin: -15px 0 15px;
+}
+
+.remember-forgot label input {
+    accent-color: #fff;
+    margin-right: 4px;
+}
+
+.remember-forgot a {
+    color:#fff;
+    text-decoration: none;
+}
+
+.remember-forgot a:hover {
+    text-decoration: underline;
+}
+
+.wrapper button {
+    width: 100%;
+    height: 45px;
+    background: #fff;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    font-weight: 700;
+}
+
+.wrapper .register-link {
+    font-size: 14.5px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.register-link p a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-link p a:hover {
+    text-decoration: underline;
+}
+
+.error {
+    color: red;
+    text-align: center;
+    margin-bottom: 30px;
+    border: 2px solid rgba(255,255,255,.2);
+    border-radius: 40px;
+    background: #FFC9C9;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+/* Make "Forgot password?" look like a link, not a button */
+.wrapper button.linkish {
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: #fff;
+    font-weight: 400;
+    height: auto;
+    padding: 0;
+    margin-top: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Hover state */
+.wrapper button.linkish:hover {
+    text-decoration: underline;
+}
+
+/* Disabled state */
+.wrapper button.linkish:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+.verify-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.verify-card {
+  width: 100%;
+  max-width: 720px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.verify-title {
+  margin: 0 0 1rem 0;
+}
+
+.verify-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0 1rem 0;
+}
+
+.verify-icon {
+  font-size: 1.6rem;
+}
+
+.verify-lead {
+  margin: 0 0 1.25rem 0;
+  line-height: 1.5;
+}
+
+.verify-panel {
+  background: #ffffff15;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.verify-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.verify-row:last-child {
+  margin-bottom: 0;
+}
+
+.mini-icon {
+  margin-top: 0.2rem;
+}
+
+.verify-row-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  margin-top: 0.4rem;
+  flex: 0 0 auto;
+  background: #ffffff;
+}
+
+.verify-row-title {
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.verify-row-text {
+  line-height: 1.45;
+}
+
+.verify-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.verify-actions button {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  border: 1px solid #ddd;
+}
+
+.verify-actions .primary {
+  background: #00d9ff9a;
+  color: #fff;
+}
+
+.verify-actions .secondary {
+  background: #fff;
+  color: #222;
+}
+
+.verify-footnote {
+  margin-top: 1rem;
+  color: #ececec;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}

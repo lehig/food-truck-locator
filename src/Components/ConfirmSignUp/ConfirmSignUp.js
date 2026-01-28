@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./ConfirmSignUp.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaEnvelope, FaLock } from "react-icons/fa";
+import { FaLock } from "react-icons/fa";
 import { confirmSignUp, resendSignUpCode, signIn, fetchAuthSession } from "../../auth/cognito";
 
 function ConfirmSignup() {
@@ -28,6 +28,13 @@ function ConfirmSignup() {
     setStatus("");
   };
 
+  const normalizeRole = (acctType) => {
+        if (acctType === "business") return "unverified-business";
+        if (acctType === "customer") return "customer";
+        if (acctType === "unverified-business") return "unverified-business";
+        return acctType || "";
+    };
+
   const handleConfirm = async (e) => {
     e.preventDefault();
     clearMessages();
@@ -44,11 +51,23 @@ function ConfirmSignup() {
       const session = await fetchAuthSession();
       const token = session.tokens?.idToken?.toString();
 
+      const role = normalizeRole(accountType);
+
+      sessionStorage.setItem(
+        "ftlUser",
+        JSON.stringify({
+            userID: userId,     // keep this consistent everywhere (ProfilePage expects user.userID)
+            username,
+            email,
+            role,
+            token,
+        })
+        );
       // Continue based on account type
-      if (accountType === "business") {
-        navigate("/business-register", {
+      if (role === "business") {
+        navigate("/business-verification", {
           replace: true,
-          state: { userId, username, email, token },
+          state: { userID: userId, username, email, role },
         });
       } else {
         // You can go to dashboard or login depending on your flow
