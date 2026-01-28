@@ -1,0 +1,29 @@
+.terms-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.terms-page h1 {
+  margin-bottom: 0.25rem;
+}
+
+.last-updated {
+  font-size: 0.9rem;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+.terms-section {
+  margin-bottom: 1.5rem;
+}
+
+.terms-section h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.15rem;
+}
+
+.terms-section p {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}

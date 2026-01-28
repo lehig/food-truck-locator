@@ -2,7 +2,7 @@ import React from "react";
 import './RegisterForm.css';
 import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function RegisterForm() {
@@ -10,12 +10,18 @@ function RegisterForm() {
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
     const [accountType, setAccountType] = useState('customer'); // default
+    const [acceptedLegal, setAcceptedLegal] = useState(false);
     const navigate = useNavigate();
     const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(''); // clear any previous error
+
+        if (!acceptedLegal) {
+            setError("You must agree to the Terms of Service and acknowledge the Privacy Policy to register.");
+            return;
+        }
 
         try {
             const response = await axios.post(
@@ -25,6 +31,9 @@ function RegisterForm() {
                     password, 
                     email,
                     accountType
+                    // TODO: send this so you can log/record it server-side later
+                    // acceptedLegal: true,
+                    // acceptedLegalAt: new Date().toISOString(),
                 },
                 {
                     headers: {
@@ -130,6 +139,28 @@ function RegisterForm() {
                         onChange={(e) => setAccountType(e.target.value)}
                         />
                         Business
+                    </label>
+                </div>
+
+                <div className="legal-consent">
+                    <label className="legal-row">
+                        <input
+                        type="checkbox"
+                        checked={acceptedLegal}
+                        onChange={(e) => setAcceptedLegal(e.target.checked)}
+                        required
+                        />
+                        <span>
+                        I agree to the{" "}
+                        <Link to="/tos" target="_blank" rel="noreferrer">
+                            Terms of Service
+                        </Link>{" "}
+                        and acknowledge the{" "}
+                        <Link to="/privacy" target="_blank" rel="noreferrer">
+                            Privacy Policy
+                        </Link>
+                        .
+                        </span>
                     </label>
                 </div>
 

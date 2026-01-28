@@ -1,0 +1,89 @@
+/* AboutPage.css */
+
+/* Match your .profile-page layout width + spacing */
+.about-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Make sure headers fit the same vibe as your other pages */
+.about-page h1 {
+  margin-bottom: 0.5rem;
+}
+
+.about-page h2 {
+  margin: 0.75rem 0 0.5rem;
+  color: #fff;
+}
+
+/* Reuse your glass styling (copied to keep AboutPage self-contained).
+   If you already have .glass-box globally, you can delete this block. */
+.glass-box {
+  margin-top: 1.5rem;
+  padding: 1.5rem 1.75rem;
+  color: #fff;
+
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.about-header {
+  margin-bottom: 1rem;
+}
+
+.about-subtitle {
+  margin: 0.25rem 0 0;
+  opacity: 0.9;
+}
+
+/* General section spacing */
+.about-section {
+  margin-top: 1.25rem;
+}
+
+/* Two-column layout like a modern “features” section */
+.about-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Make it responsive */
+@media (max-width: 800px) {
+  .about-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card styling that matches your glass look */
+.about-card {
+  padding: 1.25rem 1.25rem;
+  margin-top: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* List styling that stays readable on dark/glass backgrounds */
+.about-card ul {
+  margin: 0.5rem 0 0.75rem 1.25rem;
+  padding: 0;
+}
+
+.about-card li {
+  margin-bottom: 0.35rem;
+}
+
+/* Keep paragraph color consistent with your existing global rule */
+.about-page p {
+  color: #fff;
+  line-height: 1.55;
+  margin-top: 0.8rem;
+}

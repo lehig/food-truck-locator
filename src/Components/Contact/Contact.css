@@ -1,0 +1,156 @@
+/* ContactMe.css */
+
+/* Match your .profile-page layout width + spacing */
+.contact-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Make sure headers fit the same vibe as your other pages */
+.contact-page h1 {
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.contact-page h2 {
+  margin: 0.75rem 0 0.5rem;
+  color: #fff;
+}
+
+/* Keep paragraph color consistent with your existing global rule */
+.contact-page p {
+  color: #fff;
+  line-height: 1.55;
+  margin-top: 0.8rem;
+}
+
+/* Top header spacing */
+.contact-header {
+  margin-bottom: 1rem;
+}
+
+.contact-header p {
+  margin: 0.25rem 0 0;
+  opacity: 0.9;
+}
+
+/* Reuse your glass styling (self-contained). If you already have .glass-box globally, you can remove this. */
+.glass-box {
+  max-width: 900px;
+  margin: 0 auto;
+  margin-top: 2rem;
+  padding: 1.5rem 1.75rem;
+  color: #fff;
+
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* If you keep using .contact-card in JSX, just make it behave like a glass-box */
+.contact-card {
+  margin-top: 1.5rem;
+  padding: 1.5rem 1.75rem;
+  color: #fff;
+
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* Two-column layout like a modern “features” section */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 1rem;
+}
+
+/* Make it responsive */
+@media (max-width: 800px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card styling that matches your glass look */
+.contact-left,
+.contact-form {
+  padding: 1.25rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Muted text on glass */
+.muted {
+  opacity: 0.9;
+}
+
+/* Links area */
+.contact-links {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.link {
+  color: #fff;
+  opacity: 0.95;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  word-break: break-word;
+}
+
+.link:hover {
+  opacity: 1;
+}
+
+.link-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
+
+/* Pill buttons */
+.pill {
+  display: inline-block;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  text-decoration: none;
+
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(8px);
+
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.pill:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+/* Note box */
+.note {
+  margin-top: 1rem;
+  padding: 0.9rem 0.95rem;
+  border-radius: 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(8px);
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.10);
+}

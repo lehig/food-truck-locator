@@ -1,0 +1,36 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+
+  background-color: #222;
+  color: white;
+
+  z-index: 1000; /* ensures it stays above content */
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin-left: 1rem;
+}
+
+.navbar-logo {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.logout-nav-btn {
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  font-size: 1.1rem;
+  margin-left: 0.8rem;
+  color: white;
+  font-style: bold;
+}

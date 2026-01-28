@@ -1,0 +1,29 @@
+.privacy-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.privacy-page h1 {
+  margin-bottom: 0.25rem;
+}
+
+.last-updated {
+  font-size: 0.9rem;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+.privacy-section {
+  margin-bottom: 1.5rem;
+}
+
+.privacy-section h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.15rem;
+}
+
+.privacy-section p {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}

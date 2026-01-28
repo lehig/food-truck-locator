@@ -394,6 +394,10 @@ function ProfilePage() {
               During this time, business features (messaging, profile visibility, and search listings) are disabled.
             </p>
 
+            <p style={{ marginTop: "12px" }}>
+              If you have any questions or concerns please reach out to <a href='/support'>technical support</a>.
+            </p>
+
             <div className="actions" style={{ marginTop: "18px" }}>
               <button
                 type="button"
