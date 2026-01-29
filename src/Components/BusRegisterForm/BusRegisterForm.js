@@ -8,6 +8,7 @@ function BusRegisterForm() {
   const location = useLocation();
   const { userId, username, email } = location.state || {};
   const navigate = useNavigate();
+  const API_BASE_URL = process.env.REACT_APP_API_BASE;
 
 
   const [businessProfile, setBusinessProfile] = useState({
@@ -87,6 +88,12 @@ function BusRegisterForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!API_BASE_URL) {
+      setError('Missing API base URL configuration.');
+      return;
+    }
+
     setSaving(true);
 
     try {

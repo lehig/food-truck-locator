@@ -24,6 +24,7 @@ function ProfilePage() {
   const stored = sessionStorage.getItem('ftlUser');
   const user = stored ? JSON.parse(stored) : null;
   const navigate = useNavigate();
+  const API_BASE_URL = process.env.REACT_APP_API_BASE;
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -66,6 +67,10 @@ function ProfilePage() {
   const fetchAndPersistRole = async () => {
     // If we already have role, nothing to do
     if (!effectiveUser || effectiveUser.role) return effectiveUser;
+    if (!API_BASE_URL) {
+      setError('Missing API base URL configuration.');
+      return effectiveUser;
+    }
 
     try {
       // You need a backend route that returns: { role: "customer" | "business" | "unverified-business" }
@@ -95,6 +100,11 @@ function ProfilePage() {
         setLoading(false);
         return;
       }
+      if (!API_BASE_URL) {
+        setError('Missing API base URL configuration.');
+        setLoading(false);
+        return;
+      }
 
       setError('');
       setLoading(true);
@@ -117,6 +127,12 @@ function ProfilePage() {
   }, []);
 
   const loadBusinessProfile = async (u = effectiveUser) => {
+    if (!API_BASE_URL) {
+      setError('Missing API base URL configuration.');
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError('');
@@ -173,6 +189,12 @@ function ProfilePage() {
   };
 
   const loadCustomerMessages = async (u = effectiveUser) => {
+    if (!API_BASE_URL) {
+      setError('Missing API base URL configuration.');
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError('');
@@ -230,6 +252,11 @@ function ProfilePage() {
   const handleSaveBusiness = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!API_BASE_URL) {
+      setError('Missing API base URL configuration.');
+      return;
+    }
 
     try {
       const payload = {

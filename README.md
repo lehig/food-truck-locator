@@ -1,37 +1,57 @@
-### Backend API Endpoints (Go Lambdas)
+## Food Truck Locator
 
-1. POST /subscribe
+React frontend for a food-truck discovery app with AWS Cognito auth and a backend hosted on AWS API Gateway + Lambda.
 
-    - Creates Subscriptions item.
-    - Idempotent: ignore if item already exists.
+### Architecture
 
-2. DELETE /subscribe
+- Frontend: React (Create React App), Axios for API calls.
+- Auth: AWS Cognito via Amplify; the ID token is sent as a Bearer token for API calls.
+- Backend: AWS API Gateway + Lambda functions.
+- Legacy: `auth-backend/` contains an older Go auth server and is no longer used by the app.
 
-    - Deletes that subscription row.
+### Environment Variables
 
-3. GET /subscriptions/customer/{customer_id}
+These are expected at runtime (see `.env` for current values):
 
-    - Queries GSI by customer_id to get list of business_ids the user is following.
-    - Used by the Dashboard to know which cards say "Subscribed".
+- `REACT_APP_API_BASE` (API Gateway base URL, e.g. `https://<id>.execute-api.<region>.amazonaws.com/dev`)
+- `REACT_APP_COGNITO_REGION`
+- `REACT_APP_COGNITO_USER_POOL_ID`
+- `REACT_APP_COGNITO_CLIENT_ID`
+- `REACT_APP_COGNITO_DOMAIN`
+- `REACT_APP_REDIRECT_SIGNIN`
+- `REACT_APP_REDIRECT_SIGNOUT`
 
-4. POST /business/{business_id}/message (for business accounts)
+### Local Development
 
-    - Verifies caller is that business (check user_type and user_id).
-    - Queries Subscriptions for all customer_ids for this business_id.
-    - For each subscriber, writes a row into Messages table.
+1. `npm install`
+2. `npm start`
 
-5. GET /messages/customer/{customer_id} (later, for a customer inbox UI)
+### API Endpoints Used by the Frontend
 
-    - Query Messages table by customer_id.
-    - Return list of messages.
+All endpoints are relative to `REACT_APP_API_BASE` unless noted.
 
-#### IAM permissions needed
+Auth / onboarding
+- `POST /login`
+- `POST /register`
+- `POST /confirm-signup`
 
-- dynamodb:PutItem, dynamodb:DeleteItem, dynamodb:Query, dynamodb:BatchWriteItem (if you fan out messages in batches) on the Subscriptions and Messages table ARNs.
-- Plus the usual logs:CreateLogGroup, logs:CreateLogStream, logs:PutLogEvents for CloudWatch logs
+Business discovery + subscriptions
+- `GET /business` (by state)
+- `GET /subscriptions` (by customer)
+- `POST /subscribe`
+- `DELETE /subscribe`
 
-### Frontend Changes
+Profiles + messaging
+- `GET /account-type`
+- `GET /business/profile`
+- `PUT /business/profile`
+- `GET /messages`
+- `POST /messages/broadcast`
 
-1. Dashboard business cards (customer view)
-2. Button behavior
-3. Business UI (business user sends messages)
+Support
+- `POST /contact` (multipart/form-data)
+
+Test-only endpoints (used by `Test*` components)
+- `GET /customerdb`
+
+Note: Some `Test*` components still call a hard-coded API Gateway URL. Consider switching those to `REACT_APP_API_BASE` for consistency.

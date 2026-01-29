@@ -7,6 +7,7 @@ function SendMessages() {
   const stored = sessionStorage.getItem('ftlUser');
   const user = stored ? JSON.parse(stored) : null;
   const navigate = useNavigate();
+  const API_BASE_URL = process.env.REACT_APP_API_BASE;
 
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
@@ -42,6 +43,11 @@ function SendMessages() {
 
     if (!trimmedSubject || !trimmedBody) {
       setError('Subject and message cannot be empty.')
+      setSending(false);
+      return;
+    }
+    if (!API_BASE_URL) {
+      setError('Missing API base URL configuration.');
       setSending(false);
       return;
     }

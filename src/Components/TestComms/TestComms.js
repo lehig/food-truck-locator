@@ -2,11 +2,17 @@ import React, { useEffect, useState } from "react";
 import './TestComms.css';
 
 function TestComms() {
+    const API_BASE_URL = process.env.REACT_APP_API_BASE;
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch("https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/customerdb")
+        if (!API_BASE_URL) {
+            console.error('Missing REACT_APP_API_BASE. Cannot load customerdb.');
+            return;
+        }
+
+        fetch(`${API_BASE_URL}/customerdb`)
             .then(res => res.json())
             .then(parsedData => {
                 console.log("Parsed JSON:", parsedData);

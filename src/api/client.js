@@ -1,7 +1,13 @@
 import axios from 'axios';
 import { fetchAuthSession } from '../auth/cognito';
 
-const api = axios.create({ baseURL: process.env.REACT_APP_API_BASE });
+const apiBaseUrl = process.env.REACT_APP_API_BASE;
+
+if (!apiBaseUrl) {
+  console.error('Missing REACT_APP_API_BASE. API requests will fail.');
+}
+
+const api = axios.create({ baseURL: apiBaseUrl });
 
 api.interceptors.request.use(async (config) => {
   config.headers = config.headers ?? {};

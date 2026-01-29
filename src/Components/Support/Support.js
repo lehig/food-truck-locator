@@ -61,6 +61,10 @@ export default function Support() {
       setError(msg);
       return;
     }
+    if (!API_BASE_URL) {
+      setError("Missing API base URL configuration.");
+      return;
+    }
 
     // Build multipart/form-data payload
     const fd = new FormData();

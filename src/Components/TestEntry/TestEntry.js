@@ -12,14 +12,20 @@ function TestEntry() {
     const navigate = useNavigate();
     const [error, setError] = useState('');
     const [accountType, setAccountType] = useState('customer'); // default
+    const API_BASE_URL = process.env.REACT_APP_API_BASE;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
+        if (!API_BASE_URL) {
+            setError("Missing API base URL configuration.");
+            return;
+        }
+
         try {
             const response = await axios.post(
-                "https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/register",
+                `${API_BASE_URL}/register`,
                 {
                     username,
                     password, 

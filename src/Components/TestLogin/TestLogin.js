@@ -10,13 +10,19 @@ function TestLogin() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const API_BASE_URL = process.env.REACT_APP_API_BASE;
     
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
+        if (!API_BASE_URL) {
+            setError("Missing API base URL configuration.");
+            return;
+        }
+
         try {
-            const response = await axios.post("https://1pdtxa0shi.execute-api.us-east-1.amazonaws.com/dev/login", {
+            const response = await axios.post(`${API_BASE_URL}/login`, {
                 username,
                 password
             },

@@ -7,6 +7,7 @@ import './Dashboard.css';
 function Dashboard() {
   const location = useLocation();
   const navigate = useNavigate();
+  const API_BASE_URL = process.env.REACT_APP_API_BASE;
 
   const locationState = location.state || {};
 
@@ -43,6 +44,10 @@ function Dashboard() {
     setError('');
 
     if (!value) return;
+    if (!API_BASE_URL) {
+      setError('Missing API base URL configuration.');
+      return;
+    }
 
     setLoading(true);
     try {
@@ -77,6 +82,10 @@ function Dashboard() {
   // === NEW: Load subscriptions for this customer ===
   useEffect(() => {
     if (!userID) return; // nothing to load for guests
+    if (!API_BASE_URL) {
+      setError('Missing API base URL configuration.');
+      return;
+    }
 
     const fetchSubscriptions = async () => {
       try {
@@ -112,6 +121,10 @@ function Dashboard() {
     }
     if (!businessID) {
       console.error('Missing businessID on card');
+      return;
+    }
+    if (!API_BASE_URL) {
+      setError('Missing API base URL configuration.');
       return;
     }
 
