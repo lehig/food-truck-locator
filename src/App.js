@@ -4,9 +4,7 @@ import './App.css';
 // import RegisterForm from './Components/RegisterForm/RegisterForm';
 // import BusRegisterForm from './Components/BusRegisterForm/BusRegisterForm';
 // import Dashboard from './Components/Dashboard/Dashboard';
-import TestComms from './Components/TestComms/TestComms';
-import TestEntry from './Components/TestEntry/TestEntry';
-import TestLogin from './Components/TestLogin/TestLogin';
+
 // import ProfilePage from './Components/ProfilePage/ProfilePage';
 // import SendMessages from './Components/SendMessages/SendMessages';
 import ProtectedRoute from './routes/ProtectedRoute';
@@ -40,11 +38,6 @@ function App() {
         <Route path='/contact' element={<ContactPage />} />
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
         <Route path='/tos' element={<TermsOfServicePage />} />
-
-        {/* Public tests */}
-        <Route path="/test" element={<TestComms />} />
-        <Route path="/test-entry" element={<TestEntry />} />
-        <Route path="/test-login" element={<TestLogin />} />
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute redirectTo="/" />}>
