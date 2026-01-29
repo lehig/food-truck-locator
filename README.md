@@ -6,8 +6,8 @@ React frontend for a food-truck discovery app with AWS Cognito auth and a backen
 
 - Frontend: React (Create React App), Axios for API calls.
 - Auth: AWS Cognito via Amplify; the ID token is sent as a Bearer token for API calls.
-- Backend: AWS API Gateway + Lambda functions.
-- Legacy: `auth-backend/` contains an older Go auth server and is no longer used by the app.
+- Backend: AWS API Gateway + Lambda functions (serverless).
+- Legacy: `zz_legacy/` contains older backend code and is not used by the app.
 
 ### Environment Variables
 
@@ -25,6 +25,13 @@ These are expected at runtime (see `.env` for current values):
 
 1. `npm install`
 2. `npm start`
+
+### Deployment
+
+- Source: GitHub repo.
+- Hosting: AWS Amplify builds and hosts the frontend from GitHub.
+- Backend: API Gateway + Lambda are already deployed serverlessly in AWS.
+- Auth: enforced server-side (API Gateway/Lambda).
 
 ### API Endpoints Used by the Frontend
 
