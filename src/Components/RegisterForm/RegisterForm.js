@@ -30,10 +30,9 @@ function RegisterForm() {
                     username,
                     password, 
                     email,
-                    accountType
-                    // TODO: send this so you can log/record it server-side later
-                    // acceptedLegal: true,
-                    // acceptedLegalAt: new Date().toISOString(),
+                    accountType,
+                    acceptedLegal: true,
+                    acceptedLegalAt: new Date().toISOString(),
                 },
                 {
                     headers: {

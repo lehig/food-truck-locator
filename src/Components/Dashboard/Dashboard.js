@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../../api/client';
 import { signOut } from '../../auth/cognito';
@@ -58,6 +58,15 @@ function Dashboard() {
       setLoading(false);
     }
   };
+
+  const visibleBusinesses = useMemo(() => {
+    const isTest = (b) => {
+      const name = (b?.business_name ?? "").trim().toUpperCase();
+      return name.startsWith("TEST"); // matches "TEST", "TEST ", "TEST-"
+    };
+
+    return (businesses ?? []).filter((b) => !isTest(b));
+  }, [businesses]);
 
   const handleLogout = async () => {
     sessionStorage.removeItem('ftlUser');
@@ -338,7 +347,7 @@ function Dashboard() {
         {!loading && businesses.length > 0 && (
           <div className="business-list">
             <div className="business-cards">
-              {businesses.map((b) => {
+              {visibleBusinesses.map((b) => {
                 const businessID = b.user_id || b.id;
                 const subscribed = isSubscribed(businessID);
                 const isSubmitting = submittingMap[businessID] || false;
