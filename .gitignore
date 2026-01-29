@@ -24,3 +24,6 @@ yarn-debug.log*
 yarn-error.log*
 
 /auth-backend/node_modules
+
+# legacy code
+/zz_legacy
