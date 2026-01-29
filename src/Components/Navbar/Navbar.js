@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import { signOut } from "../../auth/cognito";
+import logo from "../../assets/FTL-favicon.png"; // adjust path if needed
 
 function Navbar() {
   const navigate = useNavigate();
@@ -36,7 +37,14 @@ function Navbar() {
     <nav className="navbar">
       <div className="navbar-left">
         <Link to="/" className="navbar-logo">
-          Food Truck Locator
+          <img
+            src={logo}
+            alt="Food Truck Locator logo"
+            className="navbar-logo-img"
+          />
+          <span className="navbar-logo-text">
+            Food Truck Locator
+          </span>
         </Link>
       </div>
 
