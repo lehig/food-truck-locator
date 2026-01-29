@@ -1,13 +1,11 @@
 import React from "react";
 import { TERMS_OF_SERVICE } from "../Components/TOS/TermsOfService"; // adjust path if needed
 import "../Components/TOS/TermsOfService.css";
-import Navbar from "../Components/Navbar/Navbar";
-import Footer from "../Components/Footer/Footer";
+import Layout from "../Components/Layout/Layout";
 
 function TermsOfServicePage() {
   return (
-    <>
-        <Navbar />
+    <Layout>
         <div className="glass-box">
             <div className="terms-page">
             <h1>{TERMS_OF_SERVICE.title}</h1>
@@ -25,8 +23,7 @@ function TermsOfServicePage() {
             ))}
             </div>
         </div>
-        <Footer />
-    </>
+    </Layout>
   );
 }
 

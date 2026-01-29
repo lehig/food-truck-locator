@@ -2,17 +2,14 @@
 PROTECTED PAGE 
 */
 import React from "react";
-import Navbar from "../../Components/Navbar/Navbar";
 import ProfilePage from "../../Components/ProfilePage/ProfilePage";
-import Footer from "../../Components/Footer/Footer";
+import Layout from "../../Components/Layout/Layout";
 
 function ProfileNavPage() {
   return (
-    <>
-      <Navbar />
+    <Layout>
       <ProfilePage />
-      <Footer />
-    </>
+    </Layout>
   );
 }
 

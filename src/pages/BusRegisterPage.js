@@ -2,17 +2,14 @@
 PUBLIC PAGE 
 */
 import React from "react";
-import Navbar from "../Components/Navbar/Navbar";
+import Layout from "../Components/Layout/Layout";
 import BusRegisterForm from "../Components/BusRegisterForm/BusRegisterForm";
-import Footer from "../Components/Footer/Footer";
 
 function BusRegisterPage() {
   return (
-    <>
-      <Navbar />
+    <Layout>
       <BusRegisterForm />
-      <Footer />
-    </>
+    </Layout>
   );
 }
 

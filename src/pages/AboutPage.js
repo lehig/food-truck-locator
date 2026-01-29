@@ -2,16 +2,13 @@
 PUBLIC PAGE 
 */
 import React from "react";
-import Navbar from "../Components/Navbar/Navbar";
 import About from "../Components/About/About";
-import Footer from "../Components/Footer/Footer";
+import Layout from "../Components/Layout/Layout";
 
 export default function AboutPage() {
   return (
-    <>
-    <Navbar />
-    <About />
-    <Footer />
-    </>
+    <Layout>
+        <About />
+    </Layout>
   );
 }

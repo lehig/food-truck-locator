@@ -3,16 +3,13 @@ PUBLIC PAGE
 */
 import React from "react";
 import RegisterForm from "../Components/RegisterForm/RegisterForm";
-import Navbar from "../Components/Navbar/Navbar";
-import Footer from "../Components/Footer/Footer";
+import Layout from "../Components/Layout/Layout";
 
 function RegisterPage() {
     return (
-    <>
-      <Navbar />
+    <Layout>
       <RegisterForm />
-      <Footer />
-    </>
+    </Layout>
     )
 }
 

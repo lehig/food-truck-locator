@@ -1,13 +1,11 @@
 import React from "react";
 import { PRIVACY_POLICY } from "../Components/PrivacyPolicy/PrivacyPolicy"; // adjust path if needed
 import "../Components/PrivacyPolicy/PrivacyPolicy.css";
-import Navbar from "../Components/Navbar/Navbar";
-import Footer from "../Components/Footer/Footer";
+import Layout from "../Components/Layout/Layout";
 
 function PrivacyPolicyPage() {
   return (
-    <>
-        <Navbar />
+    <Layout>
         <div className="privacy-page">
             <div className="glass-box">
                 <h1>{PRIVACY_POLICY.title}</h1>
@@ -25,8 +23,7 @@ function PrivacyPolicyPage() {
                 ))}
             </div>
         </div>
-        <Footer />
-    </>
+    </Layout>
     
   );
 }

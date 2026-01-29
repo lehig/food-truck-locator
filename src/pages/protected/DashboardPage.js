@@ -2,17 +2,14 @@
 PROTECTED PAGE 
 */
 import React from "react";
-import Navbar from "../../Components/Navbar/Navbar";
 import Dashboard from "../../Components/Dashboard/Dashboard";
-import Footer from "../../Components/Footer/Footer";
+import Layout from "../../Components/Layout/Layout";
 
 function DashboardPage() {
   return (
-    <>
-      <Navbar />
+    <Layout>
       <Dashboard />
-      <Footer />
-    </>
+    </Layout>
   );
 }
 

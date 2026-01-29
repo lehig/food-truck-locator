@@ -2,17 +2,14 @@
 PUBLIC PAGE 
 */
 import React from "react";
-import Navbar from "../Components/Navbar/Navbar";
 import BusinessVerification from "../Components/BusinessVerification/BusinessVerification";
-import Footer from "../Components/Footer/Footer";
+import Layout from "../Components/Layout/Layout";
 
 function BusVerificationPage() {
   return (
-    <>
-      <Navbar />
+    <Layout>
       <BusinessVerification />
-      <Footer />
-    </>
+    </Layout>
   );
 }
 

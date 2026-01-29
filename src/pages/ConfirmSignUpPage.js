@@ -2,17 +2,14 @@
 PUBLIC PAGE 
 */
 import React from "react";
-import Navbar from "../Components/Navbar/Navbar";
 import ConfirmSignup from "../Components/ConfirmSignUp/ConfirmSignUp";
-import Footer from "../Components/Footer/Footer";
+import Layout from "../Components/Layout/Layout";
 
 function ConfirmSignUpPage() {
   return (
-    <>
-      <Navbar />
+    <Layout>
       <ConfirmSignup />
-      <Footer />
-    </>
+    </Layout>
   );
 }
 

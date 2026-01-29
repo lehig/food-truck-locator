@@ -1,6 +1,5 @@
 /* Root dashboard layout – similar background to login page */
 .dashboard {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   /* You can tweak this gradient or replace with your page background */

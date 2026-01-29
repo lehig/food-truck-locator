@@ -1,0 +1,20 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#root {
+  height: 100%;
+}
+
+.app-layout {
+  min-height: 93vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* This is the key: it grows to push the footer down when content is short */
+.app-content {
+  flex: 1;
+  display: block;
+}
