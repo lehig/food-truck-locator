@@ -82,30 +82,17 @@ function SendMessages() {
     }
   };
 
-  const handleBackToDashboard = () => {
-    navigate('/dashboard', { state: { userID: user.userID, username: user.username, email: user.email } });
-  };
-
   return (
     <div className="messages-page">
       {/* Top profile/header box */}
       <div className="glass-box header-box">
         <div className="header-main">
-          <div>
             <h1>Business Messages</h1>
-            <p className="subtitle">
-              Logged in as <span className="highlight">{user.username}</span>
-            </p>
-          </div>
         </div>
-        <div className="header-actions">
-          <button
-            type="button"
-            className="btn"
-            onClick={handleBackToDashboard}
-          >
-            Back to Dashboard
-          </button>
+        <div>
+          <p className="subtitle">
+              Logged in as <span className="highlight">{user.username}</span>
+          </p>
         </div>
       </div>
 
