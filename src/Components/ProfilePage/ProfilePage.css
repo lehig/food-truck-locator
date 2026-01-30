@@ -99,7 +99,7 @@
   /* Glass / Frosted UI */
   background: rgba(255, 255, 255, 0.18);   /* light transparency */
   border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 12px;
+  border-radius: 8px;
   backdrop-filter: blur(10px);
 
   /* Optional shadow for depth */
@@ -243,7 +243,7 @@
   align-items: stretch;
   justify-content: space-between;
   margin-bottom: 1.5rem;
-  border-radius: 16px;
+  border-radius: 8px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(8px);

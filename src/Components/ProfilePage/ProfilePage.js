@@ -58,7 +58,6 @@ function ProfilePage() {
   const [messages, setMessages] = useState([]);
 
   const [effectiveUser, setEffectiveUser] = useState(user);
-  const role = effectiveUser?.role;
 
   const isBusiness = user?.role === 'business';
   const isCustomer = user?.role === 'customer';
@@ -310,17 +309,6 @@ function ProfilePage() {
       
   };
 
-  const handleGoToMessages = () => {
-    // 🔁 Change '/messages' to whatever route you end up using
-    navigate('/messages', {
-      state: {
-        userID: user.userID,
-        username: user.username,
-        email: user.email,
-      },
-    });
-  };
-
   if (loading) {
     return <div className="profile-page"><p>Loading...</p></div>;
   }
@@ -368,37 +356,7 @@ function ProfilePage() {
 
   return (
     <div className="profile-page">
-      {/* Top Navigation Bar */}
-      <nav className="dashboard-nav">
-      {/* Left side */}
-      <div
-        className="nav-part nav-part-left"
-        role="button"
-        tabIndex={0}
-        onClick={handleGoToDashboard}
-        onKeyDown={(e) => e.key === 'Enter' && handleGoToDashboard()}
-      >
-        ← Back to Dashboard
-      </div>
-
-      {/* Center section (optional title) */}
-      <div className="nav-part nav-part-center">
-        <strong>Profile</strong>
-      </div>
-
-      {/* Right side — ONLY FOR BUSINESSES */}
-      {isBusiness && (
-        <div
-          className="nav-part nav-part-right"
-          role="button"
-          tabIndex={0}
-          onClick={handleGoToMessages}
-          onKeyDown={(e) => e.key === 'Enter' && handleGoToMessages()}
-        >
-          ✉ Send Messages
-        </div>
-      )}
-    </nav>
+      
       <div className='glass-box'>
         <div className="">
           <h1>Profile</h1>

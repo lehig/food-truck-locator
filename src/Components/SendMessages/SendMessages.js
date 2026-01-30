@@ -142,7 +142,7 @@ function SendMessages() {
           <div className="actions">
             <button
               type="submit"
-              className="primary-button"
+              className="msg-primary msg-btn"
               disabled={sending}
             >
               {sending ? 'Sending...' : 'Send Message'}

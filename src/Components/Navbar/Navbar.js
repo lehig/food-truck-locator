@@ -59,7 +59,10 @@ function Navbar() {
             <Link to="/dashboard">Dashboard</Link>
 
             {isBusiness && (
-              <Link to="/support">Technical Support</Link>
+              <>
+                <Link to="/messages">Send Message</Link>
+                <Link to="/support">Technical Support</Link>
+              </>
             )}
 
             <button

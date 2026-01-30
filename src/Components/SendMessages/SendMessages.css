@@ -40,7 +40,7 @@
   width: 100%;
   padding: 0.5rem;
   margin-top: 0.25rem;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid #ccc;
   font: inherit;
 }
@@ -55,39 +55,30 @@
   justify-content: flex-end;
 }
 
-.primary-button,
-.secondary-button {
-  border: none;
-  padding: 0.45rem 1.1rem;
-  border-radius: 999px;
-  font: inherit;
+.msg-btn {
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: transform 0.05s ease, box-shadow 0.05s ease, background 0.15s ease;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(6px);
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  color: #fff;
 }
 
-.primary-button {
-  background: #2563eb;
-  color: white;
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+.msg-btn:hover {
+  filter: brightness(0.95);
 }
 
-.primary-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+.msg-primary {
+  background: rgba(0, 119, 204, 0.5);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.85);
 }
 
-.primary-button:disabled {
-  opacity: 0.6;
-  cursor: default;
-}
-
-.secondary-button {
-  background: #e5e7eb;
-  color: #111827;
-}
-
-.secondary-button:hover {
-  background: #d1d5db;
+.msg-primary:hover {
+  background: rgba(0, 119, 204, 0.9);
 }
 
 .error {

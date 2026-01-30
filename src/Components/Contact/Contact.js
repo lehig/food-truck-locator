@@ -175,13 +175,13 @@ export default function Contact() {
             )}
 
             <div className="actions">
-              <button type="submit" disabled={sending}>
+              <button className="con-primary contact-btn" type="submit" disabled={sending}>
                 {sending ? "Sending…" : "Send message"}
               </button>
 
               <button
                 type="button"
-                className="secondary"
+                className="contact-btn"
                 onClick={() => setForm({ name: "", email: "", topic: "General", message: "" })}
                 disabled={sending}
               >

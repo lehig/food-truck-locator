@@ -8,8 +8,10 @@
   justify-content: space-between;
   padding: 0.75rem 1.5rem;
 
-  background-color: #222;
+  background: rgba(255, 255, 255, 0.18);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
   color: white;
+  backdrop-filter: blur(10px);
 
   z-index: 1000; /* ensures it stays above content */
 }
@@ -17,7 +19,11 @@
 .navbar a {
   color: white;
   text-decoration: none;
-  margin-left: 1rem;
+  margin-left: 1.5rem;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
 }
 
 .navbar-logo {
@@ -47,7 +53,11 @@
   cursor: pointer;
   background: transparent;
   font-size: 1.1rem;
-  margin-left: 0.8rem;
+  margin-left: 1.5rem;
   color: white;
   font-style: bold;
+}
+
+.logout-nav-btn:hover {
+  text-decoration: underline;
 }
