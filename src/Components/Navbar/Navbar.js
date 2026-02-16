@@ -1,11 +1,13 @@
-import React, { useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 import { signOut } from "../../auth/cognito";
 import logo from "../../assets/FTL-favicon.png"; // adjust path if needed
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Single source of truth: sessionStorage
   const user = useMemo(() => {
@@ -24,6 +26,7 @@ function Navbar() {
     role === "business" || role === "unverified-business";
 
   const handleLogout = async () => {
+    setIsMenuOpen(false);
     sessionStorage.removeItem("ftlUser");
     try {
       await signOut();
@@ -31,6 +34,16 @@ function Navbar() {
       // swallow errors so logout always succeeds locally
     }
     navigate("/");
+  };
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  const handleNavClick = (event) => {
+    if (event.target.closest("a")) {
+      setIsMenuOpen(false);
+    }
   };
 
   return (
@@ -48,7 +61,20 @@ function Navbar() {
         </Link>
       </div>
 
-      <div className="navbar-right">
+      <button
+        className="navbar-menu-btn"
+        type="button"
+        aria-expanded={isMenuOpen}
+        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+        onClick={() => setIsMenuOpen((prev) => !prev)}
+      >
+        {isMenuOpen ? "Close" : "Menu"}
+      </button>
+
+      <div
+        className={`navbar-right ${isMenuOpen ? "is-open" : ""}`}
+        onClick={handleNavClick}
+      >
         {/* Always visible */}
         <Link to="/about">About</Link>
         <Link to="/contact">Contact</Link>

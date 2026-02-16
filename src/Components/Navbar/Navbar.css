@@ -16,6 +16,10 @@
   z-index: 1000; /* ensures it stays above content */
 }
 
+.navbar-left {
+  min-width: 0;
+}
+
 .navbar a {
   color: white;
   text-decoration: none;
@@ -47,6 +51,22 @@
   line-height: 1;
 }
 
+.navbar-right {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.navbar-menu-btn {
+  display: none;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  border-radius: 8px;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
 
 .logout-nav-btn {
   border: none;
@@ -60,4 +80,63 @@
 
 .logout-nav-btn:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .navbar {
+    padding: 0.7rem 1rem;
+  }
+
+  .navbar-logo-text {
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 58vw;
+  }
+
+  .navbar-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .navbar-right {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    right: 0.75rem;
+    left: 0.75rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.35rem;
+    padding: 0.65rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(6, 22, 38, 0.92);
+    backdrop-filter: blur(10px);
+  }
+
+  .navbar-right.is-open {
+    display: flex;
+  }
+
+  .navbar a,
+  .logout-nav-btn {
+    margin-left: 0;
+    width: 100%;
+    text-align: left;
+    padding: 0.55rem 0.65rem;
+    border-radius: 8px;
+  }
+
+  .navbar a:hover,
+  .logout-nav-btn:hover {
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  .logout-nav-btn {
+    font-size: 1rem;
+  }
 }

@@ -4,7 +4,7 @@
   flex-direction: column;
   /* You can tweak this gradient or replace with your page background */
   color: #fff;
-  padding: 20px 10px;
+  padding: 20px 10px 90px;
   box-sizing: border-box;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
@@ -30,6 +30,7 @@
 .nav-left .nav-logo {
   font-size: 22px;
   font-weight: 700;
+  line-height: 1.2;
 }
 
 /* Center state selector */
@@ -158,18 +159,48 @@
 
 /* Responsive tweaks */
 @media (max-width: 768px) {
+  .dashboard {
+    padding-bottom: 20px;
+  }
+
   .dashboard-nav {
     flex-direction: column;
     align-items: stretch;
-    gap: 10px;
+    gap: 12px;
+    padding: 14px 16px;
   }
 
   .nav-center {
-    justify-content: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 
   .dashboard-main {
-    padding: 20px;
+    padding: 18px 14px;
+  }
+
+  .dashboard-main h1 {
+    font-size: 1.45rem;
+  }
+
+  .logout-btn {
+    position: static;
+    width: 100%;
+    margin-top: 12px;
+    height: 42px;
+  }
+
+  .business-card {
+    padding: 1rem;
+  }
+
+  .hours-row {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.8rem;
+  }
+
+  .hours-time {
+    text-align: left;
   }
 }
 

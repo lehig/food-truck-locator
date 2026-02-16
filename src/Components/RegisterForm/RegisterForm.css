@@ -1,5 +1,5 @@
 .wrapper {
-    width: 450px;
+    width: min(450px, calc(100% - 2rem));
     background: transparent;
     border: 2px solid rgba(255,255,255,.2);
     backdrop-filter: blur(30px);
@@ -7,7 +7,8 @@
     border-radius: 10px;
     padding: 30px 40px;
     margin: 0 auto;
-    margin-top: 100px;
+    margin-top: 48px;
+    margin-bottom: 64px;
 }
 
 .wrapper h1 {
@@ -147,4 +148,34 @@
 .legal-row a {
   color: inherit;
   text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .wrapper {
+    width: calc(100% - 1.25rem);
+    padding: 22px 18px;
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
+
+  .wrapper h1 {
+    font-size: 1.8rem;
+  }
+
+  .wrapper .input-box {
+    margin: 20px 0;
+  }
+
+  .account-type p {
+    padding-bottom: 14px;
+  }
+
+  .account-type label {
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+
+  .legal-row {
+    align-items: flex-start;
+  }
 }

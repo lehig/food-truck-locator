@@ -100,3 +100,20 @@
   margin-bottom: 0.75rem;
   opacity: 0.85;
 }
+
+@media (max-width: 768px) {
+  .messages-page {
+    padding: 1rem 0.65rem;
+  }
+
+  .header-box,
+  .header-actions,
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .msg-btn {
+    width: 100%;
+  }
+}
