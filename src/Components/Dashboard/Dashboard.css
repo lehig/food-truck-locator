@@ -46,11 +46,11 @@
 
 /* State select matches input style from .wrapper */
 .state-select {
-  height: 40px;
-  padding: 0 18px;
+  height: 25px;
+  padding: 0 10px;
   background: transparent;
   border-radius: 8px;
-  border: 2px solid rgba(255,255,255,.2);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   color: #fff;
   font-size: 14px;
   outline: none;
@@ -59,6 +59,29 @@
 
 .state-select option {
   color: #000; /* dropdown list text */
+}
+
+.search-btn {
+  height: 25px;
+  padding: 0 10px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  appearance: none;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.search-btn:disabled {
+  color: #797979;
+}
+
+.search-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 /* Right profile button – match .wrapper button style */

@@ -180,13 +180,14 @@
 
 /* Base button style (glass-friendly) */
 .btn {
-  padding: 0.45rem 0.9rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  font-size: 0.95rem;
-  cursor: pointer;
+  height: 25px;
+  padding: 0 10px;
   background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(6px);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  outline: none;
+  appearance: none;
   transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
   color: #fff;
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../../api/client';
-import { signOut } from '../../auth/cognito';
+// import { signOut } from '../../auth/cognito';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -22,9 +22,11 @@ function Dashboard() {
   const displayName = username || 'Guest';
 
   const [selectedState, setSelectedState] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
   const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [hasSearched, setHasSearched] = useState(false);
   const [expandedHours, setExpandedHours] = useState({}); // { [businessID]: boolean }
 
 
@@ -36,14 +38,11 @@ function Dashboard() {
     navigate('/profile', { state: { userID, username, email, role } });
   };
 
-  const handleStateChange = async (e) => {
-    const value = e.target.value;
-
-    setSelectedState(value);
-    setBusinesses([]);
-    setError('');
-
-    if (!value) return;
+  const fetchBusinesses = async (stateValue, cityValue) => {
+    if (!stateValue || !cityValue) {
+      setBusinesses([]);
+      return;
+    }
     if (!API_BASE_URL) {
       setError('Missing API base URL configuration.');
       return;
@@ -51,17 +50,49 @@ function Dashboard() {
 
     setLoading(true);
     try {
-      const res = await api.get('/business', { params: { state: value } });
-      
-      // this may need adjusting depending on the shape of the response
+      const res = await api.get('/business', {
+        params: {
+          state: stateValue,
+          city: cityValue || '',
+        },
+      });
+
       const data = Array.isArray(res.data) ? res.data : res.data.businesses || [];
       setBusinesses(data);
-    } catch(err) {
+    } catch (err) {
       console.error('fetch error:', err);
       setError('error fetching data. please try again.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleStateChange = (e) => {
+    const value = e.target.value;
+
+    setSelectedState(value);
+    setSelectedCity('');
+    setBusinesses([]);
+    setHasSearched(false);
+    setError('');
+  };
+
+  const handleCityChange = (e) => {
+    const value = e.target.value;
+    setSelectedCity(value);
+    setHasSearched(false);
+    setError('');
+  };
+
+  const handleSearch = async () => {
+    if (!selectedState || !selectedCity) {
+      setError('Please select both a state and city before searching.');
+      return;
+    }
+
+    setHasSearched(true);
+    setError('');
+    await fetchBusinesses(selectedState, selectedCity);
   };
 
   const visibleBusinesses = useMemo(() => {
@@ -73,11 +104,11 @@ function Dashboard() {
     return (businesses ?? []).filter((b) => !isTest(b));
   }, [businesses]);
 
-  const handleLogout = async () => {
-    sessionStorage.removeItem('ftlUser');
-    try { await signOut(); } catch {}
-    navigate('/');
-  };
+  // const handleLogout = async () => {
+  //   sessionStorage.removeItem('ftlUser');
+  //   try { await signOut(); } catch {}
+  //   navigate('/');
+  // };
 
   // === NEW: Load subscriptions for this customer ===
   useEffect(() => {
@@ -318,7 +349,7 @@ function Dashboard() {
         </div>
 
         <div className='nav-center'>
-          <label htmlFor='state-select'>Select a state:</label>
+          <label htmlFor='state-select'>Select a State:</label>
           <select
             id='state-select'
             className='state-select'
@@ -326,15 +357,36 @@ function Dashboard() {
             onChange={handleStateChange}
           >
             <option value=''>Select a State</option>
-            <option value='ID'>Idaho</option>
+            {/* <option value='ID'>Idaho</option> */}
             <option value='UT'>Utah</option>
-            <option value='WY'>Wyoming</option>
+            {/* <option value='WY'>Wyoming</option> */}
           </select>
+          <label htmlFor='city-select'>Select a City:</label>
+          <select
+            id='city-select'
+            className='state-select'
+            value={selectedCity}
+            onChange={handleCityChange}
+          >
+            <option value=''>Select a City</option>
+            <option value='logan'>Logan</option>
+            <option value='saltlakecity'>Salt Lake City</option>
+            <option value='ogden'>Ogden</option>
+            <option value='provo'>Provo</option>
+          </select>
+          <button
+            type='button'
+            className='search-btn'
+            onClick={handleSearch}
+            disabled={!selectedState || !selectedCity || loading}
+          >
+            Search
+          </button>
         </div>
 
         <div className='nav-right'>
           <button className='btn' onClick={handleProfileClick}>
-            Profile: {displayName}
+            {displayName}
           </button>
         </div>
       </nav>
@@ -343,9 +395,10 @@ function Dashboard() {
       <main className='dashboard-main'>
         <h1>Browse Food Trucks by State</h1>
 
-        {selectedState && (
+        {!loading && !error && hasSearched && selectedState && selectedCity && (
           <p className='state-summary'>
             Showing results for state: <strong>{selectedState}</strong>
+            {selectedCity && <> and city: <strong>{selectedCity}</strong></>}
           </p>
         )}
 
@@ -353,8 +406,11 @@ function Dashboard() {
 
         {error && <p className='error-message'>{error}</p>}
 
-        {!loading && !error && businesses.length === 0 && selectedState && (
-          <p>No businesses found in {selectedState}. Try a different state.</p>
+        {!loading && !error && hasSearched && businesses.length === 0 && selectedState && selectedCity && (
+          <p>
+            No businesses found in {selectedState}
+            {selectedCity ? `, ${selectedCity}` : ''}. Try a different location.
+          </p>
         )}
 
         {!loading && businesses.length > 0 && (
@@ -434,9 +490,9 @@ function Dashboard() {
       </main>
       
       {/* floating logout button */}
-      <button className='logout-btn' onClick={handleLogout}>
+      {/* <button className='logout-btn' onClick={handleLogout}>
         Logout
-      </button>
+      </button> */}
     </div>
   );
 }
