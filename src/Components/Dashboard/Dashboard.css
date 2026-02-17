@@ -34,7 +34,19 @@
 }
 
 /* Center state selector */
-.nav-center {
+.nav-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-city {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-search {
   display: flex;
   align-items: center;
   gap: 10px;

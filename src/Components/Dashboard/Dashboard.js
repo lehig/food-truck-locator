@@ -348,7 +348,7 @@ function Dashboard() {
           <span className='nav-logo'>Food Truck Locator Dashboard</span>
         </div>
 
-        <div className='nav-center'>
+        <div className='nav-state'>
           <label htmlFor='state-select'>Select a State:</label>
           <select
             id='state-select'
@@ -361,6 +361,8 @@ function Dashboard() {
             <option value='UT'>Utah</option>
             {/* <option value='WY'>Wyoming</option> */}
           </select>
+        </div>
+        <div className='nav-city'>
           <label htmlFor='city-select'>Select a City:</label>
           <select
             id='city-select'
@@ -374,6 +376,8 @@ function Dashboard() {
             <option value='ogden'>Ogden</option>
             <option value='provo'>Provo</option>
           </select>
+        </div>
+        <div className='nav-search'>
           <button
             type='button'
             className='search-btn'
