@@ -142,6 +142,7 @@ function Dashboard() {
     if (!incomingBusinessID || !userID || !subscriptionsLoaded) return;
     if (role === 'business' || role === 'unverified-business') return;
     if (subscriptions.has(incomingBusinessID)) {
+      console.log("business id:", incomingBusinessID)
       autoSubscribeAttemptedRef.current = true;
       return;
     }
