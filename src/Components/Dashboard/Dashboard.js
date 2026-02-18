@@ -35,11 +35,51 @@ function Dashboard() {
   const [subscriptions, setSubscriptions] = useState(new Set());
   const [submittingMap, setSubmittingMap] = useState({}); // { [businessID]: boolean }
   const [subscriptionsLoaded, setSubscriptionsLoaded] = useState(false);
+  const [subscriptionPopup, setSubscriptionPopup] = useState(null);
   const autoSubscribeAttemptedRef = useRef(false);
+  const popupTimerRef = useRef(null);
 
   const handleProfileClick = () => {
     navigate('/profile', { state: { userID, username, email, role } });
   };
+
+  const showSubscribeLoading = (businessName = 'this business') => {
+    if (popupTimerRef.current) {
+      clearTimeout(popupTimerRef.current);
+      popupTimerRef.current = null;
+    }
+    setSubscriptionPopup({
+      phase: 'loading',
+      businessName,
+      status: '',
+    });
+  };
+
+  const showSubscribeSuccess = (data, fallbackName = 'this business') => {
+    const businessName =
+      data?.BusinessName ||
+      data?.businessName ||
+      data?.business_name ||
+      fallbackName;
+    const status = data?.status || data?.Status || 'Subscribed';
+    setSubscriptionPopup({
+      phase: 'success',
+      businessName,
+      status,
+    });
+    popupTimerRef.current = setTimeout(() => {
+      setSubscriptionPopup(null);
+      popupTimerRef.current = null;
+    }, 1700);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (popupTimerRef.current) {
+        clearTimeout(popupTimerRef.current);
+      }
+    };
+  }, []);
 
   const fetchBusinesses = async (stateValue, cityValue) => {
     if (!stateValue || !cityValue) {
@@ -151,14 +191,17 @@ function Dashboard() {
     const subscribeFromLink = async () => {
       autoSubscribeAttemptedRef.current = true;
       try {
-        await api.post('/subscribe', { customerID: userID, businessID: incomingBusinessID });
+        showSubscribeLoading(incomingBusinessID);
+        const res = await api.post('/subscribe', { customerID: userID, businessID: incomingBusinessID });
         setSubscriptions(prev => {
           const next = new Set(prev);
           next.add(incomingBusinessID);
           return next;
         });
+        showSubscribeSuccess(res?.data, incomingBusinessID);
       } catch (err) {
         console.error('auto-subscribe error:', err);
+        setSubscriptionPopup(null);
       }
     };
 
@@ -178,7 +221,7 @@ function Dashboard() {
   };
 
   // === NEW: Toggle subscribe / unsubscribe ===
-  const toggleSubscription = async (businessID) => {
+  const toggleSubscription = async (businessID, businessName) => {
     if (!userID) {
       alert('You must be logged in to subscribe.');
       return;
@@ -207,16 +250,19 @@ function Dashboard() {
         });
       } else {
         // Subscribe
-        await api.post('/subscribe', { customerID: userID, businessID });
+        showSubscribeLoading(businessName || businessID);
+        const res = await api.post('/subscribe', { customerID: userID, businessID });
 
         setSubscriptions(prev => {
           const next = new Set(prev);
           next.add(businessID);
           return next;
         });
+        showSubscribeSuccess(res?.data, businessName || businessID);
       }
     } catch (err) {
       console.error('subscription error:', err);
+      setSubscriptionPopup(null);
       // optional: setError('Error updating subscription. Please try again.');
     } finally {
       setSubmittingFor(businessID, false);
@@ -375,6 +421,27 @@ function Dashboard() {
 
   return (
     <div className='dashboard'>
+      {subscriptionPopup && (
+        <div className="subscribe-popup-overlay" role="status" aria-live="polite">
+          <div className="subscribe-popup-card">
+            <div className="subscribe-popup-icon-wrap">
+              {subscriptionPopup.phase === 'loading' ? (
+                <div className="subscribe-spinner" />
+              ) : (
+                <div className="subscribe-checkmark">✓</div>
+              )}
+            </div>
+            <p className="subscribe-popup-title">
+              {subscriptionPopup.phase === 'loading' ? 'Subscribing...' : 'Subscribed'}
+            </p>
+            <p className="subscribe-popup-business">{subscriptionPopup.businessName}</p>
+            {subscriptionPopup.phase === 'success' && (
+              <p className="subscribe-popup-status">{subscriptionPopup.status}</p>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Top Navigation Bar */}
       <nav className='dashboard-nav'>
         <div className='nav-left'>
@@ -507,7 +574,7 @@ function Dashboard() {
                             'btn subscribe-btn' +
                             (subscribed ? ' subscribed' : '')
                           }
-                          onClick={() => toggleSubscription(businessID)}
+                          onClick={() => toggleSubscription(businessID, b.business_name)}
                           disabled={isSubmitting}
                         >
                           {isSubmitting

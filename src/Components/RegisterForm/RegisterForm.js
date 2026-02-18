@@ -19,7 +19,11 @@ function RegisterForm() {
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
-        const incomingBusinessID = params.get('business_id') || params.get('busiess_id') || '';
+        const incomingBusinessID =
+            params.get('business_id') ||
+            params.get('busiess_id') ||
+            params.get('business') ||
+            '';
         console.log("business id:", incomingBusinessID)
         setBusinessID(incomingBusinessID);
     }, [location.search]);
