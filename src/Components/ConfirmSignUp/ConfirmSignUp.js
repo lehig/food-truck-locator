@@ -9,7 +9,7 @@ function ConfirmSignup() {
   const navigate = useNavigate();
 
   // Values passed from RegisterForm
-  const { userId, username, email, password, accountType } = location.state || {};
+  const { userId, username, email, password, accountType, businessID } = location.state || {};
 
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
@@ -70,8 +70,10 @@ function ConfirmSignup() {
           state: { userID: userId, username, email, role },
         });
       } else {
-        // You can go to dashboard or login depending on your flow
-        navigate("/", { replace: true });
+        navigate("/dashboard", {
+          replace: true,
+          state: { userID: userId, username, email, role, businessID },
+        });
       }
     } catch (err) {
       console.error("Confirm sign-up error:", err);

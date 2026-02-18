@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../../api/client';
 // import { signOut } from '../../auth/cognito';
@@ -18,6 +18,7 @@ function Dashboard() {
   const username = locationState.username || storedUser?.username || null;
   const email = locationState.email || storedUser?.email || null;
   const role = locationState.role || storedUser?.role || null;
+  const incomingBusinessID = locationState.businessID || null;
 
   const displayName = username || 'Guest';
 
@@ -33,6 +34,8 @@ function Dashboard() {
   // NEW: subscription-related state
   const [subscriptions, setSubscriptions] = useState(new Set());
   const [submittingMap, setSubmittingMap] = useState({}); // { [businessID]: boolean }
+  const [subscriptionsLoaded, setSubscriptionsLoaded] = useState(false);
+  const autoSubscribeAttemptedRef = useRef(false);
 
   const handleProfileClick = () => {
     navigate('/profile', { state: { userID, username, email, role } });
@@ -126,11 +129,40 @@ function Dashboard() {
       } catch (err) {
         console.error('error loading subscriptions:', err);
         // optional: setError('Error loading subscriptions');
+      } finally {
+        setSubscriptionsLoaded(true);
       }
     };
 
     fetchSubscriptions();
-  }, [userID]);
+  }, [userID, API_BASE_URL]);
+
+  useEffect(() => {
+    if (autoSubscribeAttemptedRef.current) return;
+    if (!incomingBusinessID || !userID || !subscriptionsLoaded) return;
+    if (role === 'business' || role === 'unverified-business') return;
+    if (subscriptions.has(incomingBusinessID)) {
+      autoSubscribeAttemptedRef.current = true;
+      return;
+    }
+    if (!API_BASE_URL) return;
+
+    const subscribeFromLink = async () => {
+      autoSubscribeAttemptedRef.current = true;
+      try {
+        await api.post('/subscribe', { customerID: userID, businessID: incomingBusinessID });
+        setSubscriptions(prev => {
+          const next = new Set(prev);
+          next.add(incomingBusinessID);
+          return next;
+        });
+      } catch (err) {
+        console.error('auto-subscribe error:', err);
+      }
+    };
+
+    subscribeFromLink();
+  }, [incomingBusinessID, userID, subscriptionsLoaded, role, subscriptions, API_BASE_URL]);
 
   const isSubscribed = (businessID) => {
     if (!businessID) return false;

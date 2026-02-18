@@ -2,18 +2,26 @@ import React from "react";
 import './RegisterForm.css';
 import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 function RegisterForm() {
+    const location = useLocation();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+    const [businessID, setBusinessID] = useState('');
     const [accountType, setAccountType] = useState('customer'); // default
     const [acceptedLegal, setAcceptedLegal] = useState(false);
     const navigate = useNavigate();
     const [error, setError] = useState('');
     const API_BASE_URL = process.env.REACT_APP_API_BASE;
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const incomingBusinessID = params.get('business_id') || params.get('busiess_id') || '';
+        setBusinessID(incomingBusinessID);
+    }, [location.search]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -56,6 +64,7 @@ function RegisterForm() {
                     email,
                     password, 
                     accountType,
+                    businessID,
                 },
             });
         
