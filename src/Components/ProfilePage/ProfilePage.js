@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './ProfilePage.css';
+
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/client';
 

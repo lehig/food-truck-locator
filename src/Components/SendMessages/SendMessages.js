@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './SendMessages.css';
+
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/client';
 

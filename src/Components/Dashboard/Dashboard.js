@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../../api/client';
 // import { signOut } from '../../auth/cognito';
-import './Dashboard.css';
+
 
 function Dashboard() {
   const location = useLocation();

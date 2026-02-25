@@ -1,5 +1,5 @@
 import React from "react";
-import './RegisterForm.css';
+
 import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";

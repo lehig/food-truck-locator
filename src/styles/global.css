@@ -1,3 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+html, body, #root {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--bg-image) no-repeat;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  background: url('https://food-truck-locator-assets.s3.us-east-1.amazonaws.com/background.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  padding-top: 72px;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35); /* adjust darkness here */
+  z-index: -1;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 64px;
+    background-attachment: scroll;
+  }
+}
+
 .App {
   text-align: center;
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import { PRIVACY_POLICY } from "../Components/PrivacyPolicy/PrivacyPolicy"; // adjust path if needed
-import "../Components/PrivacyPolicy/PrivacyPolicy.css";
+
 import Layout from "../Components/Layout/Layout";
 
 function PrivacyPolicyPage() {

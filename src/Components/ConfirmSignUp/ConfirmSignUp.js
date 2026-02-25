@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./ConfirmSignUp.css";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaLock } from "react-icons/fa";
 import { confirmSignUp, resendSignUpCode, signIn, fetchAuthSession } from "../../auth/cognito";

@@ -1,6 +1,6 @@
 // ContactPage.js
 import React, { useMemo, useState } from "react";
-import "./Support.css";
+
 import axios from "axios";
 
 export default function Support() {

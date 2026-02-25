@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import "./Navbar.css";
+
 import { signOut } from "../../auth/cognito";
 import logo from "../../assets/FTL-favicon.png"; // adjust path if needed
 

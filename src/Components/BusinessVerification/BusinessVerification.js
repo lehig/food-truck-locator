@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "./BusinessVerification.css";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaCheckCircle, FaClock } from "react-icons/fa";
 

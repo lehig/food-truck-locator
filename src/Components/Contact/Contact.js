@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import "./Contact.css";
+
 // import axios from "axios";
 
 export default function Contact() {

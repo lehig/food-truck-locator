@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import './LoginForm.css';
+
 import { FaLock, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { signIn, fetchAuthSession, startPasswordReset, finishPasswordReset } from '../../auth/cognito';
@@ -148,7 +148,7 @@ function LoginForm() {
     setBusy(true);
 
     try {
-      const out = await startPasswordReset(username);
+      await startPasswordReset(username);
 
       setStatus("reset code sent. check your email.");
       setMode("confirm");
@@ -213,10 +213,10 @@ function LoginForm() {
             {busy ? "Signing in..." : "Login"}
           </button>
 
-          <button 
-            type="button" 
-            className="linkish" 
-            onClick={() => { clearMessages(); setMode("forgot");}}
+          <button
+            type="button"
+            className="linkish"
+            onClick={() => { clearMessages(); setMode("forgot"); }}
             disabled={busy}
           >
             Forgot password?
@@ -276,7 +276,7 @@ function LoginForm() {
               required
               disabled={busy}
             />
-         </div>
+          </div>
 
           <div className="input-box">
             <input
@@ -291,7 +291,7 @@ function LoginForm() {
           </div>
 
           <button type="submit" disabled={!canSubmitConfirm || busy || checkingSession}>
-            { busy ? "Confirming..." : "Confirm reset"}
+            {busy ? "Confirming..." : "Confirm reset"}
           </button>
 
           <button
@@ -307,7 +307,7 @@ function LoginForm() {
           </button>
         </form>
       )}
-        
+
 
       {checkingSession && <p className="hint">Checking session…</p>}
       {error && <p className="error">{error}</p>}

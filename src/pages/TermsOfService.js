@@ -1,6 +1,6 @@
 import React from "react";
 import { TERMS_OF_SERVICE } from "../Components/TOS/TermsOfService"; // adjust path if needed
-import "../Components/TOS/TermsOfService.css";
+
 import Layout from "../Components/Layout/Layout";
 
 function TermsOfServicePage() {

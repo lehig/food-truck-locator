@@ -1,0 +1,1429 @@
+/* Root dashboard layout – similar background to login page */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  /* You can tweak this gradient or replace with your page background */
+  color: #fff;
+  padding: 20px 10px 90px;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.subscribe-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+.subscribe-popup-card {
+  width: min(360px, calc(100vw - 32px));
+  background: rgba(14, 22, 32, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 16px;
+  padding: 18px 16px 16px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  text-align: center;
+  color: #fff;
+  animation: popup-in 220ms ease-out;
+}
+
+.subscribe-popup-icon-wrap {
+  display: grid;
+  place-items: center;
+  margin: 2px 0 10px;
+  min-height: 92px;
+}
+
+.subscribe-spinner {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  border: 6px solid rgba(255, 255, 255, 0.22);
+  border-right-color: transparent;
+  border-top-color: #d9d9d9;
+  animation: subscribe-load 1s linear infinite;
+}
+
+.subscribe-checkmark {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #1f9d55;
+  color: #fff;
+  font-size: 2.4rem;
+  font-weight: 700;
+  animation: check-pop 220ms ease-out;
+}
+
+.subscribe-popup-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.subscribe-popup-business {
+  margin: 0 0 4px;
+  font-size: 0.98rem;
+  opacity: 0.98;
+}
+
+.subscribe-popup-status {
+  margin: 0;
+  font-size: 0.88rem;
+  opacity: 0.82;
+  text-transform: capitalize;
+}
+
+@keyframes subscribe-load {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes popup-in {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes check-pop {
+  0% {
+    transform: scale(0.82);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Top nav bar styled like a horizontal "wrapper" */
+.dashboard-nav {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,.2);
+  backdrop-filter: blur(30px);
+  color: #fff;
+  border-radius: 8px;
+  padding: 15px 25px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Left logo/title */
+.nav-left .nav-logo {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Center state selector */
+.nav-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-city {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-center label {
+  font-size: 14px;
+}
+
+/* State select matches input style from .wrapper */
+.state-select {
+  height: 25px;
+  padding: 0 10px;
+  background: transparent;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  appearance: none;
+}
+
+.state-select option {
+  color: #000; /* dropdown list text */
+}
+
+.search-btn {
+  height: 25px;
+  padding: 0 10px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  appearance: none;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.search-btn:disabled {
+  color: #797979;
+}
+
+.search-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Right profile button – match .wrapper button style */
+.profile-btn {
+  min-width: 120px;
+  height: 40px;
+  background: #fff;
+  border: none;
+  outline: none;
+  border-radius: 40px;
+  box-shadow: 0 0 10px rgba(0,0,0,.1);
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  font-weight: 700;
+}
+
+/* Main content container – similar to .wrapper card */
+.dashboard-main {
+  width: 100%;
+  max-width: 1100px;
+  margin: 30px auto 40px;
+  background: transparent;
+  border: 2px solid rgba(255,255,255,.2);
+  backdrop-filter: blur(30px);
+  color: #fff;
+  border-radius: 10px;
+  padding: 30px 40px;
+  box-sizing: border-box;
+}
+
+.dashboard-main h1 {
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.state-summary {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* Loading / generic text */
+.dashboard-main p {
+  font-size: 14px;
+}
+
+/* Error message – reuse your .error style feel */
+.error-message {
+  color: red;
+  text-align: center;
+  margin: 20px 0;
+  border: 2px solid rgba(255,255,255,.2);
+  border-radius: 40px;
+  background: #FFC9C9;
+  padding: 10px 15px;
+}
+
+/* Business list table area */
+.business-list {
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+/* Glassy table */
+.business-list table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(15,23,42,0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.15);
+}
+
+/* Table headers & cells */
+.business-list th,
+.business-list td {
+  padding: 12px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.business-list th {
+  font-weight: 600;
+  text-align: left;
+  background: rgba(15,23,42,0.4);
+}
+
+.business-list tr:last-child td {
+  border-bottom: none;
+}
+
+/* Hover row effect */
+.business-list tbody tr:hover {
+  background: rgba(255,255,255,0.06);
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .dashboard {
+    padding-bottom: 20px;
+  }
+
+  .dashboard-nav {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+
+  .nav-center {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .dashboard-main {
+    padding: 18px 14px;
+  }
+
+  .dashboard-main h1 {
+    font-size: 1.45rem;
+  }
+
+  .logout-btn {
+    position: static;
+    width: 100%;
+    margin-top: 12px;
+    height: 42px;
+  }
+
+  .business-card {
+    padding: 1rem;
+  }
+
+  .hours-row {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.8rem;
+  }
+
+  .hours-time {
+    text-align: left;
+  }
+}
+
+.logout-btn {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  height: 45px;
+  padding: 0 25px;
+
+  background: #fff;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,.3);
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+  font-weight: 700;
+
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.logout-btn:hover {
+  transform: scale(1.07);
+  opacity: 0.9;
+}
+
+/* Container that holds all cards */
+.business-cards {
+  display: flex;
+  flex-direction: column;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  margin: 0 auto;
+}
+
+/* Individual card */
+.business-card {
+  background: transparent;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  border: 2px solid rgb(255, 255, 255);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  color: #fff;
+  width: 100%;
+}
+
+/* Header area with name + location */
+.business-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.business-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.business-location {
+  font-size: 0.9rem;
+  color: #fff;
+  white-space: pre-line;
+}
+
+/* Menu section */
+.business-card-body {
+  border-top: 1px solid rgba(255, 255, 255, 0.712);
+  padding-top: 0.75rem;
+}
+
+.menu-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem 0;
+}
+
+.menu-content {
+  font-size: 0.9rem;
+}
+
+/* Reuse your existing menu-list or tweak it */
+.menu-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.menu-list li {
+  margin-bottom: 0.25rem;
+}
+
+/* Optional: match buttons to the card style */
+.btn {
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  filter: brightness(0.95);
+}
+
+.subscribe-btn {
+  margin-top: 0.75rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid #4a90e2;
+  background: #fff;
+  color: #4a90e2;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.subscribe-btn:hover:not(:disabled) {
+  background: #4a90e2;
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.subscribe-btn.subscribed {
+  background: #4a90e2;
+  color: #fff;
+  border-color: #4a90e2;
+}
+
+.subscribe-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.hours-title {
+  margin-top: 0.75rem;
+}
+
+.hours-list {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.hours-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.hours-day {
+  font-weight: 600;
+}
+
+.hours-time {
+  text-align: right;
+  white-space: nowrap;
+  opacity: 0.95;
+}
+
+
+.profile-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.profile-page h1 {
+  margin-bottom: 0.5rem;
+}
+
+.error {
+  color: red;
+}
+
+.business-profile-form label {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.business-profile-form input {
+  width: 100%;
+  padding: 0.4rem;
+  margin-top: 0.25rem;
+}
+
+.row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.row label {
+  flex: 1;
+}
+
+.hours-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 0.4rem 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.hours-row {
+  display: contents;
+}
+
+.menu-item-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.menu-item-row input {
+  flex: 1;
+}
+
+.menu-item-row button {
+  flex: 0 0 auto;
+}
+
+.actions {
+  margin-top: 1rem;
+}
+
+.customer-messages .messages-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.message-card {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.message-date {
+  font-size: 0.8rem;
+  color: #ffffff;
+  font-style: italic;
+}
+
+.message-body {
+  margin: 0.25rem 0 0.5rem;
+}
+
+/* Glassmorphism card for "no business profile" message */
+.business-registration-cta {
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  
+
+  /* Glass / Frosted UI */
+  background: rgba(255, 255, 255, 0.18);   /* light transparency */
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+
+  /* Optional shadow for depth */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+
+  color: #000; /* adjust if your theme uses white text */
+}
+
+.business-registration-cta h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.business-registration-cta p {
+  margin: 0 0 1rem 0;
+  line-height: 1.45;
+  color: #fff;
+}
+
+/* Button styled to match modern glass UI */
+.business-registration-cta button {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  background: rgba(0, 119, 204, 0.6); /* transparent blue */
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+
+  backdrop-filter: blur(6px);
+  transition: all 0.2s ease;
+}
+
+.business-registration-cta button:hover {
+  background: rgba(0, 119, 204, 0.85);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Reusable glass box for profile sections */
+.glass-box {
+  margin-top: 1.5rem;
+  padding: 1.5rem 1.75rem;
+  color: #fff;
+
+  /* Glass look */
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+
+  /* Depth */
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* Layout for profile header box */
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile-header-main h1 {
+  margin-bottom: 0.25rem;
+}
+
+.profile-header-main p {
+  margin: 0;
+}
+
+.profile-header-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Base button style (glass-friendly) */
+.btn {
+  height: 25px;
+  padding: 0 10px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  outline: none;
+  appearance: none;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  color: #fff;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Primary action (Save, Register, etc.) */
+.btn-primary {
+  background: rgba(0, 119, 204, 0.5);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+.btn-primary:hover {
+  background: rgba(0, 119, 204, 0.9);
+}
+
+/* Secondary / subtle actions (Back, Add item, Remove) */
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.18);
+  color: #000;
+}
+
+/* Smaller buttons, e.g. "Remove" inside menu rows */
+.btn-small {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+  margin-top: 2rem;
+  gap: 0.75rem;
+}
+
+.buttons button {
+  font-size: large;
+}
+
+.dashboard-nav {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Each partition */
+.nav-part {
+  flex: 1;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: default;
+}
+
+/* Clickable partitions look like buttons */
+.nav-part-left,
+.nav-part-right {
+  cursor: pointer;
+  font-weight: 600;
+  text-align: center;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+/* Subtle separators between partitions */
+.nav-part-left {
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.nav-part-right {
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Hover / active states */
+.nav-part-left:hover,
+.nav-part-right:hover {
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+.nav-part-left:active,
+.nav-part-right:active {
+  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Center section (title + username) */
+.nav-part-center {
+  text-align: center;
+}
+
+.nav-part-center h1 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.nav-part-center p {
+  margin: 0.1rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+p {
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 1rem 0.65rem;
+  }
+
+  .glass-box {
+    padding: 1rem;
+  }
+
+  .row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .hours-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-item-row {
+    flex-direction: column;
+  }
+
+  .profile-header,
+  .profile-header-actions,
+  .buttons,
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn,
+  .actions .btn,
+  .buttons button {
+    width: 100%;
+  }
+
+  .dashboard-nav {
+    flex-direction: column;
+  }
+
+  .nav-part {
+    border: 0;
+  }
+}
+
+/* AboutPage.css */
+
+/* Match your .profile-page layout width + spacing */
+.about-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Make sure headers fit the same vibe as your other pages */
+.about-page h1 {
+  margin-bottom: 0.5rem;
+}
+
+.about-page h2 {
+  margin: 0.75rem 0 0.5rem;
+  color: #fff;
+}
+
+/* Reuse your glass styling (copied to keep AboutPage self-contained).
+   If you already have .glass-box globally, you can delete this block. */
+.glass-box {
+  margin-top: 1.5rem;
+  padding: 1.5rem 1.75rem;
+  color: #fff;
+
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.about-header {
+  margin-bottom: 1rem;
+}
+
+.about-subtitle {
+  margin: 0.25rem 0 0;
+  opacity: 0.9;
+}
+
+/* General section spacing */
+.about-section {
+  margin-top: 1.25rem;
+}
+
+/* Two-column layout like a modern “features” section */
+.about-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Make it responsive */
+@media (max-width: 800px) {
+  .about-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card styling that matches your glass look */
+.about-card {
+  padding: 1.25rem 1.25rem;
+  margin-top: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* List styling that stays readable on dark/glass backgrounds */
+.about-card ul {
+  margin: 0.5rem 0 0.75rem 1.25rem;
+  padding: 0;
+}
+
+.about-card li {
+  margin-bottom: 0.35rem;
+}
+
+/* Keep paragraph color consistent with your existing global rule */
+.about-page p {
+  color: #fff;
+  line-height: 1.55;
+  margin-top: 0.8rem;
+}
+
+/* ContactMe.css */
+
+/* Match your .profile-page layout width + spacing */
+.contact-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Make sure headers fit the same vibe as your other pages */
+.contact-page h1 {
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.contact-page h2 {
+  margin: 0.75rem 0 0.5rem;
+  color: #fff;
+}
+
+/* Keep paragraph color consistent with your existing global rule */
+.contact-page p {
+  color: #fff;
+  line-height: 1.55;
+  margin-top: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+/* Top header spacing */
+.contact-header {
+  margin-bottom: 1rem;
+}
+
+.contact-header p {
+  margin: 0.25rem 0 0;
+  opacity: 0.9;
+}
+
+/* Reuse your glass styling (self-contained). If you already have .glass-box globally, you can remove this. */
+.glass-box {
+  max-width: 900px;
+  margin: 0 auto;
+  margin-top: 2rem;
+  padding: 1.5rem 1.75rem;
+  color: #fff;
+
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* If you keep using .contact-card in JSX, just make it behave like a glass-box */
+.contact-card {
+  margin-top: 1.5rem;
+  padding: 1.5rem 1.75rem;
+  color: #fff;
+
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+/* Two-column layout like a modern “features” section */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 1rem;
+}
+
+/* Make it responsive */
+@media (max-width: 800px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card styling that matches your glass look */
+.contact-left,
+.contact-form {
+  padding: 1.25rem 1.25rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* Muted text on glass */
+.muted {
+  opacity: 0.9;
+}
+
+/* Links area */
+.contact-links {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.link {
+  color: #fff;
+  opacity: 0.95;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  word-break: break-word;
+}
+
+.link:hover {
+  opacity: 1;
+}
+
+.link-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
+
+/* Pill buttons */
+.pill {
+  display: inline-block;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  text-decoration: none;
+
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(8px);
+
+  transition: transform 0.12s ease, opacity 0.12s ease;
+}
+
+.pill:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+/* Note box */
+.note {
+  margin-top: 1rem;
+  padding: 0.9rem 0.95rem;
+  border-radius: 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(8px);
+
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.10);
+}
+
+.contact-btn {
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(6px);
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  color: #fff;
+}
+
+.contact-btn:hover {
+  filter: brightness(0.95);
+}
+
+.con-primary {
+  background: rgba(0, 119, 204, 0.5);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+.con-primary:hover {
+  background: rgba(0, 119, 204, 0.9);
+}
+.messages-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.header-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.header-main h1 {
+  margin: 0;
+}
+
+.subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.highlight {
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.send-message-form label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #fff;
+}
+
+.send-message-form input,
+.send-message-form textarea {
+  width: 100%;
+  padding: 0.55rem;
+  margin-top: 0.25rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: #ffffffa9;
+  color: rgb(51, 51, 51);
+  outline: none;
+  backdrop-filter: blur(6px);
+}
+
+.send-message-form textarea {
+  resize: vertical;
+}
+
+.actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.msg-btn {
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(6px);
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  color: #fff;
+}
+
+.msg-btn:hover {
+  filter: brightness(0.95);
+}
+
+.msg-primary {
+  background: rgba(0, 119, 204, 0.5);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+.msg-primary:hover {
+  background: rgba(0, 119, 204, 0.9);
+}
+
+.error {
+  color: #b91c1c;
+  margin-bottom: 0.5rem;
+}
+
+.success {
+  color: #15803d;
+  margin-bottom: 0.5rem;
+}
+
+.hint-text {
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.85;
+}
+
+@media (max-width: 768px) {
+  .messages-page {
+    padding: 1rem 0.65rem;
+  }
+
+  .header-box,
+  .header-actions,
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .msg-btn {
+    width: 100%;
+  }
+}
+
+/* ContactPage.css */
+.contact-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.contact-form label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #fff;
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+  width: 100%;
+  padding: 0.55rem;
+  margin-top: 0.25rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: #ffffffa9;
+  color: rgb(51, 51, 51);
+  outline: none;
+  backdrop-filter: blur(6px);
+}
+.contact-form input::placeholder,
+.contact-form textarea::placeholder {
+  color: rgba(24, 24, 24, 0.75);
+}
+
+
+.contact-form select {
+  cursor: pointer;
+}
+
+.contact-form option {
+    color: black;
+}
+
+.row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.row label {
+  flex: 1;
+}
+
+@media (max-width: 800px) {
+  .row {
+    flex-direction: column;
+  }
+}
+
+.attachments {
+  margin-top: 0.25rem;
+}
+
+.file-label input[type="file"] {
+  margin-top: 0.5rem;
+  padding: 0.35rem;
+}
+
+.file-list {
+  margin-top: 0.75rem;
+}
+
+.file-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.file-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-hint {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  margin-top: 0.25rem;
+}
+
+.actions {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.success {
+  color: #b7ffb7;
+  margin-top: 0.5rem;
+}
+
+.email-fallback {
+  color: #fff;
+  text-decoration: underline;
+  opacity: 0.9;
+}
+
+.privacy-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.privacy-page h1 {
+  margin-bottom: 0.25rem;
+}
+
+.last-updated {
+  font-size: 0.9rem;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+.privacy-section {
+  margin-bottom: 1.5rem;
+}
+
+.privacy-section h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.15rem;
+}
+
+.privacy-section p {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.terms-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.terms-page h1 {
+  margin-bottom: 0.25rem;
+}
+
+.last-updated {
+  font-size: 0.9rem;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+.terms-section {
+  margin-bottom: 1.5rem;
+}
+
+.terms-section h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.15rem;
+}
+
+.terms-section p {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
