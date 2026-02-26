@@ -1,7 +1,7 @@
 .wrapper {
     width: min(450px, calc(100% - 2rem));
     background: transparent;
-    border: 2px solid rgba(255,255,255,.2);
+    border: 2px solid rgba(255, 255, 255, .2);
     backdrop-filter: blur(30px);
     color: #fff;
     border-radius: 10px;
@@ -34,7 +34,7 @@
     background: transparent;
     border: none;
     outline: none;
-    border: 2px solid rgba(255,255,255,.2);
+    border: 2px solid rgba(255, 255, 255, .2);
     border-radius: 40px;
     font-size: 16px;
     color: #fff;
@@ -66,7 +66,7 @@
 }
 
 .remember-forgot a {
-    color:#fff;
+    color: #fff;
     text-decoration: none;
 }
 
@@ -81,7 +81,7 @@
     border: none;
     outline: none;
     border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
     cursor: pointer;
     font-size: 16px;
     color: #333;
@@ -108,8 +108,8 @@
     color: red;
     text-align: center;
     margin-bottom: 30px;
-    border: 2px solid rgba(255,255,255,.2);
-    border-radius: 40px;
+    border: 2px solid rgba(255, 255, 255, .2);
+    border-radius: 8px;
     background: #FFC9C9;
     padding-bottom: 10px;
     padding-top: 10px;
@@ -143,26 +143,26 @@
 }
 
 @media (max-width: 600px) {
-  .wrapper {
-    width: calc(100% - 1.25rem);
-    padding: 22px 18px;
-    margin-top: 24px;
-    margin-bottom: 24px;
-  }
+    .wrapper {
+        width: calc(100% - 1.25rem);
+        padding: 22px 18px;
+        margin-top: 24px;
+        margin-bottom: 24px;
+    }
 
-  .wrapper h1 {
-    font-size: 1.8rem;
-  }
+    .wrapper h1 {
+        font-size: 1.8rem;
+    }
 
-  .wrapper .input-box {
-    margin: 20px 0;
-  }
+    .wrapper .input-box {
+        margin: 20px 0;
+    }
 }
 
 .wrapper {
     width: min(450px, calc(100% - 2rem));
     background: transparent;
-    border: 2px solid rgba(255,255,255,.2);
+    border: 2px solid rgba(255, 255, 255, .2);
     backdrop-filter: blur(30px);
     color: #fff;
     border-radius: 10px;
@@ -195,7 +195,7 @@
     background: transparent;
     border: none;
     outline: none;
-    border: 2px solid rgba(255,255,255,.2);
+    border: 2px solid rgba(255, 255, 255, .2);
     border-radius: 40px;
     font-size: 16px;
     color: #fff;
@@ -227,7 +227,7 @@
 }
 
 .remember-forgot a {
-    color:#fff;
+    color: #fff;
     text-decoration: none;
 }
 
@@ -242,7 +242,7 @@
     border: none;
     outline: none;
     border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
     cursor: pointer;
     font-size: 16px;
     color: #333;
@@ -265,17 +265,6 @@
     text-decoration: underline;
 }
 
-.error {
-    color: red;
-    text-align: center;
-    margin-bottom: 30px;
-    border: 2px solid rgba(255,255,255,.2);
-    border-radius: 40px;
-    background: #FFC9C9;
-    padding-bottom: 10px;
-    padding-top: 10px;
-}
-
 .account-type {
     padding-bottom: 30px;
     text-align: center;
@@ -291,60 +280,60 @@
 }
 
 .legal-consent {
-  margin: 0.75rem 0 1rem 0;
-  font-size: 0.9rem;
+    margin: 0.75rem 0 1rem 0;
+    font-size: 0.9rem;
 }
 
 .legal-row {
-  display: flex;
-  gap: 0.6rem;
-  align-items: flex-start;
-  line-height: 1.4;
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    line-height: 1.4;
 }
 
 .legal-row input[type="checkbox"] {
-  margin-top: 0.2rem;
+    margin-top: 0.2rem;
 }
 
 .legal-row a {
-  color: inherit;
-  text-decoration: underline;
+    color: inherit;
+    text-decoration: underline;
 }
 
 @media (max-width: 600px) {
-  .wrapper {
-    width: calc(100% - 1.25rem);
-    padding: 22px 18px;
-    margin-top: 24px;
-    margin-bottom: 24px;
-  }
+    .wrapper {
+        width: calc(100% - 1.25rem);
+        padding: 22px 18px;
+        margin-top: 24px;
+        margin-bottom: 24px;
+    }
 
-  .wrapper h1 {
-    font-size: 1.8rem;
-  }
+    .wrapper h1 {
+        font-size: 1.8rem;
+    }
 
-  .wrapper .input-box {
-    margin: 20px 0;
-  }
+    .wrapper .input-box {
+        margin: 20px 0;
+    }
 
-  .account-type p {
-    padding-bottom: 14px;
-  }
+    .account-type p {
+        padding-bottom: 14px;
+    }
 
-  .account-type label {
-    display: inline-block;
-    margin-bottom: 8px;
-  }
+    .account-type label {
+        display: inline-block;
+        margin-bottom: 8px;
+    }
 
-  .legal-row {
-    align-items: flex-start;
-  }
+    .legal-row {
+        align-items: flex-start;
+    }
 }
 
 .wrapper-bus {
     width: min(550px, calc(100% - 2rem));
     background: transparent;
-    border: 2px solid rgba(255,255,255,.2);
+    border: 2px solid rgba(255, 255, 255, .2);
     backdrop-filter: blur(30px);
     color: #fff;
     border-radius: 10px;
@@ -372,12 +361,12 @@
 }
 
 .input-box select {
-  width: 100%;
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
-  background-color: #f2f2f2;
-  font-size: 16px;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #f2f2f2;
+    font-size: 16px;
 }
 
 .input-box input {
@@ -386,7 +375,7 @@
     background: transparent;
     border: none;
     outline: none;
-    border: 2px solid rgba(255,255,255,.2);
+    border: 2px solid rgba(255, 255, 255, .2);
     border-radius: 40px;
     font-size: 16px;
     color: #fff;
@@ -394,7 +383,8 @@
 }
 
 .input-box input::placeholder {
-    color: rgba(255, 255, 255, 0.2); /* 50% white */
+    color: rgba(255, 255, 255, 0.2);
+    /* 50% white */
 }
 
 .input-box .icon {
@@ -418,7 +408,7 @@
 }
 
 .remember-forgot a {
-    color:#fff;
+    color: #fff;
     text-decoration: none;
 }
 
@@ -433,7 +423,7 @@
     border: none;
     outline: none;
     border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
     cursor: pointer;
     font-size: 16px;
     color: #333;
@@ -456,17 +446,6 @@
     text-decoration: underline;
 }
 
-.error {
-    color: red;
-    text-align: center;
-    margin-bottom: 30px;
-    border: 2px solid rgba(255,255,255,.2);
-    border-radius: 40px;
-    background: #FFC9C9;
-    padding-bottom: 10px;
-    padding-top: 10px;
-}
-
 .menu-item {
     display: flex;
     flex-direction: column;
@@ -487,7 +466,7 @@
     cursor: pointer;
 }
 
-.input-box > button {
+.input-box>button {
     margin-top: 10px;
     background: #4CAF50;
     color: white;
@@ -511,35 +490,35 @@
     border-radius: 40px;
     background: transparent;
     color: white;
-    border: 2px solid rgba(255,255,255,.2);
+    border: 2px solid rgba(255, 255, 255, .2);
 }
 
 @media (max-width: 700px) {
-  .wrapper-bus {
-    width: calc(100% - 1.25rem);
-    padding: 22px 18px;
-    margin-top: 24px;
-    margin-bottom: 24px;
-  }
+    .wrapper-bus {
+        width: calc(100% - 1.25rem);
+        padding: 22px 18px;
+        margin-top: 24px;
+        margin-bottom: 24px;
+    }
 
-  .wrapper-bus h1 {
-    font-size: 1.8rem;
-  }
+    .wrapper-bus h1 {
+        font-size: 1.8rem;
+    }
 
-  .wrapper-bus .input-box {
-    margin: 20px 0;
-  }
+    .wrapper-bus .input-box {
+        margin: 20px 0;
+    }
 
-  .menu-item button,
-  .input-box > button {
-    width: 100%;
-  }
+    .menu-item button,
+    .input-box>button {
+        width: 100%;
+    }
 }
 
 .wrapper {
     width: min(450px, calc(100% - 2rem));
     background: transparent;
-    border: 2px solid rgba(255,255,255,.2);
+    border: 2px solid rgba(255, 255, 255, .2);
     backdrop-filter: blur(30px);
     color: #fff;
     border-radius: 10px;
@@ -572,7 +551,7 @@
     background: transparent;
     border: none;
     outline: none;
-    border: 2px solid rgba(255,255,255,.2);
+    border: 2px solid rgba(255, 255, 255, .2);
     border-radius: 40px;
     font-size: 16px;
     color: #fff;
@@ -604,7 +583,7 @@
 }
 
 .remember-forgot a {
-    color:#fff;
+    color: #fff;
     text-decoration: none;
 }
 
@@ -619,7 +598,7 @@
     border: none;
     outline: none;
     border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
     cursor: pointer;
     font-size: 16px;
     color: #333;
@@ -640,17 +619,6 @@
 
 .register-link p a:hover {
     text-decoration: underline;
-}
-
-.error {
-    color: red;
-    text-align: center;
-    margin-bottom: 30px;
-    border: 2px solid rgba(255,255,255,.2);
-    border-radius: 40px;
-    background: #FFC9C9;
-    padding-bottom: 10px;
-    padding-top: 10px;
 }
 
 /* Make "Forgot password?" look like a link, not a button */
@@ -681,26 +649,26 @@
 }
 
 @media (max-width: 600px) {
-  .wrapper {
-    width: calc(100% - 1.25rem);
-    padding: 22px 18px;
-    margin-top: 24px;
-    margin-bottom: 24px;
-  }
+    .wrapper {
+        width: calc(100% - 1.25rem);
+        padding: 22px 18px;
+        margin-top: 24px;
+        margin-bottom: 24px;
+    }
 
-  .wrapper h1 {
-    font-size: 1.8rem;
-  }
+    .wrapper h1 {
+        font-size: 1.8rem;
+    }
 
-  .wrapper .input-box {
-    margin: 20px 0;
-  }
+    .wrapper .input-box {
+        margin: 20px 0;
+    }
 }
 
 .wrapper {
     width: min(450px, calc(100% - 2rem));
     background: transparent;
-    border: 2px solid rgba(255,255,255,.2);
+    border: 2px solid rgba(255, 255, 255, .2);
     backdrop-filter: blur(30px);
     color: #fff;
     border-radius: 10px;
@@ -733,7 +701,7 @@
     background: transparent;
     border: none;
     outline: none;
-    border: 2px solid rgba(255,255,255,.2);
+    border: 2px solid rgba(255, 255, 255, .2);
     border-radius: 40px;
     font-size: 16px;
     color: #fff;
@@ -765,7 +733,7 @@
 }
 
 .remember-forgot a {
-    color:#fff;
+    color: #fff;
     text-decoration: none;
 }
 
@@ -780,7 +748,7 @@
     border: none;
     outline: none;
     border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0,0,0,.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
     cursor: pointer;
     font-size: 16px;
     color: #333;
@@ -801,17 +769,6 @@
 
 .register-link p a:hover {
     text-decoration: underline;
-}
-
-.error {
-    color: red;
-    text-align: center;
-    margin-bottom: 30px;
-    border: 2px solid rgba(255,255,255,.2);
-    border-radius: 40px;
-    background: #FFC9C9;
-    padding-bottom: 10px;
-    padding-top: 10px;
 }
 
 /* Make "Forgot password?" look like a link, not a button */
@@ -842,135 +799,194 @@
 }
 
 .verify-wrapper {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1.5rem;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
 }
 
 .verify-card {
-  width: 100%;
-  max-width: 720px;
-  background: #fff;
-  border-radius: 14px;
-  padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 720px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 .verify-title {
-  margin: 0 0 1rem 0;
+    margin: 0 0 1rem 0;
 }
 
 .verify-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin: 0.5rem 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.5rem 0 1rem 0;
 }
 
 .verify-icon {
-  font-size: 1.6rem;
+    font-size: 1.6rem;
 }
 
 .verify-lead {
-  margin: 0 0 1.25rem 0;
-  line-height: 1.5;
+    margin: 0 0 1.25rem 0;
+    line-height: 1.5;
 }
 
 .verify-panel {
-  background: #ffffff15;
-  border-radius: 12px;
-  padding: 1.25rem;
-  margin-bottom: 1.5rem;
+    background: #ffffff15;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
 }
 
 .verify-row {
-  display: flex;
-  gap: 0.75rem;
-  align-items: flex-start;
-  margin-bottom: 1rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-bottom: 1rem;
 }
 
 .verify-row:last-child {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 .mini-icon {
-  margin-top: 0.2rem;
+    margin-top: 0.2rem;
 }
 
 .verify-row-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  margin-top: 0.4rem;
-  flex: 0 0 auto;
-  background: #ffffff;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    margin-top: 0.4rem;
+    flex: 0 0 auto;
+    background: #ffffff;
 }
 
 .verify-row-title {
-  font-weight: 700;
-  margin-bottom: 0.25rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
 }
 
 .verify-row-text {
-  line-height: 1.45;
+    line-height: 1.45;
 }
 
 .verify-actions {
-  display: flex;
-  gap: 0.75rem;
+    display: flex;
+    gap: 0.75rem;
 }
 
 .verify-actions button {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 700;
-  border: 1px solid #ddd;
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    border: 1px solid #ddd;
 }
 
 .verify-actions .primary {
-  background: #00d9ff9a;
-  color: #fff;
+    background: #00d9ff9a;
+    color: #fff;
 }
 
 .verify-actions .secondary {
-  background: #fff;
-  color: #222;
+    background: #fff;
+    color: #222;
 }
 
 .verify-footnote {
-  margin-top: 1rem;
-  color: #ececec;
-  font-size: 0.9rem;
-  line-height: 1.4;
+    margin-top: 1rem;
+    color: #ececec;
+    font-size: 0.9rem;
+    line-height: 1.4;
 }
 
 @media (max-width: 700px) {
-  .wrapper {
-    width: calc(100% - 1.25rem);
-    padding: 22px 18px;
-    margin-top: 24px;
-    margin-bottom: 24px;
-  }
+    .wrapper {
+        width: calc(100% - 1.25rem);
+        padding: 22px 18px;
+        margin-top: 24px;
+        margin-bottom: 24px;
+    }
 
-  .wrapper h1 {
-    font-size: 1.8rem;
-  }
+    .wrapper h1 {
+        font-size: 1.8rem;
+    }
 
-  .verify-wrapper {
-    padding: 1rem 0.75rem;
-  }
+    .verify-wrapper {
+        padding: 1rem 0.75rem;
+    }
 
-  .verify-card {
-    padding: 1rem;
-  }
+    .verify-card {
+        padding: 1rem;
+    }
 
-  .verify-actions {
-    flex-direction: column;
-  }
+    .verify-actions {
+        flex-direction: column;
+    }
 }
 
+/* Password Requirements */
+.password-requirements {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out, margin 0.3s ease-out;
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 0 15px;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.password-requirements.visible {
+    max-height: 150px;
+    opacity: 1;
+    padding: 10px 15px;
+    margin-top: -10px;
+}
+
+.password-requirements .req-title {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.password-requirements .req-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.8rem;
+}
+
+.password-requirements .req-list li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 3px;
+    color: #ffd6d6;
+    transition: color 0.2s ease;
+}
+
+.password-requirements .req-list li::before {
+    content: "○";
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 0.9rem;
+}
+
+.password-requirements .req-list li.valid {
+    color: #4CAF50;
+}
+
+.password-requirements .req-list li.valid::before {
+    content: "✓";
+    font-weight: bold;
+}

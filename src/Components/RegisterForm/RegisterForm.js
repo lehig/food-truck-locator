@@ -5,11 +5,42 @@ import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
+// Helper to translate technical errors to user-friendly messages
+function getFriendlyErrorMessage(errString) {
+    if (!errString) return "An unexpected error occurred. Please try again.";
+
+    const lowerMsg = String(errString).toLowerCase();
+
+    if (lowerMsg.includes('usernameexistsexception')) {
+        return "An account with this username already exists.";
+    }
+    if (lowerMsg.includes('invalidpasswordexception')) {
+        return "Your password does not meet the security requirements (e.g., minimum length, numbers, special characters).";
+    }
+    if (lowerMsg.includes('invalidparameterexception')) {
+        return "Please check your information. Your email or username might be in an invalid format.";
+    }
+    if (lowerMsg.includes('limitexceededexception') || lowerMsg.includes('toomanyrequestsexception')) {
+        return "Too many attempts. Please try again later.";
+    }
+    if (lowerMsg.includes('network error')) {
+        return "Network error. Please check your internet connection.";
+    }
+    // Fallback for any other technical string
+    if (lowerMsg.includes('exception')) {
+        return "Something went wrong during registration. Please try again.";
+    }
+
+    // If it doesn't look like a technical exception, just return it
+    return String(errString);
+}
+
 function RegisterForm() {
     const location = useLocation();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+    const [passwordFocused, setPasswordFocused] = useState(false);
     const [businessID, setBusinessID] = useState('');
     const [accountType, setAccountType] = useState('customer'); // default
     const [acceptedLegal, setAcceptedLegal] = useState(false);
@@ -47,7 +78,7 @@ function RegisterForm() {
                 `${API_BASE_URL}/register`,
                 {
                     username,
-                    password, 
+                    password,
                     email,
                     accountType,
                     acceptedLegal: true,
@@ -59,39 +90,39 @@ function RegisterForm() {
                     }
                 }
             );
-            
+
             console.log("Success:", response.data);
 
             navigate("/confirm-signup", {
                 state: {
                     userId: response.data.user_id,
-                    username, 
+                    username,
                     email,
-                    password, 
+                    password,
                     accountType,
                     businessID,
                 },
             });
-        
+
         } catch (err) {
-        console.error('Register error:', err);
+            console.error('Register error:', err);
 
-        let message = 'Registration failed';
+            let message = 'Registration failed';
 
-        // If backend sends something in response.data
-        if (err.response && err.response.data) {
-            const data = err.response.data;
-            console.log("err.response.data: ", data)
+            // If backend sends something in response.data
+            if (err.response && err.response.data) {
+                const data = err.response.data;
+                console.log("err.response.data: ", data)
 
-            message = data.error
-        } else if (err.message) {
-            // Generic JS / Axios error message
-            message = err.message;
+                message = data.error
+            } else if (err.message) {
+                // Generic JS / Axios error message
+                message = err.message;
+            }
+
+            setError(getFriendlyErrorMessage(message));
         }
-
-        setError(String(message)); // ALWAYS a string
-    }
-};
+    };
 
     return (
         <div className="wrapper">
@@ -101,7 +132,7 @@ function RegisterForm() {
 
                 {/* email */}
                 <div className="input-box">
-                    <input 
+                    <input
                         type="email"
                         placeholder="example@email.com"
                         value={email}
@@ -113,9 +144,9 @@ function RegisterForm() {
 
                 {/* username */}
                 <div className="input-box">
-                    <input 
-                        type="text" 
-                        placeholder="Username" 
+                    <input
+                        type="text"
+                        placeholder="Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
@@ -125,14 +156,27 @@ function RegisterForm() {
 
                 {/* password */}
                 <div className="input-box">
-                    <input 
-                        type="password" 
-                        placeholder="Password" 
+                    <input
+                        type="password"
+                        placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        onFocus={() => setPasswordFocused(true)}
+                        onBlur={() => setPasswordFocused(false)}
                         required
                     />
                     <FaLock className="icon" />
+                </div>
+
+                <div className={`password-requirements ${passwordFocused || password ? 'visible' : ''}`}>
+                    <p className="req-title">Password must contain:</p>
+                    <ul className="req-list">
+                        <li className={password.length >= 8 ? 'valid' : 'invalid'}>At least 8 characters long</li>
+                        <li className={/[a-z]/.test(password) ? 'valid' : 'invalid'}>One lowercase letter</li>
+                        <li className={/[A-Z]/.test(password) ? 'valid' : 'invalid'}>One uppercase letter</li>
+                        <li className={/[0-9]/.test(password) ? 'valid' : 'invalid'}>One number</li>
+                        <li className={/[^a-zA-Z0-9]/.test(password) ? 'valid' : 'invalid'}>One symbol</li>
+                    </ul>
                 </div>
 
                 {/* radio button account type */}
@@ -140,22 +184,22 @@ function RegisterForm() {
                     <p>What type of account are you registering?</p>
                     <label>
                         <input
-                        type="radio"
-                        name="accountType"
-                        value="customer"
-                        checked={accountType === 'customer'}
-                        onChange={(e) => setAccountType(e.target.value)}
+                            type="radio"
+                            name="accountType"
+                            value="customer"
+                            checked={accountType === 'customer'}
+                            onChange={(e) => setAccountType(e.target.value)}
                         />
                         Customer
                     </label>
 
                     <label>
                         <input
-                        type="radio"
-                        name="accountType"
-                        value="business"
-                        checked={accountType === 'business'}
-                        onChange={(e) => setAccountType(e.target.value)}
+                            type="radio"
+                            name="accountType"
+                            value="business"
+                            checked={accountType === 'business'}
+                            onChange={(e) => setAccountType(e.target.value)}
                         />
                         Business
                     </label>
@@ -164,21 +208,21 @@ function RegisterForm() {
                 <div className="legal-consent">
                     <label className="legal-row">
                         <input
-                        type="checkbox"
-                        checked={acceptedLegal}
-                        onChange={(e) => setAcceptedLegal(e.target.checked)}
-                        required
+                            type="checkbox"
+                            checked={acceptedLegal}
+                            onChange={(e) => setAcceptedLegal(e.target.checked)}
+                            required
                         />
                         <span>
-                        I agree to the{" "}
-                        <Link to="/tos" target="_blank" rel="noreferrer">
-                            Terms of Service
-                        </Link>{" "}
-                        and acknowledge the{" "}
-                        <Link to="/privacy" target="_blank" rel="noreferrer">
-                            Privacy Policy
-                        </Link>
-                        .
+                            I agree to the{" "}
+                            <Link to="/tos" target="_blank" rel="noreferrer">
+                                Terms of Service
+                            </Link>{" "}
+                            and acknowledge the{" "}
+                            <Link to="/privacy" target="_blank" rel="noreferrer">
+                                Privacy Policy
+                            </Link>
+                            .
                         </span>
                     </label>
                 </div>

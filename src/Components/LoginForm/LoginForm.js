@@ -27,6 +27,40 @@ function buildUserFromSession(session, fallbackUsername = '') {
   return { userID, username, email, role };
 }
 
+// Helper to translate technical errors to user-friendly messages
+function getFriendlyErrorMessage(err) {
+  if (!err) return "An unexpected error occurred. Please try again.";
+
+  const name = err.name || "";
+  const msg = err.message || "";
+
+  switch (name) {
+    case 'NotAuthorizedException':
+      return "Incorrect username or password.";
+    case 'UserNotFoundException':
+      return "We couldn't find an account with that username.";
+    case 'LimitExceededException':
+    case 'TooManyRequestsException':
+      return "Too many attempts. Please try again later.";
+    case 'CodeMismatchException':
+      return "The reset code you entered is incorrect.";
+    case 'ExpiredCodeException':
+      return "The reset code has expired. Please request a new one.";
+    case 'InvalidPasswordException':
+      return "Your password does not meet the security requirements.";
+    case 'InvalidParameterException':
+      return "Please check your information and try again.";
+    case 'NetworkError':
+      return "Network error. Please check your internet connection.";
+    default:
+      if (msg.toLowerCase().includes('network error')) {
+        return "Network error. Please check your internet connection.";
+      }
+      // If none of our cases match, you can return a generic message
+      return "Something went wrong. Please check your information and try again.";
+  }
+}
+
 function LoginForm() {
   const [mode, setMode] = useState("login");
   // "login" | "forgot" | "confirm"
@@ -136,7 +170,7 @@ function LoginForm() {
         }
       }
 
-      setError(err?.message || 'login failed');
+      setError(getFriendlyErrorMessage(err));
     } finally {
       setBusy(false);
     }
@@ -153,7 +187,7 @@ function LoginForm() {
       setStatus("reset code sent. check your email.");
       setMode("confirm");
     } catch (err) {
-      setError(err?.message || "could not start password reset.");
+      setError(getFriendlyErrorMessage(err));
     } finally {
       setBusy(false);
     }
@@ -172,7 +206,7 @@ function LoginForm() {
       setNewPassword("");
       setMode("login");
     } catch (err) {
-      setError(err?.message || "could not confirm password reset")
+      setError(getFriendlyErrorMessage(err));
     } finally {
       setBusy(false);
     }
