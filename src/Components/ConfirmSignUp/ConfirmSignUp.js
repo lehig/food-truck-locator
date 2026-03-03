@@ -46,7 +46,18 @@ function ConfirmSignup() {
 
       // Sign them in immediately after confirmation (optional but common).
       // If you don't want to carry password in route state, ask them to re-enter it here instead.
-      await signIn({ username, password });
+      if (password) {
+        await signIn({ username, password });
+      } else {
+        // If no password, redirect to login to enter it
+        setStatus("Confirmed. Heading to login...");
+        setTimeout(() => {
+          navigate("/", {
+            replace: true,
+            state: { username },
+          });
+        }, 2000);
+      }
 
       const session = await fetchAuthSession();
       const token = session.tokens?.idToken?.toString();

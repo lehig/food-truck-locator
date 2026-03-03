@@ -143,6 +143,9 @@ function LoginForm() {
       // If Cognito requires another step (MFA, new password, etc.)
       const step = res?.nextStep?.signInStep;
       if (step && step !== 'DONE') {
+        if (step === 'CONFIRM_SIGN_UP') {
+          navigate('/confirm-signup', { replace: true, state: { username } });
+        }
         throw new Error(`Sign-in requires additional step: ${step}`);
       }
 
