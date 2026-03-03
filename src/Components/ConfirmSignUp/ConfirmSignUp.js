@@ -29,11 +29,11 @@ function ConfirmSignup() {
   };
 
   const normalizeRole = (acctType) => {
-        if (acctType === "business") return "unverified-business";
-        if (acctType === "customer") return "customer";
-        if (acctType === "unverified-business") return "unverified-business";
-        return acctType || "";
-    };
+    if (acctType === "business") return "unverified-business";
+    if (acctType === "customer") return "customer";
+    if (acctType === "unverified-business") return "unverified-business";
+    return acctType || "";
+  };
 
   const handleConfirm = async (e) => {
     e.preventDefault();
@@ -56,13 +56,13 @@ function ConfirmSignup() {
       sessionStorage.setItem(
         "ftlUser",
         JSON.stringify({
-            userID: userId,     // keep this consistent everywhere (ProfilePage expects user.userID)
-            username,
-            email,
-            role,
-            token,
+          userID: userId,     // keep this consistent everywhere (ProfilePage expects user.userID)
+          username,
+          email,
+          role,
+          token,
         })
-        );
+      );
       // Continue based on account type
       if (role === "business") {
         navigate("/business-verification", {
@@ -134,6 +134,18 @@ function ConfirmSignup() {
           disabled={busy}
         >
           Resend code
+        </button>
+
+        <button
+          type="button"
+          className="linkish"
+          onClick={() => navigate("/register", {
+            state: { userId, username, email, password, accountType, businessID, fromConfirm: true }
+          })}
+          disabled={busy}
+          style={{ marginTop: '10px' }}
+        >
+          Entered wrong email? Edit email
         </button>
       </form>
     </div>

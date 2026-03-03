@@ -299,6 +299,13 @@
     margin-top: 0;
 }
 
+.legal-row input[type="checkbox"]:hover {
+    cursor: pointer;
+    color: aqua;
+    border-color: aqua;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
 .legal-row a {
     color: inherit;
     text-decoration: underline;

@@ -37,12 +37,12 @@ function getFriendlyErrorMessage(errString) {
 
 function RegisterForm() {
     const location = useLocation();
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState(location.state?.username || '');
+    const [password, setPassword] = useState(location.state?.password || '');
+    const [email, setEmail] = useState(location.state?.email || '');
     const [passwordFocused, setPasswordFocused] = useState(false);
-    const [businessID, setBusinessID] = useState('');
-    const [accountType, setAccountType] = useState('customer'); // default
+    const [businessID, setBusinessID] = useState(location.state?.businessID || '');
+    const [accountType, setAccountType] = useState(location.state?.accountType || 'customer'); // default
     const [acceptedLegal, setAcceptedLegal] = useState(false);
     const navigate = useNavigate();
     const [error, setError] = useState('');
@@ -54,10 +54,11 @@ function RegisterForm() {
             params.get('business_id') ||
             params.get('busiess_id') ||
             params.get('business') ||
+            location.state?.businessID ||
             '';
         console.log("business id:", incomingBusinessID)
         setBusinessID(incomingBusinessID);
-    }, [location.search]);
+    }, [location.search, location.state]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -120,6 +121,24 @@ function RegisterForm() {
                 message = err.message;
             }
 
+            if (message === "username already in use" && location.state?.fromConfirm) {
+                console.log("Attempting to delete unconfirmed user to allow email change...");
+                try {
+                    await axios.post(
+                        `${API_BASE_URL}/delete-unconfirmed`,
+                        { username },
+                        { headers: { "Content-Type": "application/json" } }
+                    );
+                    // Successfully deleted unconfirmed account! 
+                    // Let's clear the fromConfirm flag so it doesn't loop infinitely, then retry registration.
+                    navigate(location.pathname, { replace: true, state: { ...location.state, fromConfirm: false } });
+                    return handleSubmit(e);
+                } catch (delErr) {
+                    console.error("Failed to delete unconfirmed user:", delErr);
+                    // If deletion failed (e.g. they are fully confirmed), just fall through to the normal error
+                }
+            }
+
             setError(getFriendlyErrorMessage(message));
         }
     };
@@ -161,7 +180,7 @@ function RegisterForm() {
                 </div>
 
                 {/* email */}
-                <div className="input-box"> 
+                <div className="input-box">
                     <input
                         type="email"
                         placeholder="example@email.com"
