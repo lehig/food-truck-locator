@@ -655,6 +655,9 @@
   border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 12px;
   backdrop-filter: blur(10px);
+  max-width: 1000px;
+  margin: 0 auto;
+  margin-top: 5rem;
 
   /* Depth */
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
@@ -742,18 +745,6 @@
 
 .buttons button {
   font-size: large;
-}
-
-.dashboard-nav {
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  margin-bottom: 1.5rem;
-  border-radius: 8px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 /* Each partition */
@@ -881,21 +872,6 @@ p {
   color: #fff;
 }
 
-/* Reuse your glass styling (copied to keep AboutPage self-contained).
-   If you already have .glass-box globally, you can delete this block. */
-.glass-box {
-  margin-top: 1.5rem;
-  padding: 1.5rem 1.75rem;
-  color: #fff;
-
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-}
-
 .about-header {
   margin-bottom: 1rem;
 }
@@ -988,22 +964,6 @@ p {
 .contact-header p {
   margin: 0.25rem 0 0;
   opacity: 0.9;
-}
-
-/* Reuse your glass styling (self-contained). If you already have .glass-box globally, you can remove this. */
-.glass-box {
-  max-width: 900px;
-  margin: 0 auto;
-  margin-top: 2rem;
-  padding: 1.5rem 1.75rem;
-  color: #fff;
-
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
 }
 
 /* If you keep using .contact-card in JSX, just make it behave like a glass-box */

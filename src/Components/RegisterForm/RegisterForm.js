@@ -1,6 +1,6 @@
 import React from "react";
 
-import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaUser, FaStore } from "react-icons/fa";
 import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -130,8 +130,38 @@ function RegisterForm() {
                 <h1>Food Truck Locator</h1>
                 <h2>Registration</h2>
 
+                {/* account type selection */}
+                <div className="account-type">
+                    <p>What type of account are you registering?</p>
+                    <div className="account-type-boxes">
+                        <label className={`type-box ${accountType === 'customer' ? 'active' : ''}`}>
+                            <input
+                                type="radio"
+                                name="accountType"
+                                value="customer"
+                                checked={accountType === 'customer'}
+                                onChange={(e) => setAccountType(e.target.value)}
+                            />
+                            <FaUser className="box-icon" />
+                            <span>Customer</span>
+                        </label>
+
+                        <label className={`type-box ${accountType === 'business' ? 'active' : ''}`}>
+                            <input
+                                type="radio"
+                                name="accountType"
+                                value="business"
+                                checked={accountType === 'business'}
+                                onChange={(e) => setAccountType(e.target.value)}
+                            />
+                            <FaStore className="box-icon" />
+                            <span>Business</span>
+                        </label>
+                    </div>
+                </div>
+
                 {/* email */}
-                <div className="input-box">
+                <div className="input-box"> 
                     <input
                         type="email"
                         placeholder="example@email.com"
@@ -177,32 +207,6 @@ function RegisterForm() {
                         <li className={/[0-9]/.test(password) ? 'valid' : 'invalid'}>One number</li>
                         <li className={/[^a-zA-Z0-9]/.test(password) ? 'valid' : 'invalid'}>One symbol</li>
                     </ul>
-                </div>
-
-                {/* radio button account type */}
-                <div className="account-type">
-                    <p>What type of account are you registering?</p>
-                    <label>
-                        <input
-                            type="radio"
-                            name="accountType"
-                            value="customer"
-                            checked={accountType === 'customer'}
-                            onChange={(e) => setAccountType(e.target.value)}
-                        />
-                        Customer
-                    </label>
-
-                    <label>
-                        <input
-                            type="radio"
-                            name="accountType"
-                            value="business"
-                            checked={accountType === 'business'}
-                            onChange={(e) => setAccountType(e.target.value)}
-                        />
-                        Business
-                    </label>
                 </div>
 
                 <div className="legal-consent">
