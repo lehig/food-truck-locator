@@ -29,6 +29,7 @@ function Dashboard() {
   const [error, setError] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
   const [expandedHours, setExpandedHours] = useState({}); // { [businessID]: boolean }
+  const [expandedMenu, setExpandedMenu] = useState({}); // { [businessID]: boolean }
 
 
   // NEW: subscription-related state
@@ -297,7 +298,7 @@ function Dashboard() {
     );
   };
 
-    const toggleHours = (businessID) => {
+  const toggleHours = (businessID) => {
     setExpandedHours(prev => ({
       ...prev,
       [businessID]: !prev[businessID],
@@ -306,7 +307,16 @@ function Dashboard() {
 
   const isHoursExpanded = (businessID) => !!expandedHours[businessID];
 
-  const renderMenuItems = (menu) => {
+  const toggleMenu = (businessID) => {
+    setExpandedMenu(prev => ({
+      ...prev,
+      [businessID]: !prev[businessID],
+    }));
+  };
+
+  const isMenuExpanded = (businessID) => !!expandedMenu[businessID];
+
+  const renderMenuItems = (menu, businessID) => {
     if (!menu) return '—';
 
     // Helper to flatten nested arrays: [[item1, item2], [item3]] -> [item1, item2, item3]
@@ -345,59 +355,89 @@ function Dashboard() {
           }
         }
 
+        const expanded = isMenuExpanded(businessID);
+        const visibleGroups = expanded ? groups : groups.slice(0, 3);
+        const hasMore = groups.length > 3;
+
         return (
-          <ul className="menu-list">
-            {groups.map((item, idx) => (
-              <li key={idx}>
-                <strong>{item.name || 'Item'}</strong>
-                {item.price && ` – $${item.price}`}
-                {item.description && ` – ${item.description}`}
-              </li>
-            ))}
-          </ul>
+          <>
+            <ul className="menu-list">
+              {visibleGroups.map((item, idx) => (
+                <li key={idx}>
+                  <strong>{item.name || 'Item'}</strong>
+                  {item.price && ` – $${item.price}`}
+                  {item.description && ` – ${item.description}`}
+                </li>
+              ))}
+            </ul>
+            {hasMore && (
+              <div
+                className="read-more-link"
+                onClick={() => toggleMenu(businessID)}
+                style={{ color: '#007BFF', cursor: 'pointer', fontSize: '0.9em', marginTop: '5px' }}
+              >
+                {expanded ? '...read less' : 'read more...'}
+              </div>
+            )}
+          </>
         );
       }
 
       // Case 2: array of objects or nested arrays
+      const expanded = isMenuExpanded(businessID);
+      const visibleItems = expanded ? flatItems : flatItems.slice(0, 3);
+      const hasMore = flatItems.length > 3;
+
       return (
-        <ul className="menu-list">
-          {flatItems.map((item, idx) => {
-            // raw string items, keep as-is
-            if (typeof item === 'string') {
-              return <li key={idx}>{item}</li>;
-            }
+        <>
+          <ul className="menu-list">
+            {visibleItems.map((item, idx) => {
+              // raw string items, keep as-is
+              if (typeof item === 'string') {
+                return <li key={idx}>{item}</li>;
+              }
 
-            // expected: object: { name, price, description }
-            if (item && typeof item === 'object') {
-              const name = item.name || 
-                item.item_name ||
-                item.Name ||
-                'Item';
-              const rawPrice = 
-                item.price ||
-                item.item_price ||
-                item.Price; 
-              const desc = item.description || 
-                item.desc ||
-                item.item_description ||
-                item.Description ||
-                '';
+              // expected: object: { name, price, description }
+              if (item && typeof item === 'object') {
+                const name = item.name ||
+                  item.item_name ||
+                  item.Name ||
+                  'Item';
+                const rawPrice =
+                  item.price ||
+                  item.item_price ||
+                  item.Price;
+                const desc = item.description ||
+                  item.desc ||
+                  item.item_description ||
+                  item.Description ||
+                  '';
 
-              const price = rawPrice ? `$${rawPrice}` : '';
+                const price = rawPrice ? `$${rawPrice}` : '';
 
-              return (
-                <li key={idx}>
-                  <strong>{name}</strong>
-                  {price && ` – ${price}`}
-                  {desc && ` – ${desc}`}
-                </li>
-              );
-            }
+                return (
+                  <li key={idx}>
+                    <strong>{name}</strong>
+                    {price && ` – ${price}`}
+                    {desc && ` – ${desc}`}
+                  </li>
+                );
+              }
 
-            // fallback
-            return <li key={idx}>{String(item)}</li>;
-          })}
-        </ul>
+              // fallback
+              return <li key={idx}>{String(item)}</li>;
+            })}
+          </ul>
+          {hasMore && (
+            <div
+              className="read-more-link"
+              onClick={() => toggleMenu(businessID)}
+              style={{ color: '#007BFF', cursor: 'pointer', fontSize: '0.9em', marginTop: '5px' }}
+            >
+              {expanded ? '...read less' : 'read more...'}
+            </div>
+          )}
+        </>
       );
     }
 
@@ -406,7 +446,7 @@ function Dashboard() {
       try {
         const parsed = JSON.parse(menu);
         if (Array.isArray(parsed)) {
-          return renderMenuItems(parsed);
+          return renderMenuItems(parsed, businessID);
         }
         return String(menu);
       } catch {
@@ -471,10 +511,10 @@ function Dashboard() {
             onChange={handleCityChange}
           >
             <option value=''>Select a City</option>
-            <option value='logan'>Logan</option>
-            <option value='saltlakecity'>Salt Lake City</option>
-            <option value='ogden'>Ogden</option>
-            <option value='provo'>Provo</option>
+            <option value='Logan'>Logan</option>
+            <option value='Salt Lake City'>Salt Lake City</option>
+            <option value='Ogden'>Ogden</option>
+            <option value='Provo'>Provo</option>
           </select>
         </div>
         <div className='nav-search'>
@@ -544,7 +584,7 @@ function Dashboard() {
                     <div className="business-card-body">
                       <h3 className="menu-title">Menu</h3>
                       <div className="menu-content">
-                        {renderMenuItems(b.menu_items)}
+                        {renderMenuItems(b.menu_items, businessID)}
                       </div>
 
                       {/* Hours (collapsible) */}
@@ -592,7 +632,7 @@ function Dashboard() {
           </div>
         )}
       </main>
-      
+
       {/* floating logout button */}
       {/* <button className='logout-btn' onClick={handleLogout}>
         Logout
