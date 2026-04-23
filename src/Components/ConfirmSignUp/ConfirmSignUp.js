@@ -111,7 +111,7 @@ function ConfirmSignup() {
 
   return (
     <div className="wrapper">
-      <h1>Food Truck Locator</h1>
+      <h1>Lowk</h1>
       <h2>Confirm Your Email</h2>
 
       <p className="hint">

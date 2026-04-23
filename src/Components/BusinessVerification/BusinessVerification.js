@@ -43,7 +43,7 @@ function BusinessVerification() {
 
   return (
     <div className="wrapper">
-        <h1 className="verify-title">Food Truck Locator</h1>
+        <h1 className="verify-title">Lowk</h1>
 
         <div className="verify-badge">
             <FaCheckCircle className="verify-icon" />

@@ -61,4 +61,16 @@ Support
 Test-only endpoints (used by `Test*` components)
 - `GET /customerdb`
 
+### Auto-Subscribe Registration Shortcut
+
+You can create a direct registration link to automatically subscribe a new user to a specific business upon sign up. 
+Just append the query parameter `?business_id=[BUSINESS_ID]` to your registration URL:
+
+```text
+https://your-domain.com/register?business_id=XYZ
+```
+
+Other valid query parameters are `business` or `busiess_id` (typo fallback). 
+This logic is found and handled in `src/Components/RegisterForm/RegisterForm.js`. When a new customer completes registration and confirmation, they are redirected to their Dashboard and automatically subscribed.
+
 Note: Some `Test*` components still call a hard-coded API Gateway URL. Consider switching those to `REACT_APP_API_BASE` for consistency.

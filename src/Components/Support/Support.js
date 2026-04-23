@@ -188,7 +188,7 @@ export default function Support() {
             )}
           </div>
 
-          <div className="actions">
+          <div className="actions-support">
             <button className="btn btn-primary" type="submit" disabled={sending}>
               {sending ? "Sending..." : "Send Message"}
             </button>

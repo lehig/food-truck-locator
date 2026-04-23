@@ -146,7 +146,7 @@ function RegisterForm() {
     return (
         <div className="wrapper">
             <form onSubmit={handleSubmit}>
-                <h1>Food Truck Locator</h1>
+                <h1>Lowk</h1>
                 <h2>Registration</h2>
 
                 {/* account type selection */}

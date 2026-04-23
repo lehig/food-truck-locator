@@ -23,6 +23,7 @@ import ContactPage from './pages/ContactPage';
 import SupportPage from './pages/protected/SupportPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfService';
+import BusinessProfilePage from './pages/BusinessProfilePage';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <Route path='/contact' element={<ContactPage />} />
         <Route path="/privacy" element={<PrivacyPolicyPage />} />
         <Route path='/tos' element={<TermsOfServicePage />} />
+        <Route path="/business/:id" element={<BusinessProfilePage />} />
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute redirectTo="/" />}>

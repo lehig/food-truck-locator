@@ -7,7 +7,7 @@ function Footer() {
     <footer className="app-footer">
       <div className="footer-content">
         <span className="footer-brand">
-          © {new Date().getFullYear()} Food Truck Locator
+          © {new Date().getFullYear()} Lowk
         </span>
 
         <div className="footer-links">

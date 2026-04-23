@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import api from '../../api/client';
 // import { signOut } from '../../auth/cognito';
 
@@ -485,7 +485,7 @@ function Dashboard() {
       {/* Top Navigation Bar */}
       <nav className='dashboard-nav'>
         <div className='nav-left'>
-          <span className='nav-logo'>Food Truck Locator Dashboard</span>
+          <span className='nav-logo'>Lowk Dashboard</span>
         </div>
 
         <div className='nav-state'>
@@ -572,7 +572,14 @@ function Dashboard() {
                   >
                     <div className="business-card-header">
                       <h2 className="business-name">
-                        {b.business_name || 'Unnamed Business'}
+                        <Link 
+                          to={`/business/${businessID}`} 
+                          style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s ease' }}
+                          onMouseEnter={(e) => e.target.style.color = '#4a90e2'}
+                          onMouseLeave={(e) => e.target.style.color = 'inherit'}
+                        >
+                          {b.business_name || 'Unnamed Business'} &rarr;
+                        </Link>
                       </h2>
                       <span className="business-location">
                         {b.address && b.city && b.state
@@ -606,8 +613,14 @@ function Dashboard() {
                       </div>
                     </div>
 
-                    {/* NEW: Subscribe button */}
-                    <div className="business-card-footer">
+                    {/* NEW: Subscribe and Profile links */}
+                    <div className="business-card-footer" style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginTop: '0.5rem' }}>
+                      <Link 
+                        to={`/business/${businessID}`} 
+                        className="btn subscribe-btn" 
+                      >
+                        View Profile
+                      </Link>
                       {userID && role !== 'business' && (
                         <button
                           className={
@@ -616,6 +629,7 @@ function Dashboard() {
                           }
                           onClick={() => toggleSubscription(businessID, b.business_name)}
                           disabled={isSubmitting}
+                          style={{ margin: 0 }} // overriding margin from subscribe-btn class since flex gap handles it
                         >
                           {isSubmitting
                             ? 'Saving...'

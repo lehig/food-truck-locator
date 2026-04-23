@@ -217,7 +217,7 @@ function LoginForm() {
 
   return (
     <div className='wrapper'>
-      <h1>Food Truck Locator</h1>
+      <h1>Lowk</h1>
       <h2>Login</h2>
 
       {mode === "login" && (

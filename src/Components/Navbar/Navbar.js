@@ -52,11 +52,11 @@ function Navbar() {
         <Link to="/" className="navbar-logo">
           <img
             src={logo}
-            alt="Food Truck Locator logo"
+            alt="Lowk logo"
             className="navbar-logo-img"
           />
           <span className="navbar-logo-text">
-            Food Truck Locator
+            Lowk
           </span>
         </Link>
       </div>

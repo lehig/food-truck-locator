@@ -7,7 +7,7 @@ export default function About() {
       {/* Reuse your existing glass styling */}
       <div className="glass-box">
         <div className="about-header">
-          <h1>About Food Truck Locator</h1>
+          <h1>About Lowk</h1>
           <p className="about-subtitle">
             Connect with local food trucks. Helping food truck owners grow
             through visibility, communication, and community since 2025.
@@ -16,14 +16,14 @@ export default function About() {
 
         <div className="about-card">
           <p>
-            Food Truck Locator is a platform designed to connect hungry customers
+            Lowk is a platform designed to connect hungry customers
             with the best local food trucks, while also helping food truck owners grow
             their business through visibility, communication, and community.
           </p>
 
           <p>
             Whether you’re searching for your next favorite meal or running a
-            mobile food business, Food Truck Locator makes it easier to discover,
+            mobile food business, Lowk makes it easier to discover,
             connect, and engage.
           </p>
         </div>
@@ -61,7 +61,7 @@ export default function About() {
               <li>Build loyalty without relying only on social media</li>
             </ul>
             <p>
-              By bringing everything into one place, Food Truck Locator helps
+              By bringing everything into one place, Lowk helps
               owners focus less on promotion logistics and more on what they do
               best: serving great food.
             </p>
@@ -71,7 +71,7 @@ export default function About() {
         <div className="about-card">
           <h2>Built for Local Communities</h2>
           <p>
-            At its core, Food Truck Locator is about strengthening local food
+            At its core, Lowk is about strengthening local food
             communities. By bridging the gap between customers and food truck
             owners, the platform supports small businesses while making local
             dining more accessible and enjoyable.
@@ -79,7 +79,7 @@ export default function About() {
         </div>
         
         <div className="about-card">
-          <h2>Why I Built Food Truck Locator</h2>
+          <h2>Why I Built Lowk</h2>
           <p>
             I built this website as a project for my senior year of college. I started with the idea from 
             a friend who complained that he could never find a food truck when he needed to. I did my 

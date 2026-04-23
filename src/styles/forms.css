@@ -1,11 +1,13 @@
 .wrapper {
     width: min(450px, calc(100% - 2rem));
-    background: transparent;
-    border: 2px solid rgba(255, 255, 255, .2);
-    backdrop-filter: blur(30px);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     color: #fff;
-    border-radius: 10px;
-    padding: 30px 40px;
+    border-radius: 16px;
+    padding: 35px 40px;
     margin: 0 auto;
     margin-top: 48px;
     margin-bottom: 64px;
@@ -18,7 +20,7 @@
 
 .wrapper h2 {
     text-align: center;
-    color: aqua;
+    color: #4a90e2;
 }
 
 .wrapper .input-box {
@@ -31,21 +33,20 @@
 .input-box input {
     width: 100%;
     height: 100%;
-    background: transparent;
-    border: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     outline: none;
-    border: 2px solid rgba(255, 255, 255, .2);
-    border-radius: 40px;
-    font-size: 16px;
+    border-radius: 8px;
+    font-size: 15px;
     color: #fff;
-    padding: 20px 45px 20px 20px;
-    transition: all 0.3s ease;
+    padding: 14px 45px 14px 20px;
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input-box input:focus {
-    border-color: aqua;
-    background: rgba(0, 255, 255, 0.05);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    border-color: #4a90e2;
+    background: rgba(74, 144, 226, 0.05);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
 }
 
 .input-box input::placeholder {
@@ -62,7 +63,7 @@
 }
 
 .input-box input:focus~.icon {
-    color: aqua;
+    color: #4a90e2;
 }
 
 .wrapper .remember-forgot {
@@ -89,22 +90,22 @@
 .wrapper button {
     width: 100%;
     height: 45px;
-    background: #fff;
-    border: none;
+    background: linear-gradient(135deg, #4a90e2 0%, #0056b3 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     outline: none;
-    border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     font-size: 16px;
-    color: #333;
-    font-weight: 700;
-    transition: all 0.1s ease;
+    color: #fff;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 
 .wrapper button:hover {
-    background: aqua;
     transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 6px 15px rgba(74, 144, 226, 0.3);
+    filter: brightness(1.1);
 }
 
 .wrapper .register-link {
@@ -348,16 +349,21 @@
 
 .wrapper-bus {
     width: min(550px, calc(100% - 2rem));
-    background: transparent;
-    border: 2px solid rgba(255, 255, 255, .2);
-    backdrop-filter: blur(30px);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     color: #fff;
-    border-radius: 10px;
-    padding: 30px 40px;
+    border-radius: 16px;
+    padding: 35px 40px;
     margin: 0 auto;
     margin-top: 48px;
     margin-bottom: 64px;
     text-align: center;
+}
+.wrapper-bus:hover {
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 }
 
 .wrapper-bus h1 {
