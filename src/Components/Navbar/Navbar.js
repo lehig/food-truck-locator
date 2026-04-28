@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { signOut } from "../../auth/cognito";
-import logo from "../../assets/FTL-favicon.png"; // adjust path if needed
+import logo from "../../assets/lowk-truck-img.png"; // adjust path if needed
 
 function Navbar() {
   const navigate = useNavigate();
@@ -55,9 +55,6 @@ function Navbar() {
             alt="Lowk logo"
             className="navbar-logo-img"
           />
-          <span className="navbar-logo-text">
-            Lowk
-          </span>
         </Link>
       </div>
 
@@ -103,6 +100,7 @@ function Navbar() {
         {/* Guests only */}
         {!isLoggedIn && (
           <>
+            <Link to="/for-trucks">For Food Trucks</Link>
             <Link to="/">Login</Link>
             <Link to="/register">Register</Link>
           </>

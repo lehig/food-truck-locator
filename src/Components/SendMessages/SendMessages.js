@@ -99,7 +99,7 @@ function SendMessages() {
       {/* Message form */}
       <div className="glass-box">
         <form className="send-message-form" onSubmit={handleSubmit}>
-          <h2>Send a Message to your customers</h2>
+          <h2>Send a Message to Your Customers</h2>
 
           {error && <div className="error">{error}</div>}
           {successMessage && <div className="success">{successMessage}</div>}

@@ -1,9 +1,9 @@
 {
-  "short_name": "Food Truck Locator",
-  "name": "",
+  "short_name": "Lowk",
+  "name": "Lowk Locale",
   "icons": [
     {
-      "src": "FTL-favicon.png",
+      "src": "lowk-truck-img.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/png"
     },

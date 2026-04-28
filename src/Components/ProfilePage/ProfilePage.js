@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/client';
 import BusinessProfile from '../BusinessProfile/BusinessProfile';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+
 
 const formatTimestamp = (isoString) => {
   if (!isoString) return '';
@@ -34,7 +37,7 @@ const parseTimeTo24h = (timeStr) => {
   if (!timeStr || timeStr === 'N/A' || timeStr === 'Closed') return '';
   const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
   if (!match) return '';
-  let [_, hours, minutes, ampm] = match;
+  let [, hours, minutes, ampm] = match;
   let h = parseInt(hours, 10);
   if (ampm.toUpperCase() === 'PM' && h < 12) h += 12;
   if (ampm.toUpperCase() === 'AM' && h === 12) h = 0;
@@ -63,6 +66,45 @@ function ProfilePage() {
 
   // Flag for "no business row exists yet"
   const [needsRegistration, setNeedsRegistration] = useState(false);
+
+  // Go Live state
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [showMapModal, setShowMapModal] = useState(false);
+  const [mapCoords, setMapCoords] = useState(null);
+  
+  const mapContainer = useRef(null);
+  const mapRef = useRef(null);
+
+  // Mapbox initialization
+  useEffect(() => {
+    if (showMapModal && mapContainer.current && !mapRef.current) {
+      mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_KEY || '';
+      
+      const map = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [mapCoords.lng, mapCoords.lat],
+        zoom: 16
+      });
+
+      map.on('move', () => {
+        const center = map.getCenter();
+        setMapCoords({ lat: center.lat, lng: center.lng });
+      });
+
+      map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+      mapRef.current = map;
+    }
+
+    return () => {
+      if (!showMapModal && mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showMapModal]); // Remove mapCoords from dependencies to prevent infinite re-renders
 
   // Business profile state
   const [businessProfile, setBusinessProfile] = useState({
@@ -367,6 +409,55 @@ function ProfilePage() {
     });
   };
 
+  const submitGoLive = async (lat, lng) => {
+    try {
+      setLocationLoading(true);
+      await api.post('/business/live', {
+        userID: user.userID,
+        username: user.username,
+        lat: lat,
+        lng: lng,
+        durationHours: 4
+      });
+      alert("You are now live! Your location will be broadcasted for the next 4 hours.");
+      setShowMapModal(false);
+    } catch (err) {
+      console.error('Error going live:', err);
+      alert("Failed to go live. Please try again.");
+    } finally {
+      setLocationLoading(false);
+    }
+  };
+
+  const handleGoLive = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    setLocationLoading(true);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        // Always prompt with Mapbox to confirm location before going live
+        setMapCoords({ lat: latitude, lng: longitude });
+        setShowMapModal(true);
+        setLocationLoading(false);
+      },
+      (error) => {
+        console.error("Error getting location", error);
+        alert("Unable to retrieve your location. Please check your browser permissions.");
+        setLocationLoading(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
+  };
+
   const handleGoToLogin = () => {
     navigate('/')
   }
@@ -505,6 +596,28 @@ function ProfilePage() {
 
       {isBusiness && !needsRegistration && (
         <div>
+          <div className='glass-box' style={{ marginBottom: '1.5rem', background: 'rgba(255, 77, 77, 0.1)', border: '1px solid rgba(255, 77, 77, 0.3)' }}>
+            <h2 style={{ color: '#ff4d4d', marginTop: 0, marginBottom: '10px' }}>📍 Quick Actions: Go Live</h2>
+            <p>
+              Parked and ready for customers? Ping your current location to appear on the live map and mark your truck as "Open" for the next 4 hours.
+            </p>
+            <button
+              type="button"
+              className="btn btn-broadcast"
+              onClick={handleGoLive}
+              disabled={locationLoading}
+            >
+              {locationLoading ? (
+                <>
+                  <div className="bp-spinner" style={{ width: '16px', height: '16px', borderWidth: '2px' }}></div>
+                  Getting Location...
+                </>
+              ) : (
+                'Broadcast Location (4 Hours)'
+              )}
+            </button>
+          </div>
+
           <div className='glass-box'>
             <form className="business-profile-form" onSubmit={handleSaveBusiness}>
               <h1>Business Profile</h1>
@@ -722,6 +835,55 @@ function ProfilePage() {
           <button type="button" className="btn-save-now" onClick={handleSaveBusiness}>
             Save Now
           </button>
+        </div>
+      )}
+
+      {/* Mapbox Modal for GPS Correction */}
+      {showMapModal && (
+        <div className="subscribe-popup-overlay" style={{ zIndex: 9999, pointerEvents: 'auto' }}>
+          <div className="subscribe-popup-card" style={{ width: '90%', maxWidth: '600px', background: '#fff', color: '#000', textAlign: 'left', padding: '20px', pointerEvents: 'auto' }}>
+            <h2 style={{ marginTop: 0, color: '#333' }}>📍 Confirm Your Location</h2>
+            <p style={{ color: '#555', marginBottom: '15px' }}>
+              Please drag the map so the pin points to your exact parking spot so customers know exactly where to find you!
+            </p>
+            <div style={{ position: 'relative', width: '100%', height: '350px', marginBottom: '20px' }}>
+              <div 
+                ref={mapContainer} 
+                style={{ width: '100%', height: '100%', borderRadius: '8px', border: '1px solid #ccc' }}
+              ></div>
+              {/* Static Center Pin Overlay */}
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -100%)',
+                pointerEvents: 'none',
+                zIndex: 10,
+                fontSize: '40px',
+                filter: 'drop-shadow(0px 4px 4px rgba(0,0,0,0.4))'
+              }}>
+                📍
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+              <button 
+                type="button" 
+                className="btn btn-secondary" 
+                onClick={() => setShowMapModal(false)}
+                style={{ color: '#333', background: '#e0e0e0', borderColor: '#e0e0e0' }}
+              >
+                Cancel
+              </button>
+              <button 
+                type="button" 
+                className="btn btn-confirm" 
+                onClick={() => submitGoLive(mapCoords.lat, mapCoords.lng)}
+                disabled={locationLoading}
+              >
+                {locationLoading ? 'Confirming...' : 'Confirm Location'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
