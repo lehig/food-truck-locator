@@ -375,6 +375,24 @@ function ProfilePage() {
         closed: hrs.isClosed || (!hrs.open && !hrs.close)
       }));
 
+      // Geocode address
+      let lat = businessProfile.lat || 0;
+      let lng = businessProfile.lng || 0;
+      const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_KEY;
+      if (MAPBOX_TOKEN && businessProfile.address) {
+        const addressStr = `${businessProfile.address}, ${businessProfile.city}, ${businessProfile.state} ${businessProfile.zipCode || ''}`.trim();
+        try {
+          const geoRes = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(addressStr)}.json?access_token=${MAPBOX_TOKEN}&limit=1`);
+          const geoData = await geoRes.json();
+          if (geoData.features && geoData.features.length > 0) {
+            lng = geoData.features[0].center[0];
+            lat = geoData.features[0].center[1];
+          }
+        } catch (geoErr) {
+          console.error("Geocoding failed:", geoErr);
+        }
+      }
+
       const payload = {
         ...businessProfile,
         username: user.username,
@@ -386,6 +404,8 @@ function ProfilePage() {
           ...mi,
           price: mi.price === '' || mi.price == null ? '' : String(mi.price).trim(),
         })),
+        lat: lat,
+        lng: lng
       };
 
       await api.put('/business/profile', payload);

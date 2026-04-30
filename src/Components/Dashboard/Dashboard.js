@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import api from '../../api/client';
-// import { signOut } from '../../auth/cognito';
-
-
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 function Dashboard() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -22,14 +21,18 @@ function Dashboard() {
 
   const displayName = username || 'Guest';
 
-  const [selectedState, setSelectedState] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
+  const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_KEY;
   const [businesses, setBusinesses] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [hasSearched, setHasSearched] = useState(false);
+  const [selectedBusiness, setSelectedBusiness] = useState(null);
+
   const [expandedHours, setExpandedHours] = useState({}); // { [businessID]: boolean }
   const [expandedMenu, setExpandedMenu] = useState({}); // { [businessID]: boolean }
+
+  const mapContainer = useRef(null);
+  const mapRef = useRef(null);
+  const markersRef = useRef({});
 
 
   // NEW: subscription-related state
@@ -82,11 +85,29 @@ function Dashboard() {
     };
   }, []);
 
-  const fetchBusinesses = async (stateValue, cityValue) => {
-    if (!stateValue || !cityValue) {
-      setBusinesses([]);
-      return;
+  const geocodeAddress = async (addressStr) => {
+    const cacheKey = 'geocodeCache_v1';
+    let cache = {};
+    try { cache = JSON.parse(localStorage.getItem(cacheKey) || '{}'); } catch (e) {}
+    if (cache[addressStr]) return cache[addressStr];
+
+    if (!MAPBOX_TOKEN) return null;
+    try {
+      const res = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(addressStr)}.json?access_token=${MAPBOX_TOKEN}&limit=1`);
+      const data = await res.json();
+      if (data.features && data.features.length > 0) {
+        const coords = { lng: data.features[0].center[0], lat: data.features[0].center[1] };
+        cache[addressStr] = coords;
+        localStorage.setItem(cacheKey, JSON.stringify(cache));
+        return coords;
+      }
+    } catch (err) {
+      console.error('Geocoding error:', err);
     }
+    return null;
+  };
+
+  const fetchBusinesses = async (bounds) => {
     if (!API_BASE_URL) {
       setError('Missing API base URL configuration.');
       return;
@@ -94,15 +115,31 @@ function Dashboard() {
 
     setLoading(true);
     try {
-      const res = await api.get('/business', {
-        params: {
-          state: stateValue,
-          city: cityValue || '',
-        },
+      const { _sw, _ne } = bounds;
+      const res = await api.get('/business', { 
+        params: { 
+          minLat: _sw.lat,
+          maxLat: _ne.lat,
+          minLng: _sw.lng,
+          maxLng: _ne.lng
+        } 
       });
-
       const data = Array.isArray(res.data) ? res.data : res.data.businesses || [];
-      setBusinesses(data);
+      
+      const isTest = (b) => {
+        const name = (b?.business_name ?? "").trim().toUpperCase();
+        return name.startsWith("TEST");
+      };
+      
+      const validBusinesses = data.filter((b) => !isTest(b));
+
+      // Map lat/lng directly to a coords object for backward compatibility
+      const mappedBusinesses = validBusinesses.map(b => ({
+        ...b,
+        coords: (b.lat && b.lng) ? { lat: b.lat, lng: b.lng } : null
+      })).filter(b => b.coords !== null);
+
+      setBusinesses(mappedBusinesses);
     } catch (err) {
       console.error('fetch error:', err);
       setError('error fetching data. please try again.');
@@ -111,33 +148,57 @@ function Dashboard() {
     }
   };
 
-  const handleStateChange = (e) => {
-    const value = e.target.value;
+  useEffect(() => {
+    if (!mapContainer.current || !MAPBOX_TOKEN) return;
+    if (!mapRef.current) {
+      mapboxgl.accessToken = MAPBOX_TOKEN;
+      mapRef.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/dark-v11',
+        center: [-111.891, 40.760],
+        zoom: 10
+      });
+      mapRef.current.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
-    setSelectedState(value);
-    setSelectedCity('');
-    setBusinesses([]);
-    setHasSearched(false);
-    setError('');
-  };
+      const map = mapRef.current;
 
-  const handleCityChange = (e) => {
-    const value = e.target.value;
-    setSelectedCity(value);
-    setHasSearched(false);
-    setError('');
-  };
+      map.on('load', () => {
+        fetchBusinesses(map.getBounds());
+      });
 
-  const handleSearch = async () => {
-    if (!selectedState || !selectedCity) {
-      setError('Please select both a state and city before searching.');
-      return;
+      map.on('moveend', () => {
+        fetchBusinesses(map.getBounds());
+      });
     }
 
-    setHasSearched(true);
-    setError('');
-    await fetchBusinesses(selectedState, selectedCity);
-  };
+    const map = mapRef.current;
+
+    businesses.forEach((b) => {
+      const businessID = b.user_id || b.id;
+      if (!b.coords || markersRef.current[businessID]) return;
+
+      const el = document.createElement('div');
+      el.className = 'custom-map-marker';
+      el.style.width = '24px';
+      el.style.height = '24px';
+      el.style.background = '#e74c3c';
+      el.style.borderRadius = '50%';
+      el.style.border = '3px solid #fff';
+      el.style.boxShadow = '0 0 10px rgba(0,0,0,0.5)';
+      el.style.cursor = 'pointer';
+      
+      el.addEventListener('click', () => {
+        setSelectedBusiness(b);
+        map.flyTo({ center: [b.coords.lng, b.coords.lat], zoom: 15, speed: 1.2 });
+      });
+
+      const marker = new mapboxgl.Marker(el)
+        .setLngLat([b.coords.lng, b.coords.lat])
+        .addTo(map);
+
+      markersRef.current[businessID] = marker;
+    });
+  }, [businesses, MAPBOX_TOKEN]);
 
   const visibleBusinesses = useMemo(() => {
     const isTest = (b) => {
@@ -460,7 +521,7 @@ function Dashboard() {
   };
 
   return (
-    <div className='dashboard'>
+    <div className='dashboard dashboard-map-mode' style={{ padding: 0, height: '100vh', width: '100vw', overflow: 'hidden', position: 'relative' }}>
       {subscriptionPopup && (
         <div className="subscribe-popup-overlay" role="status" aria-live="polite">
           <div className="subscribe-popup-card">
@@ -482,175 +543,129 @@ function Dashboard() {
         </div>
       )}
 
-      {/* Top Navigation Bar */}
-      <nav className='dashboard-nav'>
+      {/* Floating Top Navigation Bar */}
+      <nav className='dashboard-nav' style={{ position: 'absolute', top: '50px', left: '50%', transform: 'translateX(-50%)', zIndex: 10, width: '90%', maxWidth: '1100px', background: 'rgba(15, 23, 42, 0.75)' }}>
         <div className='nav-left'>
           <span className='nav-logo'>Lowk Dashboard</span>
         </div>
-
-        <div className='nav-state'>
-          <label htmlFor='state-select'>Select a State:</label>
-          <select
-            id='state-select'
-            className='state-select'
-            value={selectedState}
-            onChange={handleStateChange}
-          >
-            <option value=''>Select a State</option>
-            {/* <option value='ID'>Idaho</option> */}
-            <option value='UT'>Utah</option>
-            {/* <option value='WY'>Wyoming</option> */}
-          </select>
-        </div>
-        <div className='nav-city'>
-          <label htmlFor='city-select'>Select a City:</label>
-          <select
-            id='city-select'
-            className='state-select'
-            value={selectedCity}
-            onChange={handleCityChange}
-          >
-            <option value=''>Select a City</option>
-            <option value='Logan'>Logan</option>
-            <option value='Salt Lake City'>Salt Lake City</option>
-            <option value='Ogden'>Ogden</option>
-            <option value='Provo'>Provo</option>
-          </select>
-        </div>
-        <div className='nav-search'>
-          <button
-            type='button'
-            className='search-btn'
-            onClick={handleSearch}
-            disabled={!selectedState || !selectedCity || loading}
-          >
-            Search
-          </button>
-        </div>
-
         <div className='nav-right'>
-          <button className='btn' onClick={handleProfileClick}>
+          <button className='btn profile-btn' onClick={handleProfileClick} style={{ color: '#000' }}>
             {displayName}
           </button>
         </div>
       </nav>
 
-      {/* Main Content */}
-      <main className='dashboard-main'>
-        <h1>Browse Food Trucks by State</h1>
+      {/* Mapbox Container */}
+      <div ref={mapContainer} style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 0 }} />
 
-        {!loading && !error && hasSearched && selectedState && selectedCity && (
-          <p className='state-summary'>
-            Showing results for state: <strong>{selectedState}</strong>
-            {selectedCity && <> and city: <strong>{selectedCity}</strong></>}
-          </p>
-        )}
-
-        {loading && <p>Loading businesses...</p>}
-
-        {error && <p className='error-message'>{error}</p>}
-
-        {!loading && !error && hasSearched && businesses.length === 0 && selectedState && selectedCity && (
-          <p>
-            No businesses found in {selectedState}
-            {selectedCity ? `, ${selectedCity}` : ''}. Try a different location.
-          </p>
-        )}
-
-        {!loading && businesses.length > 0 && (
-          <div className="business-list">
-            <div className="business-cards">
-              {visibleBusinesses.map((b) => {
-                const businessID = b.user_id || b.id;
-                const subscribed = isSubscribed(businessID);
-                const isSubmitting = submittingMap[businessID] || false;
-
-                return (
-                  <div
-                    key={businessID}
-                    className="business-card"
-                  >
-                    <div className="business-card-header">
-                      <h2 className="business-name">
-                        <Link 
-                          to={`/business/${businessID}`} 
-                          style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s ease' }}
-                          onMouseEnter={(e) => e.target.style.color = '#4a90e2'}
-                          onMouseLeave={(e) => e.target.style.color = 'inherit'}
-                        >
-                          {b.business_name || 'Unnamed Business'} &rarr;
-                        </Link>
-                      </h2>
-                      <span className="business-location">
-                        {b.address && b.city && b.state
-                          ? `${b.address}\n${b.city}, ${b.state} ${b.zip_code}`
-                          : b.address || b.state || b.city || 'Location N/A'}
-                      </span>
-                    </div>
-
-                    <div className="business-card-body">
-                      <h3 className="menu-title">Menu</h3>
-                      <div className="menu-content">
-                        {renderMenuItems(b.menu_items, businessID)}
-                      </div>
-
-                      {/* Hours (collapsible) */}
-                      <div className="hours-section">
-                        <button
-                          type="button"
-                          className="btn hours-toggle-btn"
-                          onClick={() => toggleHours(businessID)}
-                          aria-expanded={isHoursExpanded(businessID)}
-                        >
-                          {isHoursExpanded(businessID) ? 'Hide hours' : 'Show hours'}
-                        </button>
-
-                        {isHoursExpanded(businessID) && (
-                          <div className="hours-content">
-                            {renderHours(b.hours)}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* NEW: Subscribe and Profile links */}
-                    <div className="business-card-footer" style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginTop: '0.5rem' }}>
-                      <Link 
-                        to={`/business/${businessID}`} 
-                        className="btn subscribe-btn" 
-                      >
-                        View Profile
-                      </Link>
-                      {userID && role !== 'business' && (
-                        <button
-                          className={
-                            'btn subscribe-btn' +
-                            (subscribed ? ' subscribed' : '')
-                          }
-                          onClick={() => toggleSubscription(businessID, b.business_name)}
-                          disabled={isSubmitting}
-                          style={{ margin: 0 }} // overriding margin from subscribe-btn class since flex gap handles it
-                        >
-                          {isSubmitting
-                            ? 'Saving...'
-                            : subscribed
-                              ? 'Subscribed'
-                              : 'Subscribe'}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+      {/* Sidebar Overlay for selected business */}
+      <div className="dashboard-sidebar" style={{
+        position: 'absolute', top: '200px', bottom: '30px', left: '30px', width: '380px', 
+        zIndex: 10, display: 'flex', flexDirection: 'column', gap: '15px', pointerEvents: 'none'
+      }}>
+        
+        {loading && (
+          <div style={{ background: 'rgba(14, 22, 32, 0.85)', backdropFilter: 'blur(10px)', padding: '20px', borderRadius: '16px', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', pointerEvents: 'auto' }}>
+            <div className="subscribe-spinner" style={{ width: '30px', height: '30px', margin: '0 auto 10px', borderWidth: '3px' }}></div>
+            <p style={{ textAlign: 'center', margin: 0 }}>Loading food trucks...</p>
           </div>
         )}
-      </main>
 
-      {/* floating logout button */}
-      {/* <button className='logout-btn' onClick={handleLogout}>
-        Logout
-      </button> */}
+        {error && (
+          <div style={{ background: 'rgba(231, 76, 60, 0.85)', backdropFilter: 'blur(10px)', padding: '20px', borderRadius: '16px', color: '#fff', pointerEvents: 'auto' }}>
+            <p style={{ margin: 0 }}>{error}</p>
+          </div>
+        )}
+
+        {!selectedBusiness && !loading && !error && businesses.length > 0 && (
+          <div style={{ background: 'rgba(14, 22, 32, 0.85)', backdropFilter: 'blur(10px)', padding: '20px', borderRadius: '16px', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', pointerEvents: 'auto', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
+            <h2 style={{ marginTop: 0, fontSize: '1.2rem', marginBottom: '10px' }}>Discover Food Trucks</h2>
+            <p style={{ margin: 0, opacity: 0.8, fontSize: '0.9rem' }}>Click on any pin on the map to view menu and hours.</p>
+          </div>
+        )}
+
+        {selectedBusiness && (() => {
+          const b = selectedBusiness;
+          const businessID = b.user_id || b.id;
+          const subscribed = isSubscribed(businessID);
+          const isSubmitting = submittingMap[businessID] || false;
+          
+          return (
+            <div className="business-card" style={{ pointerEvents: 'auto', margin: 0, maxHeight: '100%', overflowY: 'auto', boxShadow: '0 8px 32px rgba(0,0,0,0.3)', background: 'rgba(14, 22, 32, 0.95)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <h2 className="business-name">
+                  <Link 
+                    to={`/business/${businessID}`} 
+                    style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s ease' }}
+                    onMouseEnter={(e) => e.target.style.color = '#4a90e2'}
+                    onMouseLeave={(e) => e.target.style.color = 'inherit'}
+                  >
+                    {b.business_name || 'Unnamed Business'} &rarr;
+                  </Link>
+                </h2>
+                <button onClick={() => setSelectedBusiness(null)} style={{ background: 'transparent', border: 'none', color: '#fff', fontSize: '1.5rem', cursor: 'pointer', lineHeight: 1 }}>&times;</button>
+              </div>
+              <span className="business-location">
+                {b.address && b.city && b.state
+                  ? `${b.address}\n${b.city}, ${b.state} ${b.zip_code}`
+                  : b.address || b.state || b.city || 'Location N/A'}
+              </span>
+
+              <div className="business-card-body">
+                <h3 className="menu-title">Menu</h3>
+                <div className="menu-content">
+                  {renderMenuItems(b.menu_items, businessID)}
+                </div>
+
+                <div className="hours-section">
+                  <button
+                    type="button"
+                    className="btn hours-toggle-btn"
+                    onClick={() => toggleHours(businessID)}
+                    aria-expanded={isHoursExpanded(businessID)}
+                    style={{ marginTop: '10px' }}
+                  >
+                    {isHoursExpanded(businessID) ? 'Hide hours' : 'Show hours'}
+                  </button>
+
+                  {isHoursExpanded(businessID) && (
+                    <div className="hours-content">
+                      {renderHours(b.hours)}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="business-card-footer" style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginTop: '1rem' }}>
+                <Link 
+                  to={`/business/${businessID}`} 
+                  className="btn subscribe-btn" 
+                >
+                  View Profile
+                </Link>
+                {userID && role !== 'business' && (
+                  <button
+                    className={
+                      'btn subscribe-btn' +
+                      (subscribed ? ' subscribed' : '')
+                    }
+                    onClick={() => toggleSubscription(businessID, b.business_name)}
+                    disabled={isSubmitting}
+                    style={{ margin: 0 }}
+                  >
+                    {isSubmitting
+                      ? 'Saving...'
+                      : subscribed
+                        ? 'Subscribed'
+                        : 'Subscribe'}
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })()}
+
+      </div>
     </div>
   );
 }
