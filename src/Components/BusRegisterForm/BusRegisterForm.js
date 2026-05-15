@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 
 import { useLocation, useNavigate } from "react-router-dom";
 import api from '../../api/client';
+import ImageUpload from '../ImageUpload/ImageUpload';
+import { FaList, FaImage } from 'react-icons/fa';
 
 /**
  * 
@@ -85,6 +87,10 @@ function BusRegisterForm() {
       Saturday: { open: '', close: '', isClosed: false },
       Sunday: { open: '', close: '', isClosed: false }
     },
+    instagram: '',
+    logo: '',
+    menuType: 'text',
+    menuImage: '',
     menuItems: [{ name: '', description: '', price: '' }]
   });
 
@@ -201,18 +207,20 @@ function BusRegisterForm() {
         business_name: businessProfile.name,
         category: businessProfile.category,
         description: businessProfile.description,
+        instagram: businessProfile.instagram,
         address: businessProfile.address,
         state: businessProfile.state,
         city: businessProfile.city,
         zip: businessProfile.zipCode,
         hours: hoursArray,
-        menu: businessProfile.menuItems.map(item => ({
+        menu: businessProfile.menuType === 'text' ? businessProfile.menuItems.map(item => ({
           name: item.name,
           description: item.description,
           price: item.price
-        })),
-        // Default empty fields currently unsupported by the form
-        logo: '',
+        })) : [],
+        menuType: businessProfile.menuType,
+        menuImage: businessProfile.menuImage,
+        logo: businessProfile.logo,
         coverPhoto: '',
         lat: lat,
         lng: lng
@@ -280,6 +288,26 @@ function BusRegisterForm() {
               required
             />
           </label>
+
+          <label>
+            Instagram Handle/URL
+            <input
+              type="text"
+              placeholder="@yourfoodtruck or https://instagram.com/..."
+              value={businessProfile.instagram}
+              onChange={e => handleBusinessChange('instagram', e.target.value)}
+            />
+          </label>
+
+          <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+            <ImageUpload
+              label="Profile Picture (Logo)"
+              value={businessProfile.logo}
+              onChange={(url) => handleBusinessChange('logo', url)}
+              userId={userId}
+              imageType="logo"
+            />
+          </div>
 
           <label>
             Address
@@ -363,47 +391,86 @@ function BusRegisterForm() {
             )})}
           </div>
 
-          <h3>Menu Items</h3>
-          {businessProfile.menuItems.map((item, index) => (
-            <div key={index} className="menu-item-row">
+          <h3>Menu</h3>
+          <div className="account-type-boxes" style={{ marginBottom: '1.5rem', marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+            <label className={`type-box ${businessProfile.menuType === 'text' ? 'active' : ''}`}>
               <input
-                type="text"
-                placeholder="Name"
-                value={item.name}
-                onChange={e => handleMenuItemChange(index, 'name', e.target.value)}
-                required
+                type="radio"
+                name="menuType"
+                value="text"
+                checked={businessProfile.menuType === 'text'}
+                onChange={() => handleBusinessChange('menuType', 'text')}
               />
+              <FaList className="box-icon" />
+              <span>Text Menu</span>
+            </label>
+            <label className={`type-box ${businessProfile.menuType === 'image' ? 'active' : ''}`}>
               <input
-                type="text"
-                placeholder="Description"
-                value={item.description}
-                onChange={e => handleMenuItemChange(index, 'description', e.target.value)}
+                type="radio"
+                name="menuType"
+                value="image"
+                checked={businessProfile.menuType === 'image'}
+                onChange={() => handleBusinessChange('menuType', 'image')}
               />
-              <input
-                type="number"
-                step="0.01"
-                placeholder="Price"
-                value={item.price}
-                onChange={e => handleMenuItemChange(index, 'price', e.target.value)}
-                required
-              />
+              <FaImage className="box-icon" />
+              <span>Image Menu</span>
+            </label>
+          </div>
+
+          {businessProfile.menuType === 'text' ? (
+            <>
+              {businessProfile.menuItems.map((item, index) => (
+                <div key={index} className="menu-item-row">
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    value={item.name}
+                    onChange={e => handleMenuItemChange(index, 'name', e.target.value)}
+                    required
+                  />
+                  <input
+                    type="text"
+                    placeholder="Description"
+                    value={item.description}
+                    onChange={e => handleMenuItemChange(index, 'description', e.target.value)}
+                  />
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="Price"
+                    value={item.price}
+                    onChange={e => handleMenuItemChange(index, 'price', e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-rmv btn-small"
+                    onClick={() => removeMenuItem(index)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+
               <button
                 type="button"
-                className="btn btn-rmv btn-small"
-                onClick={() => removeMenuItem(index)}
+                className="btn btn-secondary"
+                onClick={addMenuItem}
               >
-                Remove
+                + Add Menu Item
               </button>
+            </>
+          ) : (
+            <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+              <ImageUpload
+                label="Upload Menu Image"
+                value={businessProfile.menuImage}
+                onChange={(url) => handleBusinessChange('menuImage', url)}
+                userId={userId}
+                imageType="menu"
+              />
             </div>
-          ))}
-
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={addMenuItem}
-          >
-            + Add Menu Item
-          </button>
+          )}
 
           {error && <p className="error">{error}</p>}
 

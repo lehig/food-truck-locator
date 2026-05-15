@@ -3,8 +3,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/client';
 import BusinessProfile from '../BusinessProfile/BusinessProfile';
+import { FaList, FaImage } from 'react-icons/fa';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import ImageUpload from '../ImageUpload/ImageUpload';
 
 
 const formatTimestamp = (isoString) => {
@@ -71,7 +73,7 @@ function ProfilePage() {
   const [locationLoading, setLocationLoading] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
   const [mapCoords, setMapCoords] = useState(null);
-  
+
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
 
@@ -79,7 +81,7 @@ function ProfilePage() {
   useEffect(() => {
     if (showMapModal && mapContainer.current && !mapRef.current) {
       mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_KEY || '';
-      
+
       const map = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v12',
@@ -125,6 +127,10 @@ function ProfilePage() {
     },
     category: '',
     description: '',
+    instagram: '',
+    logo: '',
+    menuType: 'text',
+    menuImage: '',
     menuItems: [
       { name: '', description: '', price: '' }
     ]
@@ -230,6 +236,10 @@ function ProfilePage() {
         business_name: data.business_name || '',
         category: data.category || '',
         description: data.description || '',
+        instagram: data.instagram || '',
+        logo: data.logo || '',
+        menuType: data.menuType || 'text',
+        menuImage: data.menuImage || '',
         address: data.address || '',
         city: data.city || '',
         state: data.state || '',
@@ -400,10 +410,14 @@ function ProfilePage() {
         hours: hoursArray,
         category: businessProfile.category,
         description: businessProfile.description,
-        menuItems: businessProfile.menuItems.map(mi => ({
+        instagram: businessProfile.instagram,
+        logo: businessProfile.logo,
+        menuType: businessProfile.menuType,
+        menuImage: businessProfile.menuImage,
+        menuItems: businessProfile.menuType === 'text' ? businessProfile.menuItems.map(mi => ({
           ...mi,
           price: mi.price === '' || mi.price == null ? '' : String(mi.price).trim(),
-        })),
+        })) : [],
         lat: lat,
         lng: lng
       };
@@ -706,6 +720,27 @@ function ProfilePage() {
                   onChange={e => handleBusinessChange('description', e.target.value)}
                 />
               </label>
+
+              <label>
+                Instagram Handle/URL
+                <input
+                  type="text"
+                  placeholder="@yourfoodtruck or https://instagram.com/..."
+                  value={businessProfile.instagram}
+                  onChange={e => handleBusinessChange('instagram', e.target.value)}
+                />
+              </label>
+
+              <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+                <ImageUpload
+                  label="Profile Picture (Logo)"
+                  value={businessProfile.logo}
+                  onChange={(url) => handleBusinessChange('logo', url)}
+                  userId={user.userID}
+                  imageType="logo"
+                />
+              </div>
+
               <br></br>
               <h2>Hours</h2>
               <div className="hours-grid" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
@@ -743,42 +778,85 @@ function ProfilePage() {
                 })}
               </div>
               <br></br>
-              <h2>Menu Items</h2>
-              {businessProfile.menuItems.map((item, index) => (
-                <div key={index} className="menu-item-row">
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    value={item.name}
-                    onChange={e => handleMenuItemChange(index, 'name', e.target.value)}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Description"
-                    value={item.description}
-                    onChange={e => handleMenuItemChange(index, 'description', e.target.value)}
-                  />
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="Price"
-                    value={item.price}
-                    onChange={e => handleMenuItemChange(index, 'price', e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-rmv btn-small"
-                    onClick={() => removeMenuItem(index)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              ))}
-              <div className="add-menu-btn-container">
-                <button type="button" className="btn btn-secondary" id="add-menu-btn" onClick={addMenuItem}>
-                  + Add Menu Item
-                </button>
+              <div style={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                <h2>Menu</h2>
               </div>
+              <br></br>
+              <div className="account-type-boxes" style={{ marginBottom: '1.5rem', marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+                  <label className={`type-box ${businessProfile.menuType === 'text' ? 'active' : ''}`} style={{display: 'flex'}}>
+                      <input
+                          type="radio"
+                          name="menuType"
+                          value="text"
+                          checked={businessProfile.menuType === 'text'}
+                          onChange={() => handleBusinessChange('menuType', 'text')}
+                      />
+                      <FaList className="box-icon" />
+                      <span>Text Menu</span>
+                  </label>
+
+                  <label className={`type-box ${businessProfile.menuType === 'image' ? 'active' : ''}`} style={{display: 'flex'}}>
+                      <input
+                          type="radio"
+                          name="menuType"
+                          value="image"
+                          checked={businessProfile.menuType === 'image'}
+                          onChange={() => handleBusinessChange('menuType', 'image')}
+                      />
+                      <FaImage className="box-icon" />
+                      <span>Image Menu</span>
+                  </label>
+              </div>
+
+              {businessProfile.menuType === 'text' ? (
+                <>
+                  {businessProfile.menuItems.map((item, index) => (
+                    <div key={index} className="menu-item-row">
+                      <input
+                        type="text"
+                        placeholder="Name"
+                        value={item.name}
+                        onChange={e => handleMenuItemChange(index, 'name', e.target.value)}
+                      />
+                      <input
+                        type="text"
+                        placeholder="Description"
+                        value={item.description}
+                        onChange={e => handleMenuItemChange(index, 'description', e.target.value)}
+                      />
+                      <input
+                        type="number"
+                        step="0.01"
+                        placeholder="Price"
+                        value={item.price}
+                        onChange={e => handleMenuItemChange(index, 'price', e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-rmv btn-small"
+                        onClick={() => removeMenuItem(index)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                  <div className="add-menu-btn-container">
+                    <button type="button" className="btn btn-secondary" id="add-menu-btn" onClick={addMenuItem}>
+                      + Add Menu Item
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+                  <ImageUpload
+                    label="Upload Menu Image"
+                    value={businessProfile.menuImage}
+                    onChange={(url) => handleBusinessChange('menuImage', url)}
+                    userId={user.userID}
+                    imageType="menu"
+                  />
+                </div>
+              )}
 
               <div className="actions">
                 <button type="submit" id="save-profile-btn" className="btn btn-primary">
@@ -798,8 +876,8 @@ function ProfilePage() {
               <h1>Public Profile Preview</h1>
               <p>This is exactly how your business appears to potential customers.</p>
             </div>
-            
-            <BusinessProfile 
+
+            <BusinessProfile
               data={{
                 ...businessProfile,
                 zip: businessProfile.zipCode, // BusinessProfile expects 'zip'
@@ -813,7 +891,7 @@ function ProfilePage() {
                   ...item,
                   price: item.price ? `$${parseFloat(item.price).toFixed(2)}` : ''
                 }))
-              }} 
+              }}
             />
           </div>
         </div>
@@ -867,8 +945,8 @@ function ProfilePage() {
               Please drag the map so the pin points to your exact parking spot so customers know exactly where to find you!
             </p>
             <div style={{ position: 'relative', width: '100%', height: '350px', marginBottom: '20px' }}>
-              <div 
-                ref={mapContainer} 
+              <div
+                ref={mapContainer}
                 style={{ width: '100%', height: '100%', borderRadius: '8px', border: '1px solid #ccc' }}
               ></div>
               {/* Static Center Pin Overlay */}
@@ -886,17 +964,17 @@ function ProfilePage() {
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-              <button 
-                type="button" 
-                className="btn btn-secondary" 
+              <button
+                type="button"
+                className="btn btn-secondary"
                 onClick={() => setShowMapModal(false)}
                 style={{ color: '#333', background: '#e0e0e0', borderColor: '#e0e0e0' }}
               >
                 Cancel
               </button>
-              <button 
-                type="button" 
-                className="btn btn-confirm" 
+              <button
+                type="button"
+                className="btn btn-confirm"
                 onClick={() => submitGoLive(mapCoords.lat, mapCoords.lng)}
                 disabled={locationLoading}
               >

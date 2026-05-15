@@ -1,0 +1,38 @@
+.image-upload-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.image-upload-label {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.image-upload-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.image-preview-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.image-preview {
+  max-width: 150px;
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.uploading-text {
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+}
