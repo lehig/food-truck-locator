@@ -73,6 +73,7 @@ function ProfilePage() {
   const [locationLoading, setLocationLoading] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
   const [mapCoords, setMapCoords] = useState(null);
+  const [liveDuration, setLiveDuration] = useState(4);
 
   const mapContainer = useRef(null);
   const mapRef = useRef(null);
@@ -133,7 +134,11 @@ function ProfilePage() {
     menuImage: '',
     menuItems: [
       { name: '', description: '', price: '' }
-    ]
+    ],
+    lat: 0,
+    lng: 0,
+    staticLat: 0,
+    staticLng: 0
   });
 
   // Customer messages state
@@ -244,6 +249,10 @@ function ProfilePage() {
         city: data.city || '',
         state: data.state || '',
         zipCode: data.zipCode || data.zip || '',
+        lat: data.lat || 0,
+        lng: data.lng || 0,
+        staticLat: data.staticLat || 0,
+        staticLng: data.staticLng || 0,
         hours: (() => {
           const hoursObj = {
             Monday: { open: '', close: '', isClosed: true },
@@ -451,13 +460,32 @@ function ProfilePage() {
         username: user.username,
         lat: lat,
         lng: lng,
-        durationHours: 4
+        durationHours: liveDuration
       });
-      alert("You are now live! Your location will be broadcasted for the next 4 hours.");
+      alert(`You are now live! Your location will be broadcasted for the next ${liveDuration} hours.`);
       setShowMapModal(false);
+      await loadBusinessProfile(user);
     } catch (err) {
       console.error('Error going live:', err);
       alert("Failed to go live. Please try again.");
+    } finally {
+      setLocationLoading(false);
+    }
+  };
+
+  const handleEndLive = async () => {
+    try {
+      setLocationLoading(true);
+      await api.post('/business/live', {
+        userID: user.userID,
+        username: user.username,
+        endLive: true
+      });
+      alert("Your live location has been ended.");
+      await loadBusinessProfile(user);
+    } catch (err) {
+      console.error('Error ending live location:', err);
+      alert("Failed to end live location. Please try again.");
     } finally {
       setLocationLoading(false);
     }
@@ -630,27 +658,166 @@ function ProfilePage() {
 
       {isBusiness && !needsRegistration && (
         <div>
-          <div className='glass-box' style={{ marginBottom: '1.5rem', background: 'rgba(255, 77, 77, 0.1)', border: '1px solid rgba(255, 77, 77, 0.3)' }}>
-            <h2 style={{ color: '#ff4d4d', marginTop: 0, marginBottom: '10px' }}>📍 Quick Actions: Go Live</h2>
-            <p>
-              Parked and ready for customers? Ping your current location to appear on the live map and mark your truck as "Open" for the next 4 hours.
-            </p>
-            <button
-              type="button"
-              className="btn btn-broadcast"
-              onClick={handleGoLive}
-              disabled={locationLoading}
-            >
-              {locationLoading ? (
-                <>
-                  <div className="bp-spinner" style={{ width: '16px', height: '16px', borderWidth: '2px' }}></div>
-                  Getting Location...
-                </>
-              ) : (
-                'Broadcast Location (4 Hours)'
-              )}
-            </button>
-          </div>
+          {businessProfile.staticLat && businessProfile.staticLat !== 0 ? (
+            <div className='glass-box' style={{ marginBottom: '1.5rem', background: 'rgba(46, 204, 113, 0.1)', border: '1px solid rgba(46, 204, 113, 0.3)' }}>
+              <h2 style={{ color: '#2ecc71', marginTop: 0, marginBottom: '10px' }}>📍 Live Location Active</h2>
+              <p>
+                Your truck is currently live on the map! You can update your location if you have moved, or end the broadcast to go offline.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', maxWidth: '400px', alignItems: 'flex-start' }}>
+                  <label htmlFor="duration-active-select" style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.8)', fontWeight: 'bold' }}>
+                    Select Live Duration:
+                  </label>
+                  <select
+                    id="duration-active-select"
+                    value={liveDuration}
+                    onChange={(e) => setLiveDuration(Number(e.target.value))}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      background: 'rgba(255, 255, 255, 0.08)',
+                      backdropFilter: 'blur(10px)',
+                      color: '#fff',
+                      fontSize: '1rem',
+                      outline: 'none',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#2ecc71';
+                      e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                      e.target.style.background = 'rgba(255, 255, 255, 0.08)';
+                    }}
+                  >
+                    <option value={1} style={{ color: '#000' }}>1 Hour</option>
+                    <option value={2} style={{ color: '#000' }}>2 Hours</option>
+                    <option value={3} style={{ color: '#000' }}>3 Hours</option>
+                    <option value={4} style={{ color: '#000' }}>4 Hours (Default)</option>
+                    <option value={6} style={{ color: '#000' }}>6 Hours</option>
+                    <option value={8} style={{ color: '#000' }}>8 Hours</option>
+                    <option value={12} style={{ color: '#000' }}>12 Hours</option>
+                    <option value={24} style={{ color: '#000' }}>24 Hours</option>
+                  </select>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-broadcast"
+                  style={{ marginTop: '0', backgroundColor: '#2ecc71', borderColor: '#2ecc71' }}
+                  onClick={handleGoLive}
+                  disabled={locationLoading}
+                >
+                  {locationLoading ? (
+                    <>
+                      <div className="bp-spinner" style={{ width: '16px', height: '16px', borderWidth: '2px' }}></div>
+                      Getting Location...
+                    </>
+                  ) : (
+                    `Update Live Location (${liveDuration} ${liveDuration === 1 ? 'Hour' : 'Hours'})`
+                  )}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-rmv"
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 'larger',
+                    margin: '0 auto',
+                    width: '100%',
+                    maxWidth: '400px',
+                    padding: '20px 10px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                  onClick={handleEndLive}
+                  disabled={locationLoading}
+                >
+                  {locationLoading ? (
+                    <>
+                      <div className="bp-spinner" style={{ width: '16px', height: '16px', borderWidth: '2px' }}></div>
+                      Ending Live Location...
+                    </>
+                  ) : (
+                    'End Live Location'
+                  )}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className='glass-box' style={{ marginBottom: '1.5rem', background: 'rgba(255, 77, 77, 0.1)', border: '1px solid rgba(255, 77, 77, 0.3)' }}>
+              <h2 style={{ color: '#ff4d4d', marginTop: 0, marginBottom: '10px' }}>📍 Quick Actions: Go Live</h2>
+              <p style={{ marginBottom: '15px' }}>
+                Parked and ready for customers? Select how long you want to be live, then ping your current location to appear on the live map and mark your truck as "Open".
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', maxWidth: '400px', alignItems: 'flex-start' }}>
+                  <label htmlFor="duration-inactive-select" style={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.8)', fontWeight: 'bold' }}>
+                    Select Live Duration:
+                  </label>
+                  <select
+                    id="duration-inactive-select"
+                    value={liveDuration}
+                    onChange={(e) => setLiveDuration(Number(e.target.value))}
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      background: 'rgba(255, 255, 255, 0.08)',
+                      backdropFilter: 'blur(10px)',
+                      color: '#fff',
+                      fontSize: '1rem',
+                      outline: 'none',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#ff4d4d';
+                      e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                      e.target.style.background = 'rgba(255, 255, 255, 0.08)';
+                    }}
+                  >
+                    <option value={1} style={{ color: '#000' }}>1 Hour</option>
+                    <option value={2} style={{ color: '#000' }}>2 Hours</option>
+                    <option value={3} style={{ color: '#000' }}>3 Hours</option>
+                    <option value={4} style={{ color: '#000' }}>4 Hours (Default)</option>
+                    <option value={6} style={{ color: '#000' }}>6 Hours</option>
+                    <option value={8} style={{ color: '#000' }}>8 Hours</option>
+                    <option value={12} style={{ color: '#000' }}>12 Hours</option>
+                    <option value={24} style={{ color: '#000' }}>24 Hours</option>
+                  </select>
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-broadcast"
+                  style={{ marginTop: '0' }}
+                  onClick={handleGoLive}
+                  disabled={locationLoading}
+                >
+                  {locationLoading ? (
+                    <>
+                      <div className="bp-spinner" style={{ width: '16px', height: '16px', borderWidth: '2px' }}></div>
+                      Getting Location...
+                    </>
+                  ) : (
+                    `Broadcast Location (${liveDuration} ${liveDuration === 1 ? 'Hour' : 'Hours'})`
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className='glass-box'>
             <form className="business-profile-form" onSubmit={handleSaveBusiness}>
@@ -962,6 +1129,36 @@ function ProfilePage() {
               }}>
                 📍
               </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+              <label htmlFor="duration-modal-select" style={{ fontSize: '0.95rem', color: '#333', fontWeight: 'bold' }}>
+                Confirm Live Duration:
+              </label>
+              <select
+                id="duration-modal-select"
+                value={liveDuration}
+                onChange={(e) => setLiveDuration(Number(e.target.value))}
+                style={{
+                  width: '100%',
+                  padding: '10px 14px',
+                  borderRadius: '6px',
+                  border: '1px solid #ccc',
+                  background: '#fff',
+                  color: '#333',
+                  fontSize: '1rem',
+                  outline: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value={1}>1 Hour</option>
+                <option value={2}>2 Hours</option>
+                <option value={3}>3 Hours</option>
+                <option value={4}>4 Hours (Default)</option>
+                <option value={6}>6 Hours</option>
+                <option value={8}>8 Hours</option>
+                <option value={12}>12 Hours</option>
+                <option value={24}>24 Hours</option>
+              </select>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
               <button
