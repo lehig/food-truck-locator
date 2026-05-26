@@ -15,8 +15,8 @@ html, body {
 
 /* This is the key: it grows to push the footer down when content is short */
 .app-content {
-  flex: 1;
   display: block;
+  flex: 1 1;
   width: 100%;
 }
 

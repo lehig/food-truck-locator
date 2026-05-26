@@ -24,7 +24,7 @@ body {
   background-position: center;
   background-attachment: fixed;
   color: #fff;
-  padding-top: 72px;
+  padding-top: 96px;
   overflow-x: hidden;
 }
 
@@ -43,7 +43,7 @@ code {
 
 @media (max-width: 768px) {
   body {
-    padding-top: 64px;
+    padding-top: 88px;
     background-attachment: scroll;
   }
 }

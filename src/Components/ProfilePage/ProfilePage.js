@@ -910,23 +910,23 @@ function ProfilePage() {
 
               <br></br>
               <h2>Hours</h2>
-              <div className="hours-grid" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
+              <div className="hours-grid">
                 {Object.keys(businessProfile.hours).map(day => {
                   const hrs = businessProfile.hours[day];
                   return (
-                    <div key={day} className="hours-row" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                      <span style={{ width: '90px', fontWeight: 'bold' }}>{day}</span>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: 0, cursor: 'pointer' }}>
+                    <div key={day} className="hours-row">
+                      <span className="hours-day">{day}</span>
+                      <label className="hours-closed-label">
                         <input
                           type="checkbox"
                           checked={hrs.isClosed}
                           onChange={e => handleHoursChange(day, 'isClosed', e.target.checked)}
-                          style={{ width: 'auto', marginTop: 0 }}
+                          className="hours-closed-checkbox"
                         />
                         Closed
                       </label>
                       {!hrs.isClosed && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: '200px' }}>
+                        <div className="hours-time-range">
                           <input
                             type="time"
                             value={hrs.open}

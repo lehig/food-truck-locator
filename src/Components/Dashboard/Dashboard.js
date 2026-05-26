@@ -521,7 +521,7 @@ function Dashboard() {
   };
 
   return (
-    <div className='dashboard dashboard-map-mode' style={{ padding: 0, height: '100vh', width: '100vw', overflow: 'hidden', position: 'relative' }}>
+    <div className='dashboard dashboard-map-mode' style={{ padding: 0, overflow: 'hidden', position: 'relative' }}>
       {subscriptionPopup && (
         <div className="subscribe-popup-overlay" role="status" aria-live="polite">
           <div className="subscribe-popup-card">
@@ -544,7 +544,7 @@ function Dashboard() {
       )}
 
       {/* Floating Top Navigation Bar */}
-      <nav className='dashboard-nav' style={{ position: 'absolute', top: '50px', left: '50%', transform: 'translateX(-50%)', zIndex: 10, width: '90%', maxWidth: '1100px', background: 'rgba(15, 23, 42, 0.75)' }}>
+      <nav className='dashboard-nav'>
         <div className='nav-left'>
           <span className='nav-logo'>Lowk Dashboard</span>
         </div>
@@ -559,10 +559,7 @@ function Dashboard() {
       <div ref={mapContainer} style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 0 }} />
 
       {/* Sidebar Overlay for selected business */}
-      <div className="dashboard-sidebar" style={{
-        position: 'absolute', top: '200px', bottom: '30px', left: '30px', width: '380px', 
-        zIndex: 10, display: 'flex', flexDirection: 'column', gap: '15px', pointerEvents: 'none'
-      }}>
+      <div className="dashboard-sidebar">
         
         {loading && (
           <div style={{ background: 'rgba(14, 22, 32, 0.85)', backdropFilter: 'blur(10px)', padding: '20px', borderRadius: '16px', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', pointerEvents: 'auto' }}>

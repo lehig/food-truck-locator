@@ -9,6 +9,12 @@
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
+.dashboard-map-mode {
+  height: calc(100vh - 96px);
+  width: 100%;
+}
+
+
 .subscribe-popup-overlay {
   position: fixed;
   inset: 0;
@@ -114,10 +120,14 @@
 
 /* Top nav bar styled like a horizontal "wrapper" */
 .dashboard-nav {
-  width: 100%;
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  width: 90%;
   max-width: 1100px;
-  margin: 0 auto;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(15, 23, 42, 0.75);
   border: 1px solid rgba(255, 255, 255, .1);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(20px);
@@ -129,6 +139,19 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.dashboard-sidebar {
+  position: absolute;
+  top: 200px;
+  bottom: 30px;
+  left: 30px;
+  width: 380px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  pointer-events: none;
 }
 
 /* Left logo/title */
@@ -302,15 +325,59 @@
 
 /* Responsive tweaks */
 @media (max-width: 768px) {
+  .dashboard-map-mode {
+    height: calc(100vh - 88px);
+  }
+
   .dashboard {
     padding-bottom: 20px;
   }
 
   .dashboard-nav {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-    padding: 14px 16px;
+    top: 20px;
+    width: 95%;
+    padding: 20px 15px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 12px;
+  }
+
+  .dashboard-nav .nav-logo {
+    font-size: 16px;
+  }
+
+  .dashboard-nav .profile-btn {
+    min-width: auto;
+    padding: 6px 12px;
+    font-size: 12px;
+    height: 32px;
+  }
+
+  .dashboard-sidebar {
+    top: auto;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    width: calc(100% - 20px);
+    max-height: 48vh;
+    gap: 10px;
+  }
+
+  .business-card-footer .btn {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 400px) {
+    .dashboard-nav .nav-left {
+      display: none;
+    }
+
+    .dashboard-nav {
+      justify-content: center;
+    }
   }
 
   .nav-center {
@@ -605,13 +672,44 @@
 
 .hours-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 0.4rem 0.75rem;
-  margin-bottom: 1rem;
+  grid-template-columns: 120px 100px 1fr;
+  gap: 0.8rem 1.5rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
 .hours-row {
   display: contents;
+}
+
+.hours-day {
+  font-weight: bold;
+}
+
+.hours-closed-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0 !important;
+  cursor: pointer;
+}
+
+.hours-closed-checkbox {
+  width: auto !important;
+  margin-top: 0 !important;
+}
+
+.hours-time-range {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 320px;
+}
+
+.hours-time-range input[type="time"] {
+  flex: 1;
+  margin-top: 0 !important;
 }
 
 .menu-item-row {
@@ -934,6 +1032,24 @@ p {
 
   .hours-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .hours-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .hours-row:last-child {
+    border-bottom: none;
+  }
+
+  .hours-time-range {
+    max-width: 100%;
   }
 
   .menu-item-row {
@@ -954,9 +1070,7 @@ p {
     width: 100%;
   }
 
-  .dashboard-nav {
-    flex-direction: column;
-  }
+
 
   .nav-part {
     border: 0;
@@ -1841,22 +1955,46 @@ p {
 @media (max-width: 900px) {
   .bp-content-wrapper {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .business-cover {
+    height: auto;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .business-cover-overlay {
+    position: relative;
+    inset: auto;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
   }
 
   .business-header-glass {
     flex-direction: column;
     text-align: center;
-    padding: 1rem;
+    padding: 1.5rem 1rem;
     gap: 1rem;
+    width: 100%;
+    max-width: 100%;
   }
 
   .business-stats {
     justify-content: center;
   }
 
-  .business-cover {
-    height: auto;
-    min-height: 350px;
+  .business-logo {
+    width: 80px;
+    height: 80px;
+  }
+
+  .business-header-info h1 {
+    font-size: 1.6rem;
   }
 }
 
