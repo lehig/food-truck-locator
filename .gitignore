@@ -27,3 +27,4 @@ yarn-error.log*
 
 # legacy code
 /zz_legacy
+/test_suite
